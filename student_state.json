@@ -1,0 +1,179 @@
+{
+  "masteries": {
+    "v001": {
+      "knowledge_point_id": "v001",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v002": {
+      "knowledge_point_id": "v002",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v003": {
+      "knowledge_point_id": "v003",
+      "p_known": 0.3,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v004": {
+      "knowledge_point_id": "v004",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v005": {
+      "knowledge_point_id": "v005",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v006": {
+      "knowledge_point_id": "v006",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v007": {
+      "knowledge_point_id": "v007",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v008": {
+      "knowledge_point_id": "v008",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v009": {
+      "knowledge_point_id": "v009",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v010": {
+      "knowledge_point_id": "v010",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v011": {
+      "knowledge_point_id": "v011",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v012": {
+      "knowledge_point_id": "v012",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v013": {
+      "knowledge_point_id": "v013",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v014": {
+      "knowledge_point_id": "v014",
+      "p_known": 0.3,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v015": {
+      "knowledge_point_id": "v015",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v016": {
+      "knowledge_point_id": "v016",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v017": {
+      "knowledge_point_id": "v017",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v018": {
+      "knowledge_point_id": "v018",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v019": {
+      "knowledge_point_id": "v019",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "v020": {
+      "knowledge_point_id": "v020",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "g001": {
+      "knowledge_point_id": "g001",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "g002": {
+      "knowledge_point_id": "g002",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "g003": {
+      "knowledge_point_id": "g003",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "g004": {
+      "knowledge_point_id": "g004",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    },
+    "g005": {
+      "knowledge_point_id": "g005",
+      "p_known": 0.0,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2
+    }
+  }
+}

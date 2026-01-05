@@ -1,0 +1,22 @@
+[
+  {"id": "v001", "type": "vocabulary", "chinese": "我", "pinyin": "wǒ", "english": "I, me", "hsk_level": 1, "prerequisites": []},
+  {"id": "v002", "type": "vocabulary", "chinese": "你", "pinyin": "nǐ", "english": "you", "hsk_level": 1, "prerequisites": []},
+  {"id": "v003", "type": "vocabulary", "chinese": "他", "pinyin": "tā", "english": "he, him", "hsk_level": 1, "prerequisites": []},
+  {"id": "v004", "type": "vocabulary", "chinese": "她", "pinyin": "tā", "english": "she, her", "hsk_level": 1, "prerequisites": []},
+  {"id": "v005", "type": "vocabulary", "chinese": "是", "pinyin": "shì", "english": "to be", "hsk_level": 1, "prerequisites": []},
+  {"id": "v006", "type": "vocabulary", "chinese": "不", "pinyin": "bù", "english": "not, no", "hsk_level": 1, "prerequisites": []},
+  {"id": "v007", "type": "vocabulary", "chinese": "学生", "pinyin": "xuésheng", "english": "student", "hsk_level": 1, "prerequisites": []},
+  {"id": "v008", "type": "vocabulary", "chinese": "老师", "pinyin": "lǎoshī", "english": "teacher", "hsk_level": 1, "prerequisites": []},
+  {"id": "v009", "type": "vocabulary", "chinese": "朋友", "pinyin": "péngyou", "english": "friend", "hsk_level": 1, "prerequisites": []},
+  {"id": "v010", "type": "vocabulary", "chinese": "中国", "pinyin": "Zhōngguó", "english": "China", "hsk_level": 1, "prerequisites": []},
+  {"id": "v011", "type": "vocabulary", "chinese": "人", "pinyin": "rén", "english": "person, people", "hsk_level": 1, "prerequisites": []},
+  {"id": "v012", "type": "vocabulary", "chinese": "吃", "pinyin": "chī", "english": "to eat", "hsk_level": 1, "prerequisites": []},
+  {"id": "v013", "type": "vocabulary", "chinese": "喝", "pinyin": "hē", "english": "to drink", "hsk_level": 1, "prerequisites": []},
+  {"id": "v014", "type": "vocabulary", "chinese": "水", "pinyin": "shuǐ", "english": "water", "hsk_level": 1, "prerequisites": []},
+  {"id": "v015", "type": "vocabulary", "chinese": "茶", "pinyin": "chá", "english": "tea", "hsk_level": 1, "prerequisites": []},
+  {"id": "v016", "type": "vocabulary", "chinese": "米饭", "pinyin": "mǐfàn", "english": "rice", "hsk_level": 1, "prerequisites": []},
+  {"id": "v017", "type": "vocabulary", "chinese": "好", "pinyin": "hǎo", "english": "good", "hsk_level": 1, "prerequisites": []},
+  {"id": "v018", "type": "vocabulary", "chinese": "很", "pinyin": "hěn", "english": "very", "hsk_level": 1, "prerequisites": []},
+  {"id": "v019", "type": "vocabulary", "chinese": "喜欢", "pinyin": "xǐhuan", "english": "to like", "hsk_level": 1, "prerequisites": []},
+  {"id": "v020", "type": "vocabulary", "chinese": "什么", "pinyin": "shénme", "english": "what", "hsk_level": 1, "prerequisites": []}
+]

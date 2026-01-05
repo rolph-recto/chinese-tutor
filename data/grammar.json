@@ -1,0 +1,47 @@
+[
+  {
+    "id": "g001",
+    "type": "grammar",
+    "chinese": "Subject + 是 + Noun",
+    "pinyin": "Subject + shì + Noun",
+    "english": "Subject is Noun (using 是)",
+    "hsk_level": 1,
+    "prerequisites": ["v005"]
+  },
+  {
+    "id": "g002",
+    "type": "grammar",
+    "chinese": "Subject + 不 + Verb",
+    "pinyin": "Subject + bù + Verb",
+    "english": "Negation with 不",
+    "hsk_level": 1,
+    "prerequisites": ["v006", "g001"]
+  },
+  {
+    "id": "g003",
+    "type": "grammar",
+    "chinese": "Subject + Verb + Object + 吗?",
+    "pinyin": "Subject + Verb + Object + ma?",
+    "english": "Yes/no questions with 吗",
+    "hsk_level": 1,
+    "prerequisites": ["g001"]
+  },
+  {
+    "id": "g004",
+    "type": "grammar",
+    "chinese": "Subject + 很 + Adjective",
+    "pinyin": "Subject + hěn + Adjective",
+    "english": "Subject is very Adjective (using 很)",
+    "hsk_level": 1,
+    "prerequisites": ["v018"]
+  },
+  {
+    "id": "g005",
+    "type": "grammar",
+    "chinese": "Subject + 喜欢 + Object",
+    "pinyin": "Subject + xǐhuan + Object",
+    "english": "Subject likes Object",
+    "hsk_level": 1,
+    "prerequisites": ["v019"]
+  }
+]

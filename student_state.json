@@ -2,178 +2,279 @@
   "masteries": {
     "v001": {
       "knowledge_point_id": "v001",
-      "p_known": 0.0,
+      "p_known": 0.29999873442046954,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:22.228870",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1
     },
     "v002": {
       "knowledge_point_id": "v002",
-      "p_known": 0.0,
+      "p_known": 0.7609735129956806,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:30.946399",
+      "practice_count": 2,
+      "correct_count": 2,
+      "consecutive_correct": 2
     },
     "v003": {
       "knowledge_point_id": "v003",
-      "p_known": 0.3,
+      "p_known": 0.33557167626094075,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:41:29.305834",
+      "practice_count": 1,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v004": {
       "knowledge_point_id": "v004",
-      "p_known": 0.0,
+      "p_known": 0.7609722459434496,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:15.748070",
+      "practice_count": 2,
+      "correct_count": 2,
+      "consecutive_correct": 2
     },
     "v005": {
       "knowledge_point_id": "v005",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v006": {
       "knowledge_point_id": "v006",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v007": {
       "knowledge_point_id": "v007",
-      "p_known": 0.0,
+      "p_known": 0.29999873443253966,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:22.228943",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1
     },
     "v008": {
       "knowledge_point_id": "v008",
-      "p_known": 0.0,
+      "p_known": 0.2999998857566964,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:30.946437",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1
     },
     "v009": {
       "knowledge_point_id": "v009",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v010": {
       "knowledge_point_id": "v010",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v011": {
       "knowledge_point_id": "v011",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v012": {
       "knowledge_point_id": "v012",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v013": {
       "knowledge_point_id": "v013",
-      "p_known": 0.0,
-      "p_transit": 0.3,
-      "p_slip": 0.1,
-      "p_guess": 0.2
-    },
-    "v014": {
-      "knowledge_point_id": "v014",
       "p_known": 0.3,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:40.028779",
+      "practice_count": 1,
+      "correct_count": 0,
+      "consecutive_correct": 0
+    },
+    "v014": {
+      "knowledge_point_id": "v014",
+      "p_known": 0.7609709633796922,
+      "p_transit": 0.3,
+      "p_slip": 0.1,
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:08.118412",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1
     },
     "v015": {
       "knowledge_point_id": "v015",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v016": {
       "knowledge_point_id": "v016",
-      "p_known": 0.0,
+      "p_known": 0.7609722459717175,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:15.748144",
+      "practice_count": 2,
+      "correct_count": 2,
+      "consecutive_correct": 2
     },
     "v017": {
       "knowledge_point_id": "v017",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v018": {
       "knowledge_point_id": "v018",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v019": {
       "knowledge_point_id": "v019",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "v020": {
       "knowledge_point_id": "v020",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "g001": {
       "knowledge_point_id": "g001",
-      "p_known": 0.0,
+      "p_known": 0.7609751727336022,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": "2026-01-05T15:42:30.946450",
+      "practice_count": 2,
+      "correct_count": 2,
+      "consecutive_correct": 2
     },
     "g002": {
       "knowledge_point_id": "g002",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "g003": {
       "knowledge_point_id": "g003",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "g004": {
       "knowledge_point_id": "g004",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     },
     "g005": {
       "knowledge_point_id": "g005",
       "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
-      "p_guess": 0.2
+      "p_guess": 0.2,
+      "last_practiced": null,
+      "practice_count": 0,
+      "correct_count": 0,
+      "consecutive_correct": 0
     }
-  }
+  },
+  "last_kp_type": "vocabulary"
 }

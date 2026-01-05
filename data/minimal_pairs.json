@@ -1,0 +1,86 @@
+[
+  {
+    "target_id": "v003",
+    "distractors": [
+      {"chinese": "她", "pinyin": "tā", "english": "she, her", "reason": "same pinyin, different character"},
+      {"chinese": "它", "pinyin": "tā", "english": "it", "reason": "same pinyin, different character"}
+    ]
+  },
+  {
+    "target_id": "v004",
+    "distractors": [
+      {"chinese": "他", "pinyin": "tā", "english": "he, him", "reason": "same pinyin, different character"},
+      {"chinese": "它", "pinyin": "tā", "english": "it", "reason": "same pinyin, different character"}
+    ]
+  },
+  {
+    "target_id": "v005",
+    "distractors": [
+      {"chinese": "事", "pinyin": "shì", "english": "matter, thing", "reason": "same pinyin"},
+      {"chinese": "试", "pinyin": "shì", "english": "to try", "reason": "same pinyin"}
+    ]
+  },
+  {
+    "target_id": "v006",
+    "distractors": [
+      {"chinese": "布", "pinyin": "bù", "english": "cloth", "reason": "same pinyin"},
+      {"chinese": "步", "pinyin": "bù", "english": "step", "reason": "same pinyin"}
+    ]
+  },
+  {
+    "target_id": "v012",
+    "distractors": [
+      {"chinese": "七", "pinyin": "qī", "english": "seven", "reason": "similar sound"},
+      {"chinese": "尺", "pinyin": "chǐ", "english": "ruler, measure", "reason": "similar sound, similar initial"}
+    ]
+  },
+  {
+    "target_id": "v013",
+    "distractors": [
+      {"chinese": "和", "pinyin": "hé", "english": "and, with", "reason": "similar sound, same initial"},
+      {"chinese": "河", "pinyin": "hé", "english": "river", "reason": "similar sound"}
+    ]
+  },
+  {
+    "target_id": "v014",
+    "distractors": [
+      {"chinese": "谁", "pinyin": "shuí", "english": "who", "reason": "similar sound"},
+      {"chinese": "睡", "pinyin": "shuì", "english": "to sleep", "reason": "similar sound"}
+    ]
+  },
+  {
+    "target_id": "v015",
+    "distractors": [
+      {"chinese": "查", "pinyin": "chá", "english": "to check", "reason": "same pinyin"},
+      {"chinese": "差", "pinyin": "chà", "english": "difference", "reason": "similar sound"}
+    ]
+  },
+  {
+    "target_id": "v017",
+    "distractors": [
+      {"chinese": "号", "pinyin": "hào", "english": "number", "reason": "similar sound, same initial"},
+      {"chinese": "毫", "pinyin": "háo", "english": "hair, tiny", "reason": "similar sound"}
+    ]
+  },
+  {
+    "target_id": "v018",
+    "distractors": [
+      {"chinese": "恨", "pinyin": "hèn", "english": "to hate", "reason": "similar sound"},
+      {"chinese": "狠", "pinyin": "hěn", "english": "ruthless", "reason": "same pinyin, visually similar"}
+    ]
+  },
+  {
+    "target_id": "v019",
+    "distractors": [
+      {"chinese": "洗", "pinyin": "xǐ", "english": "to wash", "reason": "same initial sound"},
+      {"chinese": "习", "pinyin": "xí", "english": "to practice", "reason": "similar sound"}
+    ]
+  },
+  {
+    "target_id": "v020",
+    "distractors": [
+      {"chinese": "神", "pinyin": "shén", "english": "god, spirit", "reason": "similar sound"},
+      {"chinese": "身", "pinyin": "shēn", "english": "body", "reason": "similar sound"}
+    ]
+  }
+]

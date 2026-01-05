@@ -30,6 +30,20 @@ class SegmentedTranslationExercise(Exercise):
     correct_order: list[int]
 
 
+class MinimalPairOption(BaseModel):
+    chinese: str
+    pinyin: str
+    english: str
+
+
+class MinimalPairExercise(Exercise):
+    target_chinese: str
+    target_pinyin: str
+    target_english: str
+    options: list[MinimalPairOption]
+    correct_index: int
+
+
 class StudentMastery(BaseModel):
     knowledge_point_id: str
     p_known: float = Field(default=0.0, ge=0.0, le=1.0)

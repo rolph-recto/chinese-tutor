@@ -1,16 +1,24 @@
-from models import StudentMastery, StudentState, KnowledgePoint
+from fsrs_scheduler import get_fsrs_retrievability, process_fsrs_review
+from models import KnowledgePoint, SchedulingMode, StudentMastery, StudentState
 
 
 def update_mastery(mastery: StudentMastery, correct: bool) -> float:
     """
-    Update the probability that the student knows the skill using Bayesian Knowledge Tracing.
+    Update mastery based on the scheduling mode.
 
-    Uses the standard BKT update equations:
-    - If correct: P(L|correct) = P(L) * (1 - P(S)) / P(correct)
-    - If incorrect: P(L|incorrect) = P(L) * P(S) / P(incorrect)
+    - BKT mode: Uses Bayesian Knowledge Tracing update equations
+    - FSRS mode: Delegates to FSRS scheduler
 
-    Then applies the learning/transition probability.
+    Returns the updated p_known value (or retrievability for FSRS).
     """
+    if mastery.scheduling_mode == SchedulingMode.FSRS:
+        # Process FSRS review
+        process_fsrs_review(mastery, correct)
+        # Return retrievability as equivalent to p_known
+        retrievability = get_fsrs_retrievability(mastery)
+        return retrievability if retrievability is not None else 1.0
+
+    # BKT mode: original logic
     p_l = mastery.p_known
     p_t = mastery.p_transit
     p_s = mastery.p_slip

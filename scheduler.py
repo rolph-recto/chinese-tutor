@@ -1,5 +1,17 @@
-from datetime import datetime, timedelta
-from models import KnowledgePoint, KnowledgePointType, StudentMastery, StudentState
+from datetime import datetime, timezone
+
+from fsrs_scheduler import (
+    get_fsrs_due_date,
+    initialize_fsrs_for_mastery,
+    is_fsrs_due,
+)
+from models import (
+    KnowledgePoint,
+    KnowledgePointType,
+    SchedulingMode,
+    StudentMastery,
+    StudentState,
+)
 
 
 # Constants
@@ -12,11 +24,15 @@ DECAY_RATE_PER_WEEK = 0.05   # 5% mastery decay per week of inactivity
 
 def apply_mastery_decay(student_state: StudentState) -> None:
     """
-    Apply time-based decay to all mastery values.
-    Mastery decays by DECAY_RATE_PER_WEEK for each week since last practice.
+    Apply time-based decay to BKT mastery values only.
+    FSRS items use the FSRS algorithm for scheduling (no manual decay).
     """
     now = datetime.now()
     for mastery in student_state.masteries.values():
+        # Only apply decay to BKT-mode items
+        if mastery.scheduling_mode != SchedulingMode.BKT:
+            continue
+
         if mastery.last_practiced is None:
             continue
 
@@ -26,6 +42,26 @@ def apply_mastery_decay(student_state: StudentState) -> None:
         if weeks_elapsed > 0:
             decay = DECAY_RATE_PER_WEEK * weeks_elapsed
             mastery.p_known = max(0.0, mastery.p_known - decay)
+
+
+def check_and_transition_to_fsrs(mastery: StudentMastery) -> bool:
+    """
+    Check if a knowledge point should transition from BKT to FSRS.
+
+    Transition occurs when:
+    - Currently in BKT mode
+    - p_known >= MASTERY_THRESHOLD
+
+    Returns True if transition occurred.
+    """
+    if mastery.scheduling_mode == SchedulingMode.FSRS:
+        return False  # Already in FSRS
+
+    if mastery.p_known >= MASTERY_THRESHOLD:
+        initialize_fsrs_for_mastery(mastery)
+        return True
+
+    return False
 
 
 def prerequisites_met(
@@ -63,10 +99,16 @@ def is_on_frontier(
 
 def needs_review(kp: KnowledgePoint, student_state: StudentState) -> bool:
     """
-    A knowledge point needs review if it was previously practiced
-    but mastery has dropped below the threshold.
+    A knowledge point needs review if:
+    - BKT mode: was previously practiced but mastery dropped below threshold
+    - FSRS mode: is past its due date
     """
     mastery = student_state.get_mastery(kp.id)
+
+    if mastery.scheduling_mode == SchedulingMode.FSRS:
+        return is_fsrs_due(mastery)
+
+    # BKT mode
     return (
         mastery.last_practiced is not None
         and mastery.p_known < MASTERY_THRESHOLD
@@ -82,19 +124,41 @@ def calculate_kp_score(
     """
     Calculate a priority score for a knowledge point.
     Higher score = higher priority for selection.
+
+    Handles both BKT and FSRS modes:
+    - BKT: Uses mastery-based scoring (original logic)
+    - FSRS: Prioritizes overdue items based on how overdue they are
     """
     mastery = student_state.get_mastery(kp.id)
     score = 0.0
 
-    # Review component: lower mastery = higher priority
-    if needs_review(kp, student_state):
-        score += REVIEW_WEIGHT * (1 - mastery.p_known)
+    if mastery.scheduling_mode == SchedulingMode.FSRS:
+        # FSRS mode: score based on due date
+        due = get_fsrs_due_date(mastery)
+        if due is not None:
+            now = datetime.now(timezone.utc)
+            due_utc = due.replace(tzinfo=timezone.utc) if due.tzinfo is None else due
 
-    # Frontier component: new learnable items get bonus
-    if is_on_frontier(kp, student_state, kp_dict):
-        score += FRONTIER_WEIGHT
+            if now >= due_utc:
+                # Overdue: higher score for more overdue items
+                overdue_hours = (now - due_utc).total_seconds() / 3600
+                # Cap at 168 hours (1 week) to avoid extreme values
+                score = min(overdue_hours / 168, 1.0) * REVIEW_WEIGHT + 0.5
+            else:
+                # Not yet due: minimal score (can still be selected if nothing else)
+                hours_until_due = (due_utc - now).total_seconds() / 3600
+                score = max(0.0, 0.1 - hours_until_due / 1000)
+    else:
+        # BKT mode: original scoring logic
+        # Review component: lower mastery = higher priority
+        if needs_review(kp, student_state):
+            score += REVIEW_WEIGHT * (1 - mastery.p_known)
 
-    # Interleaving bonus: prefer the opposite type for variety
+        # Frontier component: new learnable items get bonus
+        if is_on_frontier(kp, student_state, kp_dict):
+            score += FRONTIER_WEIGHT
+
+    # Interleaving bonus: prefer the opposite type for variety (applies to both modes)
     if prefer_type is not None and kp.type == prefer_type:
         score += 0.1  # Small bonus for variety
 
@@ -135,9 +199,13 @@ def select_next_knowledge_point(
     # Score all knowledge points
     scored_kps = []
     for kp in knowledge_points:
-        # Skip if prerequisites not met
-        if not prerequisites_met(kp, student_state, kp_dict):
-            continue
+        mastery = student_state.get_mastery(kp.id)
+
+        # For BKT items, check prerequisites
+        # For FSRS items, prerequisites are already satisfied (was mastered)
+        if mastery.scheduling_mode == SchedulingMode.BKT:
+            if not prerequisites_met(kp, student_state, kp_dict):
+                continue
 
         score = calculate_kp_score(kp, student_state, kp_dict, prefer_type)
         scored_kps.append((score, kp))
@@ -161,6 +229,7 @@ def update_practice_stats(
 ) -> None:
     """
     Update practice statistics after an exercise.
+    Also checks for BKT -> FSRS transition after stats are updated.
     """
     mastery.last_practiced = datetime.now()
     mastery.practice_count += 1
@@ -170,3 +239,6 @@ def update_practice_stats(
         mastery.consecutive_correct += 1
     else:
         mastery.consecutive_correct = 0
+
+    # Check for transition to FSRS after updating stats
+    check_and_transition_to_fsrs(mastery)

@@ -2,7 +2,7 @@ import json
 import random
 from pathlib import Path
 
-from models import KnowledgePoint, StudentState
+from models import KnowledgePoint, SchedulingMode, StudentState
 from bkt import update_mastery
 from scheduler import select_next_knowledge_point, update_practice_stats
 from exercises import segmented_translation, minimal_pair
@@ -152,9 +152,24 @@ def main():
             old_p = mastery.p_known
             new_p = update_mastery(mastery, is_correct)
             update_practice_stats(mastery, is_correct)
-            print(
-                f"  {kp.chinese} ({kp.english}): {old_p*100:.0f}% → {new_p*100:.0f}%"
-            )
+
+            # Display mode-specific information
+            mode = mastery.scheduling_mode.value.upper()
+            if mastery.scheduling_mode == SchedulingMode.FSRS and mastery.fsrs_state:
+                due_str = (
+                    mastery.fsrs_state.due.strftime("%Y-%m-%d %H:%M")
+                    if mastery.fsrs_state.due
+                    else "N/A"
+                )
+                print(
+                    f"  {kp.chinese} ({kp.english}): [{mode}] "
+                    f"retrievability={new_p*100:.0f}%, due={due_str}"
+                )
+            else:
+                print(
+                    f"  {kp.chinese} ({kp.english}): [{mode}] "
+                    f"{old_p*100:.0f}% → {new_p*100:.0f}%"
+                )
 
         # Update last KP type for interleaving
         if target_kp:

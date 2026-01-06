@@ -2,47 +2,66 @@
   "masteries": {
     "v001": {
       "knowledge_point_id": "v001",
-      "p_known": 0.29999873442046954,
+      "p_known": 0.2884179719317129,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:22.228870",
       "practice_count": 1,
       "correct_count": 1,
-      "consecutive_correct": 1
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v002": {
       "knowledge_point_id": "v002",
-      "p_known": 0.7609735129956806,
+      "p_known": 0.9515788318764526,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
-      "last_practiced": "2026-01-05T15:42:30.946399",
-      "practice_count": 2,
-      "correct_count": 2,
-      "consecutive_correct": 2
+      "last_practiced": "2026-01-06T11:10:25.924900",
+      "practice_count": 3,
+      "correct_count": 3,
+      "consecutive_correct": 3,
+      "scheduling_mode": "fsrs",
+      "fsrs_state": {
+        "stability": 2.3065,
+        "difficulty": 2.118103970459016,
+        "due": "2026-01-06T16:20:25.926456",
+        "last_review": "2026-01-06T16:10:25.926456",
+        "state": 1,
+        "step": 1
+      },
+      "transitioned_to_fsrs_at": "2026-01-06T11:10:25.926565"
     },
     "v003": {
       "knowledge_point_id": "v003",
-      "p_known": 0.33557167626094075,
+      "p_known": 0.3239821632702,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:41:29.305834",
       "practice_count": 1,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v004": {
       "knowledge_point_id": "v004",
-      "p_known": 0.7609722459434496,
+      "p_known": 0.7493904118938465,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:15.748070",
       "practice_count": 2,
       "correct_count": 2,
-      "consecutive_correct": 2
+      "consecutive_correct": 2,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v005": {
       "knowledge_point_id": "v005",
@@ -53,7 +72,10 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v006": {
       "knowledge_point_id": "v006",
@@ -64,29 +86,38 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v007": {
       "knowledge_point_id": "v007",
-      "p_known": 0.29999873443253966,
+      "p_known": 0.28841797195585317,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:22.228943",
       "practice_count": 1,
       "correct_count": 1,
-      "consecutive_correct": 1
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v008": {
       "knowledge_point_id": "v008",
-      "p_known": 0.2999998857566964,
+      "p_known": 0.2884205646645998,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:30.946437",
       "practice_count": 1,
       "correct_count": 1,
-      "consecutive_correct": 1
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v009": {
       "knowledge_point_id": "v009",
@@ -97,7 +128,10 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v010": {
       "knowledge_point_id": "v010",
@@ -108,18 +142,24 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v011": {
       "knowledge_point_id": "v011",
-      "p_known": 0.0,
+      "p_known": 0.3,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
-      "last_practiced": null,
-      "practice_count": 0,
-      "correct_count": 0,
-      "consecutive_correct": 0
+      "last_practiced": "2026-01-06T11:10:25.926616",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v012": {
       "knowledge_point_id": "v012",
@@ -130,29 +170,38 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v013": {
       "knowledge_point_id": "v013",
-      "p_known": 0.3,
+      "p_known": 0.2884221806178902,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:40.028779",
       "practice_count": 1,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v014": {
       "knowledge_point_id": "v014",
-      "p_known": 0.7609709633796922,
+      "p_known": 0.7493878678125626,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:08.118412",
       "practice_count": 1,
       "correct_count": 1,
-      "consecutive_correct": 1
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v015": {
       "knowledge_point_id": "v015",
@@ -163,18 +212,24 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v016": {
       "knowledge_point_id": "v016",
-      "p_known": 0.7609722459717175,
+      "p_known": 0.7493904119343497,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:15.748144",
       "practice_count": 2,
       "correct_count": 2,
-      "consecutive_correct": 2
+      "consecutive_correct": 2,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v017": {
       "knowledge_point_id": "v017",
@@ -185,7 +240,10 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v018": {
       "knowledge_point_id": "v018",
@@ -196,18 +254,24 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v019": {
       "knowledge_point_id": "v019",
-      "p_known": 0.0,
+      "p_known": 0.29999952054216267,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
-      "last_practiced": null,
-      "practice_count": 0,
-      "correct_count": 0,
-      "consecutive_correct": 0
+      "last_practiced": "2026-01-06T11:09:44.122882",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "v020": {
       "knowledge_point_id": "v020",
@@ -218,29 +282,38 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "g001": {
       "knowledge_point_id": "g001",
-      "p_known": 0.7609751727336022,
+      "p_known": 0.749395851643655,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
       "last_practiced": "2026-01-05T15:42:30.946450",
       "practice_count": 2,
       "correct_count": 2,
-      "consecutive_correct": 2
+      "consecutive_correct": 2,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "g002": {
       "knowledge_point_id": "g002",
-      "p_known": 0.0,
+      "p_known": 0.3,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
-      "last_practiced": null,
-      "practice_count": 0,
-      "correct_count": 0,
-      "consecutive_correct": 0
+      "last_practiced": "2026-01-06T11:10:25.926628",
+      "practice_count": 1,
+      "correct_count": 1,
+      "consecutive_correct": 1,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "g003": {
       "knowledge_point_id": "g003",
@@ -251,7 +324,10 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "g004": {
       "knowledge_point_id": "g004",
@@ -262,7 +338,10 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     },
     "g005": {
       "knowledge_point_id": "g005",
@@ -273,7 +352,10 @@
       "last_practiced": null,
       "practice_count": 0,
       "correct_count": 0,
-      "consecutive_correct": 0
+      "consecutive_correct": 0,
+      "scheduling_mode": "bkt",
+      "fsrs_state": null,
+      "transitioned_to_fsrs_at": null
     }
   },
   "last_kp_type": "vocabulary"

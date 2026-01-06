@@ -1,3 +1,4 @@
+import argparse
 import json
 import random
 from pathlib import Path
@@ -9,6 +10,80 @@ from exercises import segmented_translation, minimal_pair
 
 DATA_DIR = Path(__file__).parent / "data"
 STATE_FILE = Path(__file__).parent / "student_state.json"
+
+
+def create_parser() -> argparse.ArgumentParser:
+    """Create argument parser with subcommands."""
+    parser = argparse.ArgumentParser(
+        description="Chinese Tutor - HSK1 Learning System"
+    )
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Simulate subcommand
+    sim_parser = subparsers.add_parser("simulate", help="Run student simulation")
+    sim_parser.add_argument(
+        "--days",
+        "-d",
+        type=int,
+        default=30,
+        help="Number of days to simulate (default: 30)",
+    )
+    sim_parser.add_argument(
+        "--exercises-per-day",
+        "-e",
+        type=int,
+        default=10,
+        help="Exercises per day (default: 10)",
+    )
+    sim_parser.add_argument(
+        "--learning-rate",
+        "-l",
+        type=float,
+        default=0.3,
+        help="Student learning rate 0.0-1.0 (default: 0.3)",
+    )
+    sim_parser.add_argument(
+        "--retention-rate",
+        "-r",
+        type=float,
+        default=0.85,
+        help="Student retention rate 0.0-1.0 (default: 0.85)",
+    )
+    sim_parser.add_argument(
+        "--slip-rate",
+        "-s",
+        type=float,
+        default=0.1,
+        help="Error/slip rate 0.0-0.5 (default: 0.1)",
+    )
+    sim_parser.add_argument(
+        "--guess-rate",
+        "-g",
+        type=float,
+        default=0.25,
+        help="Guess rate 0.0-0.5 (default: 0.25)",
+    )
+    sim_parser.add_argument(
+        "--output",
+        "-o",
+        type=str,
+        default="simulation_results.json",
+        help="Output JSON file path (default: simulation_results.json)",
+    )
+    sim_parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Print detailed exercise-by-exercise output",
+    )
+    sim_parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Random seed for reproducibility",
+    )
+
+    return parser
 
 
 def load_knowledge_points() -> list[KnowledgePoint]:
@@ -44,7 +119,46 @@ def save_student_state(state: StudentState) -> None:
         f.write(state.model_dump_json(indent=2))
 
 
-def main():
+def run_simulation(args) -> None:
+    """Run the simulation subcommand."""
+    from simulate import run_simulation_and_report
+    from simulator_models import SimulatedStudentConfig
+
+    config = SimulatedStudentConfig(
+        learning_rate=args.learning_rate,
+        retention_rate=args.retention_rate,
+        slip_rate=args.slip_rate,
+        guess_rate=args.guess_rate,
+    )
+
+    knowledge_points = load_knowledge_points()
+
+    if not knowledge_points:
+        print("Error: No knowledge points found. Check data/ directory.")
+        return
+
+    print("=" * 40)
+    print("    Student Simulator")
+    print("=" * 40)
+    print()
+    print(f"Simulating {args.days} days with {args.exercises_per_day} exercises/day...")
+    if args.seed is not None:
+        print(f"Random seed: {args.seed}")
+    print()
+
+    run_simulation_and_report(
+        knowledge_points=knowledge_points,
+        config=config,
+        days=args.days,
+        exercises_per_day=args.exercises_per_day,
+        output_path=Path(args.output),
+        verbose=args.verbose,
+        seed=args.seed,
+    )
+
+
+def run_interactive() -> None:
+    """Run the interactive tutoring session."""
     print("=" * 40)
     print("       Chinese Tutor (HSK1)")
     print("=" * 40)
@@ -185,6 +299,18 @@ def main():
             break
 
         print()
+
+
+def main():
+    """Main entry point with CLI routing."""
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if args.command == "simulate":
+        run_simulation(args)
+    else:
+        # Default to interactive mode
+        run_interactive()
 
 
 if __name__ == "__main__":

@@ -1,1 +1,0 @@
-- Always use uv to do anything with Python

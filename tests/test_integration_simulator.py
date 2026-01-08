@@ -242,7 +242,7 @@ class TestQuickSanityChecks:
         random.seed(42)
 
         simulator = Simulator(knowledge_points, default_simulator_config)
-        results = simulator.run(days=1, exercises_per_day=10, verbose=False)
+        simulator.run(days=1, exercises_per_day=10, verbose=False)
 
         # Should have updated some masteries
         assert len(simulator.student_state.masteries) > 0

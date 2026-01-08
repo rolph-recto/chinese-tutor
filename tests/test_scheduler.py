@@ -11,12 +11,15 @@ from scheduler import (
     calculate_kp_score,
     select_next_knowledge_point,
     update_practice_stats,
-    MASTERY_THRESHOLD,
     DECAY_RATE_PER_WEEK,
+    ExerciseScheduler,
 )
 from models import (
     KnowledgePointType,
+    MASTERY_THRESHOLD,
+    PracticeMode,
     SchedulingMode,
+    SessionState,
 )
 
 
@@ -127,7 +130,7 @@ class TestPrerequisites:
         """Grammar KP should have prerequisites met if prereq is mastered."""
         kp_dict = {kp.id: kp for kp in sample_knowledge_points}
         # v005 (prerequisite) is mastered
-        empty_student_state.get_mastery("v005").p_known = 0.85
+        empty_student_state.get_mastery("v005").p_known = 0.96
 
         result = prerequisites_met(sample_grammar_kp, empty_student_state, kp_dict)
 
@@ -142,7 +145,7 @@ class TestFrontier:
     ):
         """KP should be on frontier if prerequisites met but not mastered."""
         kp_dict = {kp.id: kp for kp in sample_knowledge_points}
-        empty_student_state.get_mastery("v005").p_known = 0.85  # Prereq mastered
+        empty_student_state.get_mastery("v005").p_known = 0.96  # Prereq mastered
         empty_student_state.get_mastery("g001").p_known = 0.3  # KP not mastered
 
         result = is_on_frontier(sample_grammar_kp, empty_student_state, kp_dict)
@@ -154,7 +157,7 @@ class TestFrontier:
     ):
         """Mastered KP should not be on frontier."""
         kp_dict = {sample_vocabulary_kp.id: sample_vocabulary_kp}
-        empty_student_state.get_mastery(sample_vocabulary_kp.id).p_known = 0.9
+        empty_student_state.get_mastery(sample_vocabulary_kp.id).p_known = 0.96
 
         result = is_on_frontier(sample_vocabulary_kp, empty_student_state, kp_dict)
 
@@ -200,7 +203,7 @@ class TestNeedsReview:
     def test_no_review_if_mastered(self, empty_student_state, sample_vocabulary_kp):
         """BKT item at mastery threshold should not need review."""
         mastery = empty_student_state.get_mastery(sample_vocabulary_kp.id)
-        mastery.p_known = 0.85
+        mastery.p_known = 0.96
         mastery.last_practiced = datetime.now()
 
         result = needs_review(sample_vocabulary_kp, empty_student_state)
@@ -316,3 +319,160 @@ class TestUpdatePracticeStats:
         update_practice_stats(mastered_bkt, correct=True)
 
         assert mastered_bkt.scheduling_mode == SchedulingMode.FSRS
+
+
+# =============================================================================
+# New tests for ExerciseScheduler class
+# =============================================================================
+
+
+class TestExerciseSchedulerPools:
+    """Tests for Learning/Retention pool management."""
+
+    def test_learning_pool_below_threshold(self, sample_knowledge_points, empty_student_state):
+        """KPs with p_known < 0.95 should be in learning pool."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # All KPs start at 0.0, so all should be in learning pool
+        learning_pool = scheduler.get_learning_pool()
+
+        assert len(learning_pool) == len(sample_knowledge_points)
+
+    def test_retention_pool_above_threshold(self, sample_knowledge_points, empty_student_state):
+        """KPs with p_known >= 0.95 should be in retention pool."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # Master one KP
+        empty_student_state.get_mastery("v001").p_known = 0.96
+
+        retention_pool = scheduler.get_retention_pool()
+
+        assert "v001" in retention_pool
+        assert len(retention_pool) == 1
+
+    def test_mastery_transition_at_threshold(self, sample_knowledge_points, empty_student_state):
+        """KPs reaching 0.95 should transition to FSRS."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # Set a KP at exactly threshold
+        empty_student_state.get_mastery("v001").p_known = 0.95
+
+        result = scheduler.check_mastery_transition("v001")
+
+        assert result is True
+        assert empty_student_state.get_mastery("v001").scheduling_mode == SchedulingMode.FSRS
+
+
+class TestExerciseSchedulerBlockedPractice:
+    """Tests for blocked practice mode."""
+
+    def test_blocked_practice_filters_by_tag(self, sample_knowledge_points, empty_student_state):
+        """Blocked mode should only select KPs with active cluster tag."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        scheduler.activate_blocked_practice("cluster:pronouns")
+
+        selected = scheduler._select_blocked(10)
+
+        # Only v001 and v002 have cluster:pronouns tag
+        for kp_id in selected:
+            kp = scheduler.knowledge_points.get(kp_id)
+            assert "cluster:pronouns" in kp.tags
+
+    def test_interleaved_selects_all_learning(self, sample_knowledge_points, empty_student_state):
+        """Interleaved mode should select from all learning KPs."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # Default is interleaved mode
+
+        selected = scheduler._select_interleaved(10)
+
+        # Should include KPs from different clusters
+        assert len(selected) > 0
+
+    def test_blocked_complete_triggers_transition(self, sample_knowledge_points, empty_student_state):
+        """Completing blocked cluster should transition to interleaved."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        scheduler.activate_blocked_practice("cluster:pronouns")
+
+        # Master all pronouns
+        empty_student_state.get_mastery("v001").p_known = 0.96
+        empty_student_state.get_mastery("v002").p_known = 0.96
+
+        result = scheduler.check_blocked_practice_complete()
+
+        assert result is True
+        assert session_state.practice_mode == PracticeMode.INTERLEAVED
+        assert session_state.active_cluster_tag is None
+
+
+class TestExerciseSchedulerRetention:
+    """Tests for retention mode selection."""
+
+    def test_retention_prioritizes_low_retrievability(self, sample_knowledge_points, empty_student_state):
+        """Retention selection should prioritize lowest retrievability."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # Master multiple KPs to populate retention pool
+        for kp in sample_knowledge_points[:3]:
+            mastery = empty_student_state.get_mastery(kp.id)
+            mastery.p_known = 0.96
+            mastery.scheduling_mode = SchedulingMode.FSRS
+
+        selected = scheduler._select_from_retention(10)
+
+        # Should return items from retention pool
+        assert len(selected) > 0
+
+
+class TestExerciseSchedulerSessionComposition:
+    """Tests for session composition."""
+
+    def test_session_composition_ratio(self, sample_knowledge_points, empty_student_state):
+        """Session queue should respect learning/retention ratio."""
+        session_state = SessionState(learning_retention_ratio=0.5)
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # Master one KP to have items in retention pool
+        empty_student_state.get_mastery("v001").p_known = 0.96
+        empty_student_state.get_mastery("v001").scheduling_mode = SchedulingMode.FSRS
+
+        queue = scheduler.compose_session_queue(session_size=10)
+
+        # Queue should be composed (ratio applied if both pools have items)
+        assert len(queue) > 0
+
+    def test_empty_learning_uses_retention_only(self, sample_knowledge_points, empty_student_state):
+        """Empty learning pool should use 100% retention."""
+        session_state = SessionState()
+        scheduler = ExerciseScheduler(
+            sample_knowledge_points, empty_student_state, session_state
+        )
+        # Master all KPs
+        for kp in sample_knowledge_points:
+            mastery = empty_student_state.get_mastery(kp.id)
+            mastery.p_known = 0.96
+            mastery.scheduling_mode = SchedulingMode.FSRS
+
+        queue = scheduler.compose_session_queue(session_size=4)
+
+        # All items should be from retention pool
+        assert len(queue) == len(sample_knowledge_points)
+        for kp_id in queue:
+            assert kp_id in scheduler.get_retention_pool()

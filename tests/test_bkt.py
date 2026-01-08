@@ -18,7 +18,6 @@ class TestBKTUpdateMastery:
 
     def test_incorrect_answer_effect_on_low_mastery(self, fresh_mastery):
         """Incorrect answer on low mastery should have minimal negative effect."""
-        initial_p = fresh_mastery.p_known
         new_p = update_mastery(fresh_mastery, correct=False)
 
         # With p_known=0, incorrect answer shouldn't go negative

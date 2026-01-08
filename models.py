@@ -3,6 +3,10 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
+# Mastery threshold for transitioning from Learning Mode to Retention Mode
+MASTERY_THRESHOLD = 0.95
+
+
 class KnowledgePointType(str, Enum):
     VOCABULARY = "vocabulary"
     GRAMMAR = "grammar"
@@ -12,6 +16,12 @@ class SchedulingMode(str, Enum):
     """Tracks which scheduling algorithm is active for a knowledge point."""
     BKT = "bkt"       # Initial learning phase
     FSRS = "fsrs"     # Long-term retention phase
+
+
+class PracticeMode(str, Enum):
+    """Current practice mode within Learning Mode."""
+    BLOCKED = "blocked"          # Focused on single cluster
+    INTERLEAVED = "interleaved"  # All Learning Mode skills
 
 
 class FSRSState(BaseModel):
@@ -33,7 +43,7 @@ class KnowledgePoint(BaseModel):
     chinese: str
     pinyin: str
     english: str
-    hsk_level: int = Field(ge=1, le=6)
+    tags: list[str] = Field(default_factory=list)  # e.g., ["hsk1", "cluster:pronouns"]
     prerequisites: list[str] = Field(default_factory=list)
 
 
@@ -87,6 +97,11 @@ class StudentMastery(BaseModel):
     # Timestamp when transitioned to FSRS
     transitioned_to_fsrs_at: datetime | None = None
 
+    @property
+    def is_mastered(self) -> bool:
+        """Returns True if skill has reached mastery threshold (0.95)."""
+        return self.p_known >= MASTERY_THRESHOLD
+
 
 class StudentState(BaseModel):
     masteries: dict[str, StudentMastery] = Field(default_factory=dict)
@@ -98,3 +113,11 @@ class StudentState(BaseModel):
                 knowledge_point_id=knowledge_point_id
             )
         return self.masteries[knowledge_point_id]
+
+
+class SessionState(BaseModel):
+    """Tracks the current session's scheduling state."""
+    practice_mode: PracticeMode = PracticeMode.INTERLEAVED
+    active_cluster_tag: str | None = None  # e.g., "cluster:pronouns" during blocked practice
+    learning_retention_ratio: float = 0.7  # 70% learning, 30% retention
+    exercises_since_menu: int = 0

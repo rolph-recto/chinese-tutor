@@ -3,9 +3,9 @@ import json
 import random
 from pathlib import Path
 
-from models import KnowledgePoint, SchedulingMode, StudentState
+from models import KnowledgePoint, PracticeMode, SchedulingMode, SessionState, StudentState
 from bkt import update_mastery
-from scheduler import select_next_knowledge_point, update_practice_stats
+from scheduler import ExerciseScheduler, update_practice_stats
 from exercises import segmented_translation, minimal_pair
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -157,10 +157,39 @@ def run_simulation(args) -> None:
     )
 
 
+def show_topic_menu_and_select(scheduler: ExerciseScheduler) -> bool:
+    """
+    Display menu and handle cluster selection.
+
+    Returns True if a topic was selected, False if no topics available.
+    """
+    menu = scheduler.menu
+    eligible = menu.display_menu()
+
+    if not eligible:
+        print("No topics available. Continuing with retention practice.")
+        return False
+
+    while True:
+        try:
+            choice_input = input("\nSelect a topic (number): ").strip()
+            if choice_input.lower() == "q":
+                return False
+            choice = int(choice_input)
+            if 1 <= choice <= len(eligible):
+                selected_tag = eligible[choice - 1]
+                scheduler.activate_blocked_practice(selected_tag)
+                print(f"\nStarting blocked practice: {menu.get_cluster_display_name(selected_tag)}")
+                return True
+        except ValueError:
+            pass
+        print("Invalid selection. Please enter a number.")
+
+
 def run_interactive() -> None:
     """Run the interactive tutoring session."""
     print("=" * 40)
-    print("       Chinese Tutor (HSK1)")
+    print("       Chinese Tutor")
     print("=" * 40)
     print()
 
@@ -176,9 +205,30 @@ def run_interactive() -> None:
 
     kp_dict = {kp.id: kp for kp in knowledge_points}
 
+    # Initialize session state and scheduler
+    session_state = SessionState()
+    scheduler = ExerciseScheduler(
+        knowledge_points=knowledge_points,
+        student_state=student_state,
+        session_state=session_state,
+    )
+
+    # Initial menu if starting fresh (show topic selection)
+    if session_state.practice_mode == PracticeMode.INTERLEAVED:
+        show_topic_menu_and_select(scheduler)
+
     while True:
+        # Check if blocked practice is complete
+        if scheduler.check_blocked_practice_complete():
+            print("\nCluster complete! Select your next topic.")
+            show_topic_menu_and_select(scheduler)
+
         # Select next knowledge point to test
-        target_kp = select_next_knowledge_point(student_state, knowledge_points)
+        target_kp = scheduler.select_next_knowledge_point()
+
+        if target_kp is None:
+            print("No exercises available.")
+            break
 
         # Randomly select exercise type
         exercise_type = random.choice(["segmented_translation", "minimal_pair"])

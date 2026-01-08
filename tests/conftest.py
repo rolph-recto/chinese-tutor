@@ -29,7 +29,7 @@ def sample_vocabulary_kp() -> KnowledgePoint:
         chinese="我",
         pinyin="wǒ",
         english="I, me",
-        hsk_level=1,
+        tags=["hsk1", "cluster:pronouns"],
         prerequisites=[],
     )
 
@@ -43,7 +43,7 @@ def sample_grammar_kp() -> KnowledgePoint:
         chinese="Subject + 是 + Noun",
         pinyin="Subject + shì + Noun",
         english="Subject is Noun (using 是)",
-        hsk_level=1,
+        tags=["hsk1", "cluster:sentence-patterns"],
         prerequisites=["v005"],
     )
 
@@ -58,7 +58,7 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             chinese="我",
             pinyin="wǒ",
             english="I, me",
-            hsk_level=1,
+            tags=["hsk1", "cluster:pronouns"],
             prerequisites=[],
         ),
         KnowledgePoint(
@@ -67,7 +67,7 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             chinese="你",
             pinyin="nǐ",
             english="you",
-            hsk_level=1,
+            tags=["hsk1", "cluster:pronouns"],
             prerequisites=[],
         ),
         KnowledgePoint(
@@ -76,7 +76,7 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             chinese="是",
             pinyin="shì",
             english="to be",
-            hsk_level=1,
+            tags=["hsk1", "cluster:basic-verbs"],
             prerequisites=[],
         ),
         KnowledgePoint(
@@ -85,7 +85,7 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             chinese="Subject + 是 + Noun",
             pinyin="Subject + shì + Noun",
             english="Subject is Noun",
-            hsk_level=1,
+            tags=["hsk1", "cluster:sentence-patterns"],
             prerequisites=["v005"],
         ),
     ]
@@ -135,10 +135,10 @@ def near_mastery() -> StudentMastery:
 
 @pytest.fixture
 def mastered_bkt() -> StudentMastery:
-    """Create a mastered BKT record (p_known=0.85, above threshold)."""
+    """Create a mastered BKT record (p_known=0.96, above threshold)."""
     return StudentMastery(
         knowledge_point_id="v001",
-        p_known=0.85,
+        p_known=0.96,
         p_transit=0.3,
         p_slip=0.1,
         p_guess=0.2,
@@ -188,7 +188,7 @@ def populated_student_state() -> StudentState:
         knowledge_point_id="v002", p_known=0.7
     )
     state.masteries["v005"] = StudentMastery(
-        knowledge_point_id="v005", p_known=0.85  # Mastered
+        knowledge_point_id="v005", p_known=0.96  # Mastered
     )
     return state
 

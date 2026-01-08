@@ -7,5 +7,11 @@ uvx ruff check --fix
 ```
 Address any remaining issues that ruff does not automatically fix.
 
-Whenever you add a new feature, be sure to add tests to check functionality.
+Whenever you add a new feature, be sure to add tests using the existing Pytest harness to check functionality. Run tests using the following command:
+```
+uv run pytest -v
+```
 
+Add plans you make in the plan/ directory.
+
+Add specifications you make in the specs/ directory.

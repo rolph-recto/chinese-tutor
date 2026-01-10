@@ -12,7 +12,8 @@ from models import (
     StudentState,
 )
 from bkt import update_mastery
-from scheduler import select_next_knowledge_point, update_practice_stats, MASTERY_THRESHOLD
+from scheduler import select_next_knowledge_point, update_practice_stats
+from fsrs_scheduler import initialize_fsrs_for_mastery
 from exercises import segmented_translation, minimal_pair
 from simulator_models import (
     SimulatedStudentConfig,
@@ -84,6 +85,21 @@ class Simulator:
         self.exercise_results: list[ExerciseResult] = []
         self.daily_summaries: list[DailySummary] = []
         self.kp_trajectories: dict[str, KnowledgePointTrajectory] = {}
+
+    def _get_mastery_for_kp(self, kp_id: str):
+        """
+        Get mastery for a KP, initializing with correct type and FSRS state.
+        """
+        kp = self.kp_dict.get(kp_id)
+        kp_type = kp.type if kp else None
+        mastery = self.student_state.get_mastery(kp_id, kp_type)
+
+        # Initialize FSRS state for vocabulary items that don't have it
+        if (mastery.scheduling_mode == SchedulingMode.FSRS
+                and mastery.fsrs_state is None):
+            initialize_fsrs_for_mastery(mastery)
+
+        return mastery
 
     def run(
         self,
@@ -158,7 +174,7 @@ class Simulator:
 
             # Check which KPs are about to transition (before update)
             pre_transition_modes = {
-                kp_id: self.student_state.get_mastery(kp_id).scheduling_mode
+                kp_id: self._get_mastery_for_kp(kp_id).scheduling_mode
                 for kp_id in exercise.knowledge_point_ids
             }
 
@@ -187,7 +203,7 @@ class Simulator:
 
             # Check for FSRS transitions
             for kp_id in exercise.knowledge_point_ids:
-                mastery = self.student_state.get_mastery(kp_id)
+                mastery = self._get_mastery_for_kp(kp_id)
                 if (
                     pre_transition_modes[kp_id] == SchedulingMode.BKT
                     and mastery.scheduling_mode == SchedulingMode.FSRS
@@ -210,7 +226,7 @@ class Simulator:
                     bkt_p_known_before=pre_state["bkt"],
                     bkt_p_known_after=post_state["bkt"],
                     scheduling_modes={
-                        kp_id: self.student_state.get_mastery(kp_id).scheduling_mode.value
+                        kp_id: self._get_mastery_for_kp(kp_id).scheduling_mode.value
                         for kp_id in exercise.knowledge_point_ids
                     },
                 )
@@ -274,13 +290,17 @@ class Simulator:
 
     def _capture_kp_states(self, kp_ids: list[str]) -> dict:
         """Capture current state of knowledge points."""
+        bkt_states = {}
+        for kp_id in kp_ids:
+            mastery = self._get_mastery_for_kp(kp_id)
+            # For FSRS items, p_known is None; use 1.0 as they're considered mastered
+            bkt_states[kp_id] = mastery.p_known if mastery.p_known is not None else 1.0
+
         return {
             "true": {
                 kp_id: self.student.get_true_knowledge(kp_id) for kp_id in kp_ids
             },
-            "bkt": {
-                kp_id: self.student_state.get_mastery(kp_id).p_known for kp_id in kp_ids
-            },
+            "bkt": bkt_states,
         }
 
     def _process_exercise_result(
@@ -300,7 +320,7 @@ class Simulator:
             self.student.update_true_knowledge(kp_id, is_correct, current_time)
 
             # Update BKT/FSRS (the system's estimate)
-            mastery = self.student_state.get_mastery(kp_id)
+            mastery = self._get_mastery_for_kp(kp_id)
             new_p = update_mastery(mastery, is_correct)
             update_practice_stats(mastery, is_correct)
 
@@ -336,7 +356,7 @@ class Simulator:
                     first_practiced=current_time,
                 )
 
-            mastery = self.student_state.get_mastery(kp_id)
+            mastery = self._get_mastery_for_kp(kp_id)
 
             # Get FSRS state if applicable
             fsrs_stability = None
@@ -345,12 +365,15 @@ class Simulator:
                 fsrs_stability = mastery.fsrs_state.stability
                 fsrs_difficulty = mastery.fsrs_state.difficulty
 
+            # For FSRS-only items, p_known is None
+            bkt_p_known = mastery.p_known if mastery.p_known is not None else 1.0
+
             snapshot = KnowledgePointSnapshot(
                 timestamp=current_time,
                 day=day,
                 exercise_number=exercise_number,
                 true_knowledge=self.student.get_true_knowledge(kp_id),
-                bkt_p_known=mastery.p_known,
+                bkt_p_known=bkt_p_known,
                 scheduling_mode=mastery.scheduling_mode.value,
                 practice_count=mastery.practice_count,
                 correct_count=mastery.correct_count,
@@ -372,9 +395,12 @@ class Simulator:
         """Calculate average BKT p_known across all masteries."""
         if not self.student_state.masteries:
             return 0.0
-        return sum(m.p_known for m in self.student_state.masteries.values()) / len(
-            self.student_state.masteries
+        # For FSRS-only items, p_known is None; treat as 1.0 (mastered)
+        total = sum(
+            m.p_known if m.p_known is not None else 1.0
+            for m in self.student_state.masteries.values()
         )
+        return total / len(self.student_state.masteries)
 
     def _count_kps_by_mode(self, mode: SchedulingMode) -> int:
         """Count KPs in a specific scheduling mode."""
@@ -393,11 +419,12 @@ class Simulator:
     ) -> None:
         """Print verbose exercise result."""
         status = "correct" if is_correct else "incorrect"
-        mastery = self.student_state.get_mastery(target_kp.id)
+        mastery = self._get_mastery_for_kp(target_kp.id)
         true_k = self.student.get_true_knowledge(target_kp.id)
+        p_known = mastery.p_known if mastery.p_known is not None else 1.0
         print(
             f"  Day {day}, Ex {ex_num}: {target_kp.chinese} ({target_kp.english}) "
-            f"- {status} | true={true_k:.2f}, bkt={mastery.p_known:.2f}"
+            f"- {status} | true={true_k:.2f}, bkt={p_known:.2f}"
         )
 
     def _compile_results(
@@ -412,10 +439,11 @@ class Simulator:
         total_exercises = len(self.exercise_results)
 
         # Count final mastered/FSRS KPs
+        # FSRS items are always considered mastered (p_known is None)
         final_mastered = sum(
             1
             for m in self.student_state.masteries.values()
-            if m.p_known >= MASTERY_THRESHOLD
+            if m.is_mastered
         )
         final_fsrs = self._count_kps_by_mode(SchedulingMode.FSRS)
 

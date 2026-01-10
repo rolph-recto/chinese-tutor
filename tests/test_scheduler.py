@@ -330,43 +330,50 @@ class TestExerciseSchedulerPools:
     """Tests for Learning/Retention pool management."""
 
     def test_learning_pool_below_threshold(self, sample_knowledge_points, empty_student_state):
-        """KPs with p_known < 0.95 should be in learning pool."""
+        """Grammar KPs start in BKT (learning pool), vocab starts in FSRS (retention).
+
+        Note: Vocabulary items now start directly in FSRS mode, so only grammar
+        items will be in the learning pool initially.
+        """
         session_state = SessionState()
         scheduler = ExerciseScheduler(
             sample_knowledge_points, empty_student_state, session_state
         )
-        # All KPs start at 0.0, so all should be in learning pool
         learning_pool = scheduler.get_learning_pool()
 
-        assert len(learning_pool) == len(sample_knowledge_points)
+        # Only grammar items (g001) should be in learning pool
+        # Vocabulary items (v001, v002, v005) start in FSRS mode
+        assert len(learning_pool) == 1
+        assert "g001" in learning_pool
 
     def test_retention_pool_above_threshold(self, sample_knowledge_points, empty_student_state):
-        """KPs with p_known >= 0.95 should be in retention pool."""
+        """Vocabulary KPs start in FSRS mode (retention pool)."""
         session_state = SessionState()
         scheduler = ExerciseScheduler(
             sample_knowledge_points, empty_student_state, session_state
         )
-        # Master one KP
-        empty_student_state.get_mastery("v001").p_known = 0.96
-
         retention_pool = scheduler.get_retention_pool()
 
+        # All vocabulary items (v001, v002, v005) should be in retention pool
         assert "v001" in retention_pool
-        assert len(retention_pool) == 1
+        assert "v002" in retention_pool
+        assert "v005" in retention_pool
+        assert len(retention_pool) == 3
 
     def test_mastery_transition_at_threshold(self, sample_knowledge_points, empty_student_state):
-        """KPs reaching 0.95 should transition to FSRS."""
+        """Grammar KPs reaching 0.95 should transition to FSRS."""
         session_state = SessionState()
         scheduler = ExerciseScheduler(
             sample_knowledge_points, empty_student_state, session_state
         )
-        # Set a KP at exactly threshold
-        empty_student_state.get_mastery("v001").p_known = 0.95
+        # Set a grammar KP at exactly threshold
+        mastery = empty_student_state.get_mastery("g001", KnowledgePointType.GRAMMAR)
+        mastery.p_known = 0.95
 
-        result = scheduler.check_mastery_transition("v001")
+        result = scheduler.check_mastery_transition("g001")
 
         assert result is True
-        assert empty_student_state.get_mastery("v001").scheduling_mode == SchedulingMode.FSRS
+        assert empty_student_state.get_mastery("g001", KnowledgePointType.GRAMMAR).scheduling_mode == SchedulingMode.FSRS
 
 
 class TestExerciseSchedulerBlockedPractice:

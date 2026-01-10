@@ -85,22 +85,23 @@ class MultipleChoiceVocabExercise(Exercise):
 class StudentMastery(BaseModel):
     knowledge_point_id: str
 
-    # BKT parameters (used during initial learning)
-    p_known: float = Field(default=0.0, ge=0.0, le=1.0)
-    p_transit: float = Field(default=0.3, ge=0.0, le=1.0)
-    p_slip: float = Field(default=0.1, ge=0.0, le=1.0)
-    p_guess: float = Field(default=0.2, ge=0.0, le=1.0)
+    # Scheduling mode determines which algorithm is active
+    scheduling_mode: SchedulingMode = SchedulingMode.BKT
 
-    # Common practice stats
+    # BKT parameters (only used when scheduling_mode == BKT)
+    # None for FSRS-only items (vocabulary)
+    p_known: float | None = Field(default=None, ge=0.0, le=1.0)
+    p_transit: float | None = Field(default=None, ge=0.0, le=1.0)
+    p_slip: float | None = Field(default=None, ge=0.0, le=1.0)
+    p_guess: float | None = Field(default=None, ge=0.0, le=1.0)
+
+    # Common practice stats (used by both modes)
     last_practiced: datetime | None = None
     practice_count: int = 0
     correct_count: int = 0
     consecutive_correct: int = 0
 
-    # Scheduling mode tracking
-    scheduling_mode: SchedulingMode = SchedulingMode.BKT
-
-    # FSRS state (populated when scheduling_mode == FSRS)
+    # FSRS state (used when scheduling_mode == FSRS)
     fsrs_state: FSRSState | None = None
 
     # Timestamp when transitioned to FSRS
@@ -108,19 +109,53 @@ class StudentMastery(BaseModel):
 
     @property
     def is_mastered(self) -> bool:
-        """Returns True if skill has reached mastery threshold (0.95)."""
-        return self.p_known >= MASTERY_THRESHOLD
+        """Returns True if skill has reached mastery threshold."""
+        if self.scheduling_mode == SchedulingMode.FSRS:
+            return True  # FSRS items are always considered "mastered"
+        return self.p_known is not None and self.p_known >= MASTERY_THRESHOLD
 
 
 class StudentState(BaseModel):
     masteries: dict[str, StudentMastery] = Field(default_factory=dict)
     last_kp_type: KnowledgePointType | None = None
 
-    def get_mastery(self, knowledge_point_id: str) -> StudentMastery:
+    def get_mastery(
+        self,
+        knowledge_point_id: str,
+        kp_type: KnowledgePointType | None = None,
+    ) -> StudentMastery:
+        """
+        Get or create mastery for a knowledge point.
+
+        Args:
+            knowledge_point_id: The ID of the knowledge point.
+            kp_type: The type of knowledge point. Required when creating new mastery
+                     to determine scheduling mode (VOCABULARY -> FSRS, GRAMMAR -> BKT).
+
+        Returns:
+            The StudentMastery object for this knowledge point.
+        """
         if knowledge_point_id not in self.masteries:
-            self.masteries[knowledge_point_id] = StudentMastery(
-                knowledge_point_id=knowledge_point_id
-            )
+            if kp_type == KnowledgePointType.VOCABULARY:
+                # Vocabulary starts directly in FSRS mode (no BKT params)
+                mastery = StudentMastery(
+                    knowledge_point_id=knowledge_point_id,
+                    scheduling_mode=SchedulingMode.FSRS,
+                    # BKT params stay None
+                )
+                # Note: FSRS state will be initialized by the caller
+                # to avoid circular imports with fsrs_scheduler
+            else:
+                # Grammar (and unknown types) start in BKT mode
+                mastery = StudentMastery(
+                    knowledge_point_id=knowledge_point_id,
+                    scheduling_mode=SchedulingMode.BKT,
+                    p_known=0.0,
+                    p_transit=0.3,
+                    p_slip=0.1,
+                    p_guess=0.2,
+                )
+            self.masteries[knowledge_point_id] = mastery
         return self.masteries[knowledge_point_id]
 
 

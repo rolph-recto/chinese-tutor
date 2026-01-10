@@ -6,7 +6,7 @@ import random
 from simulate import Simulator, ResponseGenerator
 from simulator_models import SimulatedStudent
 from main import load_knowledge_points
-from models import Exercise
+from models import Exercise, SchedulingMode
 
 
 class TestSimulatorBasicRun:
@@ -67,9 +67,7 @@ class TestSimulatorMasteryValidation:
     def knowledge_points(self):
         return load_knowledge_points()
 
-    def test_fast_learner_shows_progress(
-        self, knowledge_points, fast_learner_config
-    ):
+    def test_fast_learner_shows_progress(self, knowledge_points, fast_learner_config):
         """Fast learner should show mastery improvement."""
         random.seed(42)
 
@@ -117,9 +115,7 @@ class TestFSRSTransition:
     def knowledge_points(self):
         return load_knowledge_points()
 
-    def test_fsrs_transitions_tracked(
-        self, knowledge_points, fast_learner_config
-    ):
+    def test_fsrs_transitions_tracked(self, knowledge_points, fast_learner_config):
         """FSRS transitions should be tracked in results."""
         random.seed(42)
 
@@ -127,8 +123,9 @@ class TestFSRSTransition:
         results = simulator.run(days=10, exercises_per_day=15, verbose=False)
 
         # final_kps_in_fsrs should be a valid count
+        # Can be >= trajectories because vocabulary starts in FSRS without needing practice
         assert results.final_kps_in_fsrs >= 0
-        assert results.final_kps_in_fsrs <= len(results.kp_trajectories)
+        assert results.final_kps_in_fsrs >= len(results.kp_trajectories)
 
 
 class TestResponseGenerator:
@@ -188,9 +185,7 @@ class TestSimulatorReproducibility:
     def knowledge_points(self):
         return load_knowledge_points()
 
-    def test_same_seed_same_results(
-        self, knowledge_points, default_simulator_config
-    ):
+    def test_same_seed_same_results(self, knowledge_points, default_simulator_config):
         """Same random seed should produce identical results."""
         random.seed(42)
         sim1 = Simulator(knowledge_points, default_simulator_config)
@@ -247,11 +242,13 @@ class TestQuickSanityChecks:
         # Should have updated some masteries
         assert len(simulator.student_state.masteries) > 0
 
-        # At least one should have non-zero mastery
-        has_nonzero = any(
-            m.p_known > 0 for m in simulator.student_state.masteries.values()
+        # At least one should have been initialized
+        has_initialized = any(
+            (m.p_known is not None and m.p_known > 0)
+            or m.scheduling_mode == SchedulingMode.FSRS
+            for m in simulator.student_state.masteries.values()
         )
-        assert has_nonzero
+        assert has_initialized
 
     def test_sanity_check_exercise_types(
         self, knowledge_points, default_simulator_config

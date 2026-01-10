@@ -3,9 +3,10 @@ import json
 import random
 from pathlib import Path
 
-from models import KnowledgePoint, PracticeMode, SchedulingMode, SessionState, StudentState
+from models import KnowledgePoint, KnowledgePointType, PracticeMode, SchedulingMode, SessionState, StudentState
 from bkt import update_mastery
 from scheduler import ExerciseScheduler, update_practice_stats
+from fsrs_scheduler import initialize_fsrs_for_mastery
 from exercises import segmented_translation, minimal_pair, chinese_to_english, english_to_chinese
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -113,6 +114,42 @@ def load_student_state() -> StudentState:
     return StudentState()
 
 
+def migrate_vocabulary_to_fsrs(
+    student_state: StudentState,
+    knowledge_points: list[KnowledgePoint],
+) -> int:
+    """
+    Migrate existing vocabulary items from BKT to FSRS mode.
+
+    This handles the case where vocabulary items were previously created with
+    BKT scheduling (before the change to have vocabulary start in FSRS mode).
+
+    Returns the number of items migrated.
+    """
+    kp_dict = {kp.id: kp for kp in knowledge_points}
+    migrated = 0
+
+    for kp_id, mastery in student_state.masteries.items():
+        kp = kp_dict.get(kp_id)
+        if kp is None:
+            continue
+
+        # Only migrate vocabulary items that are still in BKT mode
+        if kp.type == KnowledgePointType.VOCABULARY:
+            if mastery.scheduling_mode == SchedulingMode.BKT:
+                # Convert to FSRS mode
+                mastery.scheduling_mode = SchedulingMode.FSRS
+                initialize_fsrs_for_mastery(mastery)
+                # Clear BKT params (they're no longer used)
+                mastery.p_known = None
+                mastery.p_transit = None
+                mastery.p_slip = None
+                mastery.p_guess = None
+                migrated += 1
+
+    return migrated
+
+
 def save_student_state(state: StudentState) -> None:
     """Save student state to file."""
     with open(STATE_FILE, "w") as f:
@@ -199,6 +236,12 @@ def run_interactive() -> None:
     if not knowledge_points:
         print("Error: No knowledge points found. Check data/ directory.")
         return
+
+    # Migrate any existing vocabulary items from BKT to FSRS
+    migrated = migrate_vocabulary_to_fsrs(student_state, knowledge_points)
+    if migrated > 0:
+        print(f"Migrated {migrated} vocabulary item(s) to FSRS scheduling.")
+        save_student_state(student_state)
 
     print(f"Loaded {len(knowledge_points)} knowledge points.")
     print("Type 'q' to quit at any time.\n")
@@ -367,8 +410,8 @@ def run_interactive() -> None:
             if kp_id not in kp_dict:
                 continue
             kp = kp_dict[kp_id]
-            mastery = student_state.get_mastery(kp_id)
-            old_p = mastery.p_known
+            mastery = student_state.get_mastery(kp_id, kp.type)
+            old_p = mastery.p_known if mastery.p_known is not None else 0.0
             new_p = update_mastery(mastery, is_correct)
             update_practice_stats(mastery, is_correct)
 
@@ -384,10 +427,16 @@ def run_interactive() -> None:
                     f"  {kp.chinese} ({kp.english}): [{mode}] "
                     f"retrievability={new_p*100:.0f}%, due={due_str}"
                 )
-            else:
+            elif mastery.scheduling_mode == SchedulingMode.BKT:
                 print(
                     f"  {kp.chinese} ({kp.english}): [{mode}] "
                     f"{old_p*100:.0f}% → {new_p*100:.0f}%"
+                )
+            else:
+                # FSRS without state (shouldn't happen, but handle gracefully)
+                print(
+                    f"  {kp.chinese} ({kp.english}): [{mode}] "
+                    f"retrievability={new_p*100:.0f}%"
                 )
 
         # Update last KP type for interleaving

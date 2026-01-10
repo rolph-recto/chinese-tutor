@@ -61,30 +61,51 @@ class ExerciseScheduler:
     # =========================================================================
 
     def get_learning_pool(self) -> list[str]:
-        """Get KP IDs in Learning Mode (p_known < 0.95)."""
+        """Get KP IDs in Learning Mode (BKT scheduling)."""
         return [
             kp_id for kp_id in self.knowledge_points
-            if self.student_state.get_mastery(kp_id).p_known < MASTERY_THRESHOLD
+            if self._get_mastery_for_kp(kp_id).scheduling_mode == SchedulingMode.BKT
         ]
 
     def get_retention_pool(self) -> list[str]:
-        """Get KP IDs in Retention Mode (p_known >= 0.95)."""
+        """Get KP IDs in Retention Mode (FSRS scheduling)."""
         return [
             kp_id for kp_id in self.knowledge_points
-            if self.student_state.get_mastery(kp_id).p_known >= MASTERY_THRESHOLD
+            if self._get_mastery_for_kp(kp_id).scheduling_mode == SchedulingMode.FSRS
         ]
+
+    def _get_mastery_for_kp(self, kp_id: str) -> StudentMastery:
+        """
+        Get mastery for a knowledge point, initializing with correct type.
+        Also initializes FSRS state for new vocabulary items.
+        """
+        kp = self.knowledge_points.get(kp_id)
+        kp_type = kp.type if kp else None
+        mastery = self.student_state.get_mastery(kp_id, kp_type)
+
+        # Initialize FSRS state for new vocabulary items
+        if (mastery.scheduling_mode == SchedulingMode.FSRS
+                and mastery.fsrs_state is None):
+            initialize_fsrs_for_mastery(mastery)
+
+        return mastery
 
     def check_mastery_transition(self, kp_id: str) -> bool:
         """
-        Check if a skill should transition to Retention Mode.
+        Check if a BKT skill should transition to Retention Mode (FSRS).
+        Only applies to grammar items that started in BKT mode.
         Returns True if transition occurred.
         """
-        mastery = self.student_state.get_mastery(kp_id)
-        if mastery.p_known >= MASTERY_THRESHOLD:
-            if mastery.scheduling_mode != SchedulingMode.FSRS:
-                # Initialize FSRS state for newly mastered skill
-                initialize_fsrs_for_mastery(mastery)
-                return True
+        mastery = self._get_mastery_for_kp(kp_id)
+
+        # Only BKT items can transition (vocabulary starts in FSRS)
+        if mastery.scheduling_mode != SchedulingMode.BKT:
+            return False
+
+        if mastery.p_known is not None and mastery.p_known >= MASTERY_THRESHOLD:
+            # Initialize FSRS state for newly mastered skill
+            initialize_fsrs_for_mastery(mastery)
+            return True
         return False
 
     # =========================================================================
@@ -127,11 +148,12 @@ class ExerciseScheduler:
     def _select_blocked(self, count: int) -> list[str]:
         """
         Blocked Practice: Only select from active cluster tag.
+        Only applies to BKT-mode items (grammar).
         """
         if not self.session_state.active_cluster_tag:
             return []
 
-        # Get unmastered KPs with the active cluster tag
+        # Get BKT-mode KPs with the active cluster tag
         eligible = [
             kp_id for kp_id, kp in self.knowledge_points.items()
             if self.session_state.active_cluster_tag in kp.tags
@@ -167,10 +189,10 @@ class ExerciseScheduler:
 
     def _calculate_learning_score(self, kp_id: str) -> float:
         """
-        Calculate priority score for a Learning Mode KP.
+        Calculate priority score for a Learning Mode (BKT) KP.
         Combines review urgency, frontier expansion, and interleaving.
         """
-        mastery = self.student_state.get_mastery(kp_id)
+        mastery = self._get_mastery_for_kp(kp_id)
         kp = self.knowledge_points.get(kp_id)
 
         if not kp:
@@ -179,7 +201,10 @@ class ExerciseScheduler:
         score = 0.0
 
         # Review urgency (70% weight): prioritize items needing review
-        if mastery.p_known > 0 and mastery.p_known < MASTERY_THRESHOLD:
+        # Only for BKT items with p_known set
+        if (mastery.p_known is not None
+                and mastery.p_known > 0
+                and mastery.p_known < MASTERY_THRESHOLD):
             # Higher score for items that need more practice
             review_urgency = 1.0 - mastery.p_known
             score += REVIEW_WEIGHT * review_urgency
@@ -206,7 +231,7 @@ class ExerciseScheduler:
 
     def check_blocked_practice_complete(self) -> bool:
         """
-        Check if all skills in current blocked cluster have reached threshold.
+        Check if all BKT skills in current blocked cluster have reached threshold.
         If so, transition to interleaved mode and show menu.
         """
         if self.session_state.practice_mode != PracticeMode.BLOCKED:
@@ -221,9 +246,9 @@ class ExerciseScheduler:
             if self.session_state.active_cluster_tag in kp.tags
         ]
 
-        # Check if all KPs in cluster are mastered
+        # Check if all KPs in cluster are mastered (use is_mastered property)
         all_mastered = all(
-            self.student_state.get_mastery(kp_id).p_known >= MASTERY_THRESHOLD
+            self._get_mastery_for_kp(kp_id).is_mastered
             for kp_id in cluster_kp_ids
         )
 
@@ -256,7 +281,7 @@ class ExerciseScheduler:
         # Calculate retrievability for each item
         scored: list[tuple[str, float]] = []
         for kp_id in retention_pool:
-            mastery = self.student_state.get_mastery(kp_id)
+            mastery = self._get_mastery_for_kp(kp_id)
             if mastery.fsrs_state:
                 retrievability = get_fsrs_retrievability(mastery)
                 if retrievability is not None:
@@ -282,24 +307,24 @@ class ExerciseScheduler:
     ) -> None:
         """
         Update all skills associated with a multi-skill exercise.
-        Applies uniform BKT update to all associated skills.
+        Applies BKT update for grammar, FSRS update for vocabulary.
         """
         from bkt import update_mastery
 
         for kp_id in kp_ids:
-            mastery = self.student_state.get_mastery(kp_id)
+            mastery = self._get_mastery_for_kp(kp_id)
 
             if mastery.scheduling_mode == SchedulingMode.BKT:
-                # Apply BKT update
+                # Apply BKT update (grammar items)
                 update_mastery(mastery, is_correct)
             else:
-                # Apply FSRS update (doesn't move back to Learning)
+                # Apply FSRS update (vocabulary items, doesn't move back to Learning)
                 process_fsrs_review(mastery, is_correct)
 
             # Update practice stats
             update_practice_stats(mastery, is_correct)
 
-            # Check for mastery transition
+            # Check for mastery transition (only applies to BKT items)
             self.check_mastery_transition(kp_id)
 
     # =========================================================================
@@ -332,9 +357,9 @@ class ExerciseScheduler:
     # =========================================================================
 
     def _is_in_learning_mode(self, kp_id: str) -> bool:
-        """Check if KP is in Learning Mode."""
-        mastery = self.student_state.get_mastery(kp_id)
-        return mastery.p_known < MASTERY_THRESHOLD
+        """Check if KP is in Learning Mode (BKT scheduling)."""
+        mastery = self._get_mastery_for_kp(kp_id)
+        return mastery.scheduling_mode == SchedulingMode.BKT
 
     def _prerequisites_met(self, kp_id: str) -> bool:
         """Check if all prerequisites for a KP are mastered."""
@@ -343,8 +368,8 @@ class ExerciseScheduler:
             return False
 
         for prereq_id in kp.prerequisites:
-            prereq_mastery = self.student_state.get_mastery(prereq_id)
-            if prereq_mastery.p_known < MASTERY_THRESHOLD:
+            prereq_mastery = self._get_mastery_for_kp(prereq_id)
+            if not prereq_mastery.is_mastered:
                 return False
 
         return True
@@ -362,8 +387,11 @@ def apply_mastery_decay(student_state: StudentState) -> None:
     """
     now = datetime.now()
     for mastery in student_state.masteries.values():
-        # Only apply decay to BKT-mode items
+        # Only apply decay to BKT-mode items with p_known set
         if mastery.scheduling_mode != SchedulingMode.BKT:
+            continue
+
+        if mastery.p_known is None:
             continue
 
         if mastery.last_practiced is None:
@@ -390,7 +418,7 @@ def check_and_transition_to_fsrs(mastery: StudentMastery) -> bool:
     if mastery.scheduling_mode == SchedulingMode.FSRS:
         return False  # Already in FSRS
 
-    if mastery.p_known >= MASTERY_THRESHOLD:
+    if mastery.p_known is not None and mastery.p_known >= MASTERY_THRESHOLD:
         initialize_fsrs_for_mastery(mastery)
         return True
 
@@ -408,8 +436,9 @@ def prerequisites_met(
     for prereq_id in kp.prerequisites:
         if prereq_id not in kp_dict:
             continue
-        mastery = student_state.get_mastery(prereq_id)
-        if mastery.p_known < MASTERY_THRESHOLD:
+        prereq_kp = kp_dict[prereq_id]
+        mastery = student_state.get_mastery(prereq_id, prereq_kp.type)
+        if not mastery.is_mastered:
             return False
     return True
 
@@ -421,11 +450,13 @@ def is_on_frontier(
 ) -> bool:
     """
     A knowledge point is on the frontier if:
-    - All its prerequisites are mastered (p_known >= MASTERY_THRESHOLD)
-    - The KP itself is not yet mastered (p_known < MASTERY_THRESHOLD)
+    - All its prerequisites are mastered
+    - The KP itself is not yet mastered (in BKT mode and p_known < threshold)
+    Note: Vocabulary items start in FSRS, so they're never "on frontier" - they go
+    directly to retention mode.
     """
-    mastery = student_state.get_mastery(kp.id)
-    if mastery.p_known >= MASTERY_THRESHOLD:
+    mastery = student_state.get_mastery(kp.id, kp.type)
+    if mastery.is_mastered:
         return False
     return prerequisites_met(kp, student_state, kp_dict)
 
@@ -436,7 +467,7 @@ def needs_review(kp: KnowledgePoint, student_state: StudentState) -> bool:
     - BKT mode: was previously practiced but mastery dropped below threshold
     - FSRS mode: is past its due date
     """
-    mastery = student_state.get_mastery(kp.id)
+    mastery = student_state.get_mastery(kp.id, kp.type)
 
     if mastery.scheduling_mode == SchedulingMode.FSRS:
         return is_fsrs_due(mastery)
@@ -444,6 +475,7 @@ def needs_review(kp: KnowledgePoint, student_state: StudentState) -> bool:
     # BKT mode
     return (
         mastery.last_practiced is not None
+        and mastery.p_known is not None
         and mastery.p_known < MASTERY_THRESHOLD
     )
 
@@ -462,7 +494,7 @@ def calculate_kp_score(
     - BKT: Uses mastery-based scoring (original logic)
     - FSRS: Prioritizes overdue items based on how overdue they are
     """
-    mastery = student_state.get_mastery(kp.id)
+    mastery = student_state.get_mastery(kp.id, kp.type)
     score = 0.0
 
     if mastery.scheduling_mode == SchedulingMode.FSRS:
@@ -484,7 +516,7 @@ def calculate_kp_score(
     else:
         # BKT mode: original scoring logic
         # Review component: lower mastery = higher priority
-        if needs_review(kp, student_state):
+        if needs_review(kp, student_state) and mastery.p_known is not None:
             score += REVIEW_WEIGHT * (1 - mastery.p_known)
 
         # Frontier component: new learnable items get bonus
@@ -532,10 +564,10 @@ def select_next_knowledge_point(
     # Score all knowledge points
     scored_kps: list[tuple[float, KnowledgePoint]] = []
     for kp in knowledge_points:
-        mastery = student_state.get_mastery(kp.id)
+        mastery = student_state.get_mastery(kp.id, kp.type)
 
         # For BKT items, check prerequisites
-        # For FSRS items, prerequisites are already satisfied (was mastered)
+        # For FSRS items (vocabulary), prerequisites don't apply - they start in FSRS
         if mastery.scheduling_mode == SchedulingMode.BKT:
             if not prerequisites_met(kp, student_state, kp_dict):
                 continue
@@ -544,10 +576,10 @@ def select_next_knowledge_point(
         scored_kps.append((score, kp))
 
     if not scored_kps:
-        # Fallback: return any unmastered KP without checking prerequisites
+        # Fallback: return any non-mastered KP without checking prerequisites
         for kp in knowledge_points:
-            mastery = student_state.get_mastery(kp.id)
-            if mastery.p_known < MASTERY_THRESHOLD:
+            mastery = student_state.get_mastery(kp.id, kp.type)
+            if not mastery.is_mastered:
                 return kp
         return knowledge_points[0] if knowledge_points else None
 

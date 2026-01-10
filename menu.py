@@ -7,7 +7,6 @@ dynamically discovering clusters from knowledge point tags.
 
 from models import (
     KnowledgePoint,
-    MASTERY_THRESHOLD,
     StudentState,
 )
 
@@ -58,10 +57,10 @@ class TopicSelectionMenu:
         return eligible
 
     def _has_unmastered_skills(self, cluster_tag: str) -> bool:
-        """Check if cluster has at least one skill with p_known < 0.95."""
+        """Check if cluster has at least one unmastered skill (in BKT mode)."""
         for kp in self.get_kps_for_cluster(cluster_tag):
-            mastery = self.student_state.get_mastery(kp.id)
-            if mastery.p_known < MASTERY_THRESHOLD:
+            mastery = self.student_state.get_mastery(kp.id, kp.type)
+            if not mastery.is_mastered:
                 return True
         return False
 
@@ -69,16 +68,18 @@ class TopicSelectionMenu:
         """Check if all prerequisite KPs for this cluster's skills are mastered."""
         for kp in self.get_kps_for_cluster(cluster_tag):
             for prereq_id in kp.prerequisites:
-                prereq_mastery = self.student_state.get_mastery(prereq_id)
-                if prereq_mastery.p_known < MASTERY_THRESHOLD:
+                prereq_kp = self.knowledge_points.get(prereq_id)
+                prereq_type = prereq_kp.type if prereq_kp else None
+                prereq_mastery = self.student_state.get_mastery(prereq_id, prereq_type)
+                if not prereq_mastery.is_mastered:
                     return False
         return True
 
     def cluster_fully_mastered(self, cluster_tag: str) -> bool:
-        """Check if all skills in cluster have p_known >= 0.95."""
+        """Check if all skills in cluster are mastered."""
         for kp in self.get_kps_for_cluster(cluster_tag):
-            mastery = self.student_state.get_mastery(kp.id)
-            if mastery.p_known < MASTERY_THRESHOLD:
+            mastery = self.student_state.get_mastery(kp.id, kp.type)
+            if not mastery.is_mastered:
                 return False
         return True
 
@@ -94,7 +95,7 @@ class TopicSelectionMenu:
             return 0.0
         mastered = sum(
             1 for kp in kps
-            if self.student_state.get_mastery(kp.id).p_known >= MASTERY_THRESHOLD
+            if self.student_state.get_mastery(kp.id, kp.type).is_mastered
         )
         return mastered / len(kps)
 

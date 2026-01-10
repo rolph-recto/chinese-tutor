@@ -1,3 +1,5 @@
+Use uv to do anything with Python.
+
 Read README.md to get an overview of the codebase.
 
 Run the ruff linter whenever you write Python code, which will both

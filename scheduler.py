@@ -9,14 +9,6 @@ This module handles:
 """
 
 from datetime import datetime, timezone
-
-from fsrs_scheduler import (
-    get_fsrs_due_date,
-    get_fsrs_retrievability,
-    initialize_fsrs_for_mastery,
-    is_fsrs_due,
-    process_fsrs_review,
-)
 from models import (
     KnowledgePoint,
     KnowledgePointType,
@@ -24,7 +16,6 @@ from models import (
     StudentMastery,
     StudentState,
 )
-
 
 class ExerciseScheduler:
     """
@@ -52,7 +43,7 @@ class ExerciseScheduler:
 
         # Initialize FSRS state for new items
         if mastery.fsrs_state is None:
-            initialize_fsrs_for_mastery(mastery)
+            mastery.initialize_fsrs()
 
         return mastery
 
@@ -79,7 +70,7 @@ class ExerciseScheduler:
         due_items: list[str] = []
         for kp_id in eligible:
             mastery = self._get_mastery_for_kp(kp_id)
-            if is_fsrs_due(mastery):
+            if mastery.is_due:
                 due_items.append(kp_id)
 
         if not due_items:
@@ -89,10 +80,9 @@ class ExerciseScheduler:
         scored: list[tuple[str, float]] = []
         for kp_id in due_items:
             mastery = self._get_mastery_for_kp(kp_id)
-            retrievability = get_fsrs_retrievability(mastery)
-            if retrievability is not None:
+            if mastery.retrievability is not None:
                 # Lower retrievability = higher priority (more overdue)
-                scored.append((kp_id, 1.0 - retrievability))
+                scored.append((kp_id, 1.0 - mastery.retrievability))
             else:
                 # No retrievability yet, give medium priority
                 scored.append((kp_id, 0.5))
@@ -118,7 +108,7 @@ class ExerciseScheduler:
         """
         for kp_id in kp_ids:
             mastery = self._get_mastery_for_kp(kp_id)
-            process_fsrs_review(mastery, is_correct)
+            mastery.process_review(is_correct)
             update_practice_stats(mastery, is_correct)
 
     # =========================================================================
@@ -145,10 +135,9 @@ class ExerciseScheduler:
             if not self._prerequisites_met(kp_id):
                 continue
             mastery = self._get_mastery_for_kp(kp_id)
-            due = get_fsrs_due_date(mastery)
-            if due is not None:
-                if earliest_due is None or due < earliest_due:
-                    earliest_due = due
+            if mastery.due_date is not None:
+                if earliest_due is None or mastery.due_date < earliest_due:
+                    earliest_due = mastery.due_date
         return earliest_due
 
 
@@ -172,7 +161,7 @@ def prerequisites_met(
         mastery = student_state.get_mastery(prereq_id, prereq_kp.type)
         # Initialize FSRS if needed
         if mastery.fsrs_state is None:
-            initialize_fsrs_for_mastery(mastery)
+            mastery.initialize_fsrs()
         if not mastery.is_mastered:
             return False
     return True
@@ -192,15 +181,17 @@ def calculate_kp_score(
 
     # Initialize FSRS if needed
     if mastery.fsrs_state is None:
-        initialize_fsrs_for_mastery(mastery)
+        mastery.initialize_fsrs()
 
     score = 0.0
 
     # Score based on due date
-    due = get_fsrs_due_date(mastery)
-    if due is not None:
+    if mastery.due_date is not None:
         now = datetime.now(timezone.utc)
-        due_utc = due.replace(tzinfo=timezone.utc) if due.tzinfo is None else due
+        if mastery.due_date.tzinfo is None:
+            due_utc = mastery.due_date.replace(tzinfo=timezone.utc)
+        else:
+            due_utc = mastery.due_date
 
         if now >= due_utc:
             # Overdue: higher score for more overdue items

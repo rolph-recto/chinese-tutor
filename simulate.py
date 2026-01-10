@@ -11,7 +11,6 @@ from models import (
     StudentState,
 )
 from scheduler import select_next_knowledge_point, update_practice_stats
-from fsrs_scheduler import initialize_fsrs_for_mastery, process_fsrs_review, get_fsrs_retrievability
 from exercises import segmented_translation, minimal_pair
 from simulator_models import (
     SimulatedStudentConfig,
@@ -94,7 +93,7 @@ class Simulator:
 
         # Initialize FSRS state for new items
         if mastery.fsrs_state is None:
-            initialize_fsrs_for_mastery(mastery)
+            mastery.initialize_fsrs()
 
         return mastery
 
@@ -264,7 +263,7 @@ class Simulator:
         retrievability_states = {}
         for kp_id in kp_ids:
             mastery = self._get_mastery_for_kp(kp_id)
-            ret = get_fsrs_retrievability(mastery)
+            ret = mastery.retrievability
             retrievability_states[kp_id] = ret if ret is not None else 1.0
 
         return {
@@ -292,10 +291,10 @@ class Simulator:
 
             # Update FSRS (the system's estimate)
             mastery = self._get_mastery_for_kp(kp_id)
-            process_fsrs_review(mastery, is_correct)
+            mastery.process_review(is_correct)
             update_practice_stats(mastery, is_correct)
 
-            ret = get_fsrs_retrievability(mastery)
+            ret = mastery.retrievability
             post_state["retrievability"][kp_id] = ret if ret is not None else 1.0
             post_state["true"][kp_id] = self.student.get_true_knowledge(kp_id)
 
@@ -337,7 +336,7 @@ class Simulator:
                 fsrs_stability = mastery.fsrs_state.stability
                 fsrs_difficulty = mastery.fsrs_state.difficulty
 
-            ret = get_fsrs_retrievability(mastery)
+            ret = mastery.retrievability
             retrievability = ret if ret is not None else 1.0
 
             snapshot = KnowledgePointSnapshot(
@@ -369,7 +368,7 @@ class Simulator:
         total = 0.0
         count = 0
         for m in self.student_state.masteries.values():
-            ret = get_fsrs_retrievability(m)
+            ret = m.retrievability
             if ret is not None:
                 total += ret
                 count += 1
@@ -386,7 +385,7 @@ class Simulator:
         status = "correct" if is_correct else "incorrect"
         mastery = self._get_mastery_for_kp(target_kp.id)
         true_k = self.student.get_true_knowledge(target_kp.id)
-        ret = get_fsrs_retrievability(mastery)
+        ret = mastery.retrievability
         ret_val = ret if ret is not None else 1.0
         print(
             f"  Day {day}, Ex {ex_num}: {target_kp.chinese} ({target_kp.english}) "

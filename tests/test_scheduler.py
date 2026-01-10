@@ -9,20 +9,21 @@ from scheduler import (
     update_practice_stats,
     ExerciseScheduler,
 )
-from fsrs_scheduler import initialize_fsrs_for_mastery
 from models import (
     KnowledgePointType,
     SessionState,
     FSRSState,
+    StudentMastery,
 )
 
 
-def make_due_now(mastery):
+def make_due_now(mastery: StudentMastery):
     """Helper to make a mastery item due now (set due date to the past)."""
-    initialize_fsrs_for_mastery(mastery)
-    if mastery.fsrs_state:
-        # Set the due date to 1 hour in the past
-        mastery.fsrs_state.due = datetime.now(timezone.utc) - timedelta(hours=1)
+    mastery.initialize_fsrs()
+    assert mastery.fsrs_state is not None
+
+    # Set the due date to 1 hour in the past
+    mastery.fsrs_state.due = datetime.now(timezone.utc) - timedelta(hours=1)
 
 
 class TestPrerequisites:
@@ -59,8 +60,8 @@ class TestPrerequisites:
         """Grammar KP should have prerequisites met if prereq has FSRS state."""
         kp_dict = {kp.id: kp for kp in sample_knowledge_points}
         # v005 (prerequisite) has FSRS state = mastered
-        mastery = empty_student_state.get_mastery("v005")
-        initialize_fsrs_for_mastery(mastery)
+        mastery: StudentMastery = empty_student_state.get_mastery("v005")
+        mastery.initialize_fsrs()
 
         result = prerequisites_met(sample_grammar_kp, empty_student_state, kp_dict)
 
@@ -122,7 +123,7 @@ class TestCalculateKPScore:
         """Preferred type should get interleaving bonus."""
         # Initialize both with FSRS state
         vocab_mastery = empty_student_state.get_mastery(sample_vocabulary_kp.id)
-        initialize_fsrs_for_mastery(vocab_mastery)
+        vocab_mastery.initialize_fsrs()
 
         # Score vocabulary KP when preferring vocabulary
         score_preferred = calculate_kp_score(

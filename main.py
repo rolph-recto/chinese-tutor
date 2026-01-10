@@ -1,6 +1,8 @@
 import argparse
 import json
 import random
+import signal
+import sys
 from pathlib import Path
 
 from models import KnowledgePoint, SessionState, StudentState
@@ -154,6 +156,22 @@ def save_student_state(state: StudentState) -> None:
         f.write(state.model_dump_json(indent=2))
 
 
+def handle_quit(student_state: StudentState) -> None:
+    """Print quit message, save state, and exit."""
+    print("\nGoodbye! Your progress has been saved.")
+    save_student_state(student_state)
+    sys.exit(0)
+
+
+def create_sigint_handler(student_state: StudentState):
+    """Create a SIGINT handler that saves state before exiting."""
+
+    def sigint_handler(signum, frame):
+        handle_quit(student_state)
+
+    return sigint_handler
+
+
 def run_simulation(args) -> None:
     """Run the simulation subcommand."""
     from simulate import run_simulation_and_report
@@ -208,6 +226,8 @@ def run_interactive() -> None:
 
     print(f"Loaded {len(knowledge_points)} knowledge points.")
     print("Type 'q' to quit at any time.\n")
+
+    signal.signal(signal.SIGINT, create_sigint_handler(student_state))
 
     kp_dict = {kp.id: kp for kp in knowledge_points}
 

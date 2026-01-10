@@ -2,7 +2,7 @@
   "masteries": {
     "v001": {
       "knowledge_point_id": "v001",
-      "p_known": 0.4156979543517049,
+      "p_known": 0.3941422339261097,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -20,24 +20,24 @@
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
-      "last_practiced": "2026-01-08T10:58:32.874787",
-      "practice_count": 4,
-      "correct_count": 3,
-      "consecutive_correct": 0,
+      "last_practiced": "2026-01-09T23:18:07.683897",
+      "practice_count": 5,
+      "correct_count": 4,
+      "consecutive_correct": 1,
       "scheduling_mode": "fsrs",
       "fsrs_state": {
-        "stability": 0.5712991793450282,
-        "difficulty": 7.394502741279718,
-        "due": "2026-01-08T15:59:32.872719",
-        "last_review": "2026-01-08T15:58:32.872719",
+        "stability": 2.341168848592034,
+        "difficulty": 7.382336607835277,
+        "due": "2026-01-10T04:28:07.682288",
+        "last_review": "2026-01-10T04:18:07.682288",
         "state": 1,
-        "step": 0
+        "step": 1
       },
       "transitioned_to_fsrs_at": "2026-01-06T11:10:25.926565"
     },
     "v003": {
       "knowledge_point_id": "v003",
-      "p_known": 0.07765505267363912,
+      "p_known": 0.015982363504492284,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -55,24 +55,24 @@
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
-      "last_practiced": "2026-01-08T11:04:05.037739",
-      "practice_count": 5,
-      "correct_count": 4,
-      "consecutive_correct": 0,
+      "last_practiced": "2026-01-09T23:18:12.082511",
+      "practice_count": 6,
+      "correct_count": 5,
+      "consecutive_correct": 1,
       "scheduling_mode": "fsrs",
       "fsrs_state": {
-        "stability": 0.7750839828558984,
-        "difficulty": 7.394502741279718,
-        "due": "2026-01-08T16:05:05.035948",
-        "last_review": "2026-01-08T16:04:05.035948",
+        "stability": 2.649497856159571,
+        "difficulty": 7.382336607835277,
+        "due": "2026-01-10T04:28:12.080970",
+        "last_review": "2026-01-10T04:18:12.080970",
         "state": 1,
-        "step": 0
+        "step": 1
       },
       "transitioned_to_fsrs_at": "2026-01-08T10:59:57.303173"
     },
     "v005": {
       "knowledge_point_id": "v005",
-      "p_known": 0.2999912280048776,
+      "p_known": 0.27840741191856805,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -86,7 +86,7 @@
     },
     "v006": {
       "knowledge_point_id": "v006",
-      "p_known": 0.29999033352529764,
+      "p_known": 0.2784057713998016,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -100,7 +100,7 @@
     },
     "v007": {
       "knowledge_point_id": "v007",
-      "p_known": 0.042147739700644775,
+      "p_known": 0.0,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -114,7 +114,7 @@
     },
     "v008": {
       "knowledge_point_id": "v008",
-      "p_known": 0.32681687031541995,
+      "p_known": 0.30519437446307207,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -156,7 +156,7 @@
     },
     "v011": {
       "knowledge_point_id": "v011",
-      "p_known": 0.1290512020825066,
+      "p_known": 0.07897517640244706,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -184,7 +184,7 @@
     },
     "v013": {
       "knowledge_point_id": "v013",
-      "p_known": 0.7306228865749265,
+      "p_known": 0.7089625978918908,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -198,7 +198,7 @@
     },
     "v014": {
       "knowledge_point_id": "v014",
-      "p_known": 0.8162810640843576,
+      "p_known": 0.7947253437442452,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -212,7 +212,7 @@
     },
     "v015": {
       "knowledge_point_id": "v015",
-      "p_known": 0.7609034398320663,
+      "p_known": 0.7392900036835875,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -226,7 +226,7 @@
     },
     "v016": {
       "knowledge_point_id": "v016",
-      "p_known": 0.5031132145347135,
+      "p_known": 0.44144820431893966,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -254,7 +254,7 @@
     },
     "v018": {
       "knowledge_point_id": "v018",
-      "p_known": 0.29993279708134923,
+      "p_known": 0.27832072022751325,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -268,7 +268,7 @@
     },
     "v019": {
       "knowledge_point_id": "v019",
-      "p_known": 0.12900579466980816,
+      "p_known": 0.07892285699669307,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -282,7 +282,7 @@
     },
     "v020": {
       "knowledge_point_id": "v020",
-      "p_known": 0.29994094965004964,
+      "p_known": 0.2783315801270668,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -296,7 +296,7 @@
     },
     "g001": {
       "knowledge_point_id": "g001",
-      "p_known": 0.5031349884022528,
+      "p_known": 0.44147249113389964,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,
@@ -310,7 +310,7 @@
     },
     "g002": {
       "knowledge_point_id": "g002",
-      "p_known": 0.3310349963933345,
+      "p_known": 0.3094125005466083,
       "p_transit": 0.3,
       "p_slip": 0.1,
       "p_guess": 0.2,

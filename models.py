@@ -73,6 +73,15 @@ class MinimalPairExercise(Exercise):
     correct_index: int
 
 
+class MultipleChoiceVocabExercise(Exercise):
+    """Multiple choice vocabulary exercise (both directions)."""
+    direction: str  # "chinese_to_english" or "english_to_chinese"
+    prompt: str  # The word being asked about
+    prompt_pinyin: str  # Pinyin (shown when prompt is Chinese)
+    options: list[str]  # 4 answer choices
+    correct_index: int  # Index of correct answer (0-3)
+
+
 class StudentMastery(BaseModel):
     knowledge_point_id: str
 

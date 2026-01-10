@@ -6,7 +6,7 @@ from pathlib import Path
 from models import KnowledgePoint, PracticeMode, SchedulingMode, SessionState, StudentState
 from bkt import update_mastery
 from scheduler import ExerciseScheduler, update_practice_stats
-from exercises import segmented_translation, minimal_pair
+from exercises import segmented_translation, minimal_pair, chinese_to_english, english_to_chinese
 
 DATA_DIR = Path(__file__).parent / "data"
 STATE_FILE = Path(__file__).parent / "student_state.json"
@@ -231,12 +231,27 @@ def run_interactive() -> None:
             break
 
         # Randomly select exercise type
-        exercise_type = random.choice(["segmented_translation", "minimal_pair"])
+        exercise_type = random.choice([
+            "segmented_translation",
+            "minimal_pair",
+            "chinese_to_english",
+            "english_to_chinese",
+        ])
 
         # Generate exercise based on type
         if exercise_type == "minimal_pair":
             exercise = minimal_pair.generate_exercise(knowledge_points, target_kp)
             # Fall back to segmented translation if no minimal pairs available
+            if exercise is None:
+                exercise_type = "segmented_translation"
+                exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
+        elif exercise_type == "chinese_to_english":
+            exercise = chinese_to_english.generate_exercise(knowledge_points, target_kp)
+            if exercise is None:
+                exercise_type = "segmented_translation"
+                exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
+        elif exercise_type == "english_to_chinese":
+            exercise = english_to_chinese.generate_exercise(knowledge_points, target_kp)
             if exercise is None:
                 exercise_type = "segmented_translation"
                 exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
@@ -258,6 +273,46 @@ def run_interactive() -> None:
 
             # Check answer
             is_correct, correct_answer = minimal_pair.check_answer(exercise, user_input, options)
+
+            if is_correct:
+                print(f"\nCorrect! {correct_answer}")
+            else:
+                print(f"\nIncorrect. The correct answer is: {correct_answer}")
+
+        elif exercise_type == "chinese_to_english":
+            # Present Chinese to English exercise
+            chinese_to_english.present_exercise(exercise)
+
+            # Get user input
+            user_input = input("Enter your choice (A/B/C/D or 1/2/3/4): ").strip()
+
+            if user_input.lower() == "q":
+                print("\nGoodbye! Your progress has been saved.")
+                save_student_state(student_state)
+                break
+
+            # Check answer
+            is_correct, correct_answer = chinese_to_english.check_answer(exercise, user_input)
+
+            if is_correct:
+                print(f"\nCorrect! {correct_answer}")
+            else:
+                print(f"\nIncorrect. The correct answer is: {correct_answer}")
+
+        elif exercise_type == "english_to_chinese":
+            # Present English to Chinese exercise
+            english_to_chinese.present_exercise(exercise)
+
+            # Get user input
+            user_input = input("Enter your choice (A/B/C/D or 1/2/3/4): ").strip()
+
+            if user_input.lower() == "q":
+                print("\nGoodbye! Your progress has been saved.")
+                save_student_state(student_state)
+                break
+
+            # Check answer
+            is_correct, correct_answer = english_to_chinese.check_answer(exercise, user_input)
 
             if is_correct:
                 print(f"\nCorrect! {correct_answer}")

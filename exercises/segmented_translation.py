@@ -191,3 +191,59 @@ def check_answer(
     user_sentence = "".join(user_chunks)
 
     return user_sentence == correct_sentence, correct_sentence
+
+
+def process_user_input(
+    exercise: SegmentedTranslationExercise,
+) -> tuple[bool, bool | None, str]:
+    """
+    Process user input for a segmented translation exercise.
+
+    Returns (should_retry, is_correct_or_None, correct_answer_display):
+    - should_retry: True if invalid input, user should retry same exercise
+    - is_correct_or_None: True if correct, False if incorrect, None if quit
+    - correct_answer_display: String to show the correct answer
+    """
+    shuffled_chunks = present_exercise(exercise)
+
+    user_input = input("Enter the numbers in correct order (e.g., 2 1 3): ").strip()
+
+    if user_input.lower() == "q":
+        return False, None, ""
+
+    try:
+        user_order = [int(x) for x in user_input.split()]
+    except ValueError:
+        print("Invalid input. Please enter numbers separated by spaces.\n")
+        return True, False, ""
+
+    is_correct, correct_sentence = check_answer(exercise, user_order, shuffled_chunks)
+
+    return False, is_correct, correct_sentence
+
+
+def format_feedback(
+    is_correct: bool,
+    correct_answer: str,
+    knowledge_points: list[KnowledgePoint] | None = None,
+) -> str:
+    """Return formatted feedback string for a segmented translation exercise.
+
+    If knowledge_points is provided, includes pinyin in the feedback.
+    """
+    if knowledge_points is None:
+        knowledge_points = []
+    kp_dict = {kp.chinese: kp for kp in knowledge_points}
+
+    chunks = list(correct_answer)
+    pinyin_parts = []
+    for chunk in chunks:
+        if chunk in kp_dict:
+            pinyin_parts.append(kp_dict[chunk].pinyin)
+        else:
+            pinyin_parts.append("")
+
+    if is_correct:
+        return f"\nCorrect! {correct_answer} ({' '.join(pinyin_parts)})"
+    else:
+        return f"\nIncorrect. The correct answer is: {correct_answer}\nPinyin: {' '.join(pinyin_parts)}"

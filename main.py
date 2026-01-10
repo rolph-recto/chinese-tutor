@@ -5,8 +5,45 @@ from pathlib import Path
 
 from models import KnowledgePoint, SessionState, StudentState
 from scheduler import ExerciseScheduler, update_practice_stats
-from fsrs_scheduler import initialize_fsrs_for_mastery, process_fsrs_review, get_fsrs_retrievability
-from exercises import segmented_translation, minimal_pair, chinese_to_english, english_to_chinese
+from fsrs_scheduler import (
+    initialize_fsrs_for_mastery,
+    process_fsrs_review,
+    get_fsrs_retrievability,
+)
+from exercises import (
+    segmented_translation,
+    minimal_pair,
+    chinese_to_english,
+    english_to_chinese,
+)
+
+EXERCISE_MODULES = {
+    "segmented_translation": segmented_translation,
+    "minimal_pair": minimal_pair,
+    "chinese_to_english": chinese_to_english,
+    "english_to_chinese": english_to_chinese,
+}
+
+
+def get_exercise_module(exercise_type: str):
+    """Get the exercise module for the given type."""
+    return EXERCISE_MODULES[exercise_type]
+
+
+def generate_exercise_with_fallback(
+    exercise_type: str,
+    knowledge_points: list[KnowledgePoint],
+    target_kp: KnowledgePoint | None = None,
+):
+    """Generate an exercise of the given type, falling back to segmented_translation if needed."""
+    module = get_exercise_module(exercise_type)
+    exercise = module.generate_exercise(knowledge_points, target_kp)
+    if exercise is not None:
+        return exercise_type, exercise
+    return "segmented_translation", segmented_translation.generate_exercise(
+        knowledge_points, target_kp
+    )
+
 
 DATA_DIR = Path(__file__).parent / "data"
 STATE_FILE = Path(__file__).parent / "student_state.json"
@@ -14,9 +51,7 @@ STATE_FILE = Path(__file__).parent / "student_state.json"
 
 def create_parser() -> argparse.ArgumentParser:
     """Create argument parser with subcommands."""
-    parser = argparse.ArgumentParser(
-        description="Chinese Tutor - HSK1 Learning System"
-    )
+    parser = argparse.ArgumentParser(description="Chinese Tutor - HSK1 Learning System")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # Simulate subcommand
@@ -195,136 +230,30 @@ def run_interactive() -> None:
     for target_kp_id in kp_queue:
         target_kp = scheduler.knowledge_points.get(target_kp_id)
 
-        # Randomly select exercise type
-        exercise_type = random.choice([
-            "segmented_translation",
-            "minimal_pair",
-            "chinese_to_english",
-            "english_to_chinese",
-        ])
+        exercise_type = random.choice(
+            [
+                "segmented_translation",
+                "minimal_pair",
+                "chinese_to_english",
+                "english_to_chinese",
+            ]
+        )
 
-        # Generate exercise based on type
-        if exercise_type == "minimal_pair":
-            exercise = minimal_pair.generate_exercise(knowledge_points, target_kp)
-            # Fall back to segmented translation if no minimal pairs available
-            if exercise is None:
-                exercise_type = "segmented_translation"
-                exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
-        elif exercise_type == "chinese_to_english":
-            exercise = chinese_to_english.generate_exercise(knowledge_points, target_kp)
-            if exercise is None:
-                exercise_type = "segmented_translation"
-                exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
-        elif exercise_type == "english_to_chinese":
-            exercise = english_to_chinese.generate_exercise(knowledge_points, target_kp)
-            if exercise is None:
-                exercise_type = "segmented_translation"
-                exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
-        else:
-            exercise = segmented_translation.generate_exercise(knowledge_points, target_kp)
+        exercise_type, exercise = generate_exercise_with_fallback(
+            exercise_type, knowledge_points, target_kp
+        )
 
-        # Handle exercise based on type
-        if exercise_type == "minimal_pair":
-            # Present minimal pair exercise
-            options = minimal_pair.present_exercise(exercise)
+        module = get_exercise_module(exercise_type)
+        should_retry, is_correct, correct_answer = module.process_user_input(exercise)
 
-            # Get user input
-            user_input = input("Enter your choice (A/B/C or 1/2/3): ").strip()
+        if is_correct is None:
+            print("\nGoodbye! Your progress has been saved.")
+            save_student_state(student_state)
+            break
 
-            if user_input.lower() == "q":
-                print("\nGoodbye! Your progress has been saved.")
-                save_student_state(student_state)
-                break
-
-            # Check answer
-            is_correct, correct_answer = minimal_pair.check_answer(exercise, user_input, options)
-
-            if is_correct:
-                print(f"\nCorrect! {correct_answer}")
-            else:
-                print(f"\nIncorrect. The correct answer is: {correct_answer}")
-
-        elif exercise_type == "chinese_to_english":
-            # Present Chinese to English exercise
-            chinese_to_english.present_exercise(exercise)
-
-            # Get user input
-            user_input = input("Enter your choice (A/B/C/D or 1/2/3/4): ").strip()
-
-            if user_input.lower() == "q":
-                print("\nGoodbye! Your progress has been saved.")
-                save_student_state(student_state)
-                break
-
-            # Check answer
-            is_correct, correct_answer = chinese_to_english.check_answer(exercise, user_input)
-
-            if is_correct:
-                print(f"\nCorrect! {correct_answer}")
-            else:
-                print(f"\nIncorrect. The correct answer is: {correct_answer}")
-
-        elif exercise_type == "english_to_chinese":
-            # Present English to Chinese exercise
-            english_to_chinese.present_exercise(exercise)
-
-            # Get user input
-            user_input = input("Enter your choice (A/B/C/D or 1/2/3/4): ").strip()
-
-            if user_input.lower() == "q":
-                print("\nGoodbye! Your progress has been saved.")
-                save_student_state(student_state)
-                break
-
-            # Check answer
-            is_correct, correct_answer = english_to_chinese.check_answer(exercise, user_input)
-
-            if is_correct:
-                print(f"\nCorrect! {correct_answer}")
-            else:
-                print(f"\nIncorrect. The correct answer is: {correct_answer}")
-
-        else:
-            # Present segmented translation exercise
-            shuffled_chunks = segmented_translation.present_exercise(exercise)
-
-            # Get user input
-            user_input = input(
-                "Enter the numbers in correct order (e.g., 2 1 3): "
-            ).strip()
-
-            if user_input.lower() == "q":
-                print("\nGoodbye! Your progress has been saved.")
-                save_student_state(student_state)
-                break
-
-            # Parse user input
-            try:
-                user_order = [int(x) for x in user_input.split()]
-            except ValueError:
-                print("Invalid input. Please enter numbers separated by spaces.\n")
-                continue
-
-            # Check answer
-            is_correct, correct_sentence = segmented_translation.check_answer(
-                exercise, user_order, shuffled_chunks
-            )
-
-            # Get pinyin for the sentence
-            pinyin_parts = []
-            for chunk in [exercise.chinese_chunks[i] for i in exercise.correct_order]:
-                for kp in knowledge_points:
-                    if kp.chinese == chunk:
-                        pinyin_parts.append(kp.pinyin)
-                        break
-                else:
-                    pinyin_parts.append("")
-
-            if is_correct:
-                print(f"\nCorrect! {correct_sentence} ({' '.join(pinyin_parts)})")
-            else:
-                print(f"\nIncorrect. The correct answer is: {correct_sentence}")
-                print(f"Pinyin: {' '.join(pinyin_parts)}")
+        if not should_retry:
+            feedback = module.format_feedback(is_correct, correct_answer)
+            print(feedback)
 
         # Update mastery and practice stats for each knowledge point in the exercise
         print("\nMastery updates:")
@@ -361,8 +290,6 @@ def run_interactive() -> None:
 
         # Save state after each exercise
         save_student_state(student_state)
-
-        print()
 
 
 def main():

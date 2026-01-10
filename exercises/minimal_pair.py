@@ -36,7 +36,8 @@ def generate_exercise(
 
     # Get vocabulary knowledge points that have minimal pairs defined
     vocab_kps = [
-        kp for kp in knowledge_points
+        kp
+        for kp in knowledge_points
         if kp.type.value == "vocabulary" and kp.id in minimal_pairs
     ]
 
@@ -55,14 +56,12 @@ def generate_exercise(
     correct_option = MinimalPairOption(
         chinese=selected_kp.chinese,
         pinyin=selected_kp.pinyin,
-        english=selected_kp.english.split(",")[0].strip()
+        english=selected_kp.english.split(",")[0].strip(),
     )
 
     distractor_options = [
         MinimalPairOption(
-            chinese=d["chinese"],
-            pinyin=d["pinyin"],
-            english=d["english"]
+            chinese=d["chinese"], pinyin=d["pinyin"], english=d["english"]
         )
         for d in distractors
     ]
@@ -73,8 +72,7 @@ def generate_exercise(
 
     # Find the correct index after shuffling
     correct_index = next(
-        i for i, opt in enumerate(all_options)
-        if opt.chinese == selected_kp.chinese
+        i for i, opt in enumerate(all_options) if opt.chinese == selected_kp.chinese
     )
 
     return MinimalPairExercise(
@@ -95,7 +93,9 @@ def present_exercise(exercise: MinimalPairExercise) -> list[MinimalPairOption]:
 
     Returns the options list for answer checking.
     """
-    print(f'\nSelect the character for "{exercise.target_english}" ({exercise.target_pinyin})')
+    print(
+        f'\nSelect the character for "{exercise.target_english}" ({exercise.target_pinyin})'
+    )
     print()
 
     labels = ["A", "B", "C", "D", "E", "F"]
@@ -145,3 +145,34 @@ def check_answer(
     correct_display = f"{correct_opt.chinese} ({correct_opt.pinyin})"
 
     return is_correct, correct_display
+
+
+def process_user_input(exercise: MinimalPairExercise) -> tuple[bool, bool | None, str]:
+    """
+    Process user input for a minimal pair exercise.
+
+    Returns (should_retry, is_correct_or_None, correct_answer_display):
+    - should_retry: True if invalid input, user should retry same exercise
+    - is_correct_or_None: True if correct, False if incorrect, None if quit
+    - correct_answer_display: String to show the correct answer
+    """
+    present_exercise(exercise)
+
+    user_input = input("Enter your choice (A/B/C or 1/2/3): ").strip()
+
+    if user_input.lower() == "q":
+        return False, None, ""
+
+    is_correct, correct_answer_display = check_answer(
+        exercise, user_input, exercise.options
+    )
+
+    return False, is_correct, correct_answer_display
+
+
+def format_feedback(is_correct: bool, correct_answer: str) -> str:
+    """Return formatted feedback string for a minimal pair exercise."""
+    if is_correct:
+        return f"\nCorrect! {correct_answer}"
+    else:
+        return f"\nIncorrect. The correct answer is: {correct_answer}"

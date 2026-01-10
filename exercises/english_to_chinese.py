@@ -157,3 +157,34 @@ def check_answer(
     correct_answer = exercise.options[exercise.correct_index]
 
     return is_correct, correct_answer
+
+
+def process_user_input(
+    exercise: MultipleChoiceVocabExercise,
+) -> tuple[bool, bool | None, str]:
+    """
+    Process user input for an English to Chinese exercise.
+
+    Returns (should_retry, is_correct_or_None, correct_answer_display):
+    - should_retry: True if invalid input, user should retry same exercise
+    - is_correct_or_None: True if correct, False if incorrect, None if quit
+    - correct_answer_display: String to show the correct answer
+    """
+    present_exercise(exercise)
+
+    user_input = input("Enter your choice (A/B/C/D or 1/2/3/4): ").strip()
+
+    if user_input.lower() == "q":
+        return False, None, ""
+
+    is_correct, correct_answer_display = check_answer(exercise, user_input)
+
+    return False, is_correct, correct_answer_display
+
+
+def format_feedback(is_correct: bool, correct_answer: str) -> str:
+    """Return formatted feedback string for an English to Chinese exercise."""
+    if is_correct:
+        return f"\nCorrect! {correct_answer}"
+    else:
+        return f"\nIncorrect. The correct answer is: {correct_answer}"

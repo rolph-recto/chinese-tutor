@@ -14,7 +14,6 @@ from models import (
     KnowledgePointType,
     StudentMastery,
     StudentState,
-    SchedulingMode,
     FSRSState,
 )
 from simulator_models import SimulatedStudentConfig
@@ -92,70 +91,10 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
 
 
 @pytest.fixture
-def fresh_mastery() -> StudentMastery:
-    """Create a fresh (unlearned) mastery record."""
-    return StudentMastery(
-        knowledge_point_id="v001",
-        p_known=0.0,
-        p_transit=0.3,
-        p_slip=0.1,
-        p_guess=0.2,
-    )
-
-
-@pytest.fixture
-def partial_mastery() -> StudentMastery:
-    """Create a partially learned mastery record (p_known=0.5)."""
-    return StudentMastery(
-        knowledge_point_id="v001",
-        p_known=0.5,
-        p_transit=0.3,
-        p_slip=0.1,
-        p_guess=0.2,
-        last_practiced=datetime.now() - timedelta(days=1),
-        practice_count=5,
-        correct_count=3,
-    )
-
-
-@pytest.fixture
-def near_mastery() -> StudentMastery:
-    """Create a near-mastered record (p_known=0.75, just below threshold)."""
-    return StudentMastery(
-        knowledge_point_id="v001",
-        p_known=0.75,
-        p_transit=0.3,
-        p_slip=0.1,
-        p_guess=0.2,
-        last_practiced=datetime.now(),
-        practice_count=10,
-        correct_count=8,
-    )
-
-
-@pytest.fixture
-def mastered_bkt() -> StudentMastery:
-    """Create a mastered BKT record (p_known=0.96, above threshold)."""
-    return StudentMastery(
-        knowledge_point_id="v001",
-        p_known=0.96,
-        p_transit=0.3,
-        p_slip=0.1,
-        p_guess=0.2,
-        scheduling_mode=SchedulingMode.BKT,
-        last_practiced=datetime.now(),
-        practice_count=15,
-        correct_count=13,
-    )
-
-
-@pytest.fixture
 def fsrs_mastery() -> StudentMastery:
-    """Create a mastery record in FSRS mode."""
+    """Create a mastery record with FSRS state initialized."""
     return StudentMastery(
         knowledge_point_id="v001",
-        p_known=0.9,
-        scheduling_mode=SchedulingMode.FSRS,
         fsrs_state=FSRSState(
             stability=10.0,
             difficulty=5.0,
@@ -164,10 +103,36 @@ def fsrs_mastery() -> StudentMastery:
             state=2,  # Review state
             step=None,
         ),
-        transitioned_to_fsrs_at=datetime.now() - timedelta(days=7),
         last_practiced=datetime.now(),
         practice_count=20,
         correct_count=18,
+    )
+
+
+@pytest.fixture
+def new_mastery() -> StudentMastery:
+    """Create a new mastery record without FSRS state (not yet practiced)."""
+    return StudentMastery(
+        knowledge_point_id="v001",
+    )
+
+
+@pytest.fixture
+def practiced_mastery() -> StudentMastery:
+    """Create a mastery record that has been practiced multiple times."""
+    return StudentMastery(
+        knowledge_point_id="v001",
+        fsrs_state=FSRSState(
+            stability=5.0,
+            difficulty=5.0,
+            due=datetime.now() - timedelta(hours=2),  # Slightly overdue
+            last_review=datetime.now() - timedelta(days=1),
+            state=2,  # Review state
+            step=None,
+        ),
+        last_practiced=datetime.now() - timedelta(days=1),
+        practice_count=5,
+        correct_count=4,
     )
 
 
@@ -179,17 +144,54 @@ def empty_student_state() -> StudentState:
 
 @pytest.fixture
 def populated_student_state() -> StudentState:
-    """Create a student state with some mastery records."""
+    """Create a student state with some mastery records (all with FSRS state)."""
     state = StudentState()
+
+    # v001 - recently practiced
     state.masteries["v001"] = StudentMastery(
-        knowledge_point_id="v001", p_known=0.3
+        knowledge_point_id="v001",
+        fsrs_state=FSRSState(
+            stability=3.0,
+            difficulty=5.0,
+            due=datetime.now() + timedelta(hours=12),
+            last_review=datetime.now(),
+            state=2,
+            step=None,
+        ),
+        practice_count=3,
+        correct_count=2,
     )
+
+    # v002 - practiced more
     state.masteries["v002"] = StudentMastery(
-        knowledge_point_id="v002", p_known=0.7
+        knowledge_point_id="v002",
+        fsrs_state=FSRSState(
+            stability=8.0,
+            difficulty=4.5,
+            due=datetime.now() + timedelta(days=2),
+            last_review=datetime.now(),
+            state=2,
+            step=None,
+        ),
+        practice_count=7,
+        correct_count=6,
     )
+
+    # v005 - well practiced (mastered)
     state.masteries["v005"] = StudentMastery(
-        knowledge_point_id="v005", p_known=0.96  # Mastered
+        knowledge_point_id="v005",
+        fsrs_state=FSRSState(
+            stability=15.0,
+            difficulty=4.0,
+            due=datetime.now() + timedelta(days=5),
+            last_review=datetime.now(),
+            state=2,
+            step=None,
+        ),
+        practice_count=15,
+        correct_count=14,
     )
+
     return state
 
 

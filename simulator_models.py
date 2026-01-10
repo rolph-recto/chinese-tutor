@@ -16,11 +16,10 @@ class SimulatedStudentConfig(BaseModel):
     retention_rate: float = Field(default=0.85, ge=0.0, le=1.0)
 
     # Base error rate: probability of slip even when "knowing" material
-    # Maps to p_slip in BKT (0.05 = careful, 0.1 = average, 0.2 = careless)
+    # (0.05 = careful, 0.1 = average, 0.2 = careless)
     slip_rate: float = Field(default=0.1, ge=0.0, le=0.5)
 
     # Guess rate: probability of correct guess when not knowing
-    # Maps to p_guess in BKT
     guess_rate: float = Field(default=0.25, ge=0.0, le=0.5)
 
 
@@ -29,8 +28,8 @@ class SimulatedStudent(BaseModel):
 
     config: SimulatedStudentConfig
 
-    # True knowledge per knowledge point (distinct from BKT's p_known)
-    # This is the "ground truth" that BKT is trying to estimate
+    # True knowledge per knowledge point (distinct from FSRS's estimate)
+    # This is the "ground truth" that FSRS is trying to track
     true_knowledge: dict[str, float] = Field(default_factory=dict)
 
     # Track when each KP was first encountered (for learning curve analysis)
@@ -83,11 +82,8 @@ class ExerciseResult(BaseModel):
 
     # Ground truth vs estimated knowledge
     true_knowledge_before: dict[str, float]  # kp_id -> true knowledge
-    bkt_p_known_before: dict[str, float]  # kp_id -> BKT estimate
-    bkt_p_known_after: dict[str, float]  # kp_id -> BKT estimate after update
-
-    # Scheduling mode tracking
-    scheduling_modes: dict[str, str]  # kp_id -> "bkt" or "fsrs"
+    retrievability_before: dict[str, float]  # kp_id -> FSRS retrievability
+    retrievability_after: dict[str, float]  # kp_id -> FSRS retrievability after update
 
 
 class DailySummary(BaseModel):
@@ -107,13 +103,10 @@ class DailySummary(BaseModel):
 
     # Knowledge point stats
     kps_practiced: list[str]  # Unique KPs practiced this day
-    kps_transitioned_to_fsrs: list[str]  # KPs that crossed mastery threshold
 
     # Aggregate knowledge states (snapshot at end of day)
     avg_true_knowledge: float
-    avg_bkt_p_known: float
-    kps_in_bkt_mode: int
-    kps_in_fsrs_mode: int
+    avg_retrievability: float
 
 
 class KnowledgePointSnapshot(BaseModel):
@@ -124,12 +117,11 @@ class KnowledgePointSnapshot(BaseModel):
     exercise_number: int | None  # None for daily snapshots
 
     true_knowledge: float
-    bkt_p_known: float
-    scheduling_mode: str
+    retrievability: float
     practice_count: int
     correct_count: int
 
-    # FSRS state (if applicable)
+    # FSRS state
     fsrs_stability: float | None = None
     fsrs_difficulty: float | None = None
 
@@ -142,7 +134,6 @@ class KnowledgePointTrajectory(BaseModel):
     kp_english: str
 
     first_practiced: datetime | None = None
-    transitioned_to_fsrs: datetime | None = None
 
     # Snapshots taken after each exercise involving this KP
     snapshots: list[KnowledgePointSnapshot] = Field(default_factory=list)
@@ -170,5 +161,4 @@ class SimulationResults(BaseModel):
     kp_trajectories: dict[str, KnowledgePointTrajectory]
 
     # Final state
-    final_kps_mastered: int  # KPs with p_known >= 0.8
-    final_kps_in_fsrs: int  # KPs transitioned to FSRS
+    final_kps_practiced: int  # KPs that have been practiced at least once

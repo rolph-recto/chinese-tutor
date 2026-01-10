@@ -1,9 +1,9 @@
 """
-FSRS integration module for long-term retention scheduling.
+FSRS integration module for spaced repetition scheduling.
 
 This module provides functions to:
 1. Convert between our FSRSState model and py-fsrs Card objects
-2. Initialize FSRS cards when transitioning from BKT
+2. Initialize FSRS cards for new knowledge points
 3. Process reviews and update FSRS state
 4. Calculate due dates and retrievability
 """
@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 
 from fsrs import Card, Rating, Scheduler, State
 
-from models import FSRSState, SchedulingMode, StudentMastery
+from models import FSRSState, StudentMastery
 
 
 # Global FSRS scheduler with default parameters
@@ -53,10 +53,10 @@ def card_to_fsrs_state(card: Card) -> FSRSState:
 
 def initialize_fsrs_for_mastery(mastery: StudentMastery) -> None:
     """
-    Initialize FSRS state when a knowledge point transitions from BKT.
+    Initialize FSRS state for a new knowledge point.
 
-    This is called when p_known >= MASTERY_THRESHOLD (0.8).
-    The card starts fresh and we do an initial "Good" review to establish baseline.
+    Creates a fresh card and does an initial "Good" review to establish baseline
+    scheduling parameters.
     """
     # Create a new card and do an initial "Good" review to establish baseline
     card = Card()
@@ -65,8 +65,6 @@ def initialize_fsrs_for_mastery(mastery: StudentMastery) -> None:
 
     # Store the FSRS state
     mastery.fsrs_state = card_to_fsrs_state(card)
-    mastery.scheduling_mode = SchedulingMode.FSRS
-    mastery.transitioned_to_fsrs_at = datetime.now()
 
 
 def process_fsrs_review(mastery: StudentMastery, correct: bool) -> None:
@@ -96,11 +94,9 @@ def process_fsrs_review(mastery: StudentMastery, correct: bool) -> None:
 
 def get_fsrs_due_date(mastery: StudentMastery) -> datetime | None:
     """
-    Get the due date for an FSRS-scheduled knowledge point.
-    Returns None if not in FSRS mode or no due date set.
+    Get the due date for a knowledge point.
+    Returns None if FSRS state not initialized.
     """
-    if mastery.scheduling_mode != SchedulingMode.FSRS:
-        return None
     if mastery.fsrs_state is None:
         return None
     return mastery.fsrs_state.due
@@ -108,11 +104,9 @@ def get_fsrs_due_date(mastery: StudentMastery) -> datetime | None:
 
 def get_fsrs_retrievability(mastery: StudentMastery) -> float | None:
     """
-    Get current retrievability (probability of recall) for an FSRS card.
-    Returns None if not in FSRS mode.
+    Get current retrievability (probability of recall) for a knowledge point.
+    Returns None if FSRS state not initialized.
     """
-    if mastery.scheduling_mode != SchedulingMode.FSRS:
-        return None
     if mastery.fsrs_state is None:
         return None
 

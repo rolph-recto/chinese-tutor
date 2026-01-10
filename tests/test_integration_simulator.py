@@ -6,7 +6,7 @@ import random
 from simulate import Simulator, ResponseGenerator
 from simulator_models import SimulatedStudent
 from main import load_knowledge_points
-from models import Exercise, SchedulingMode
+from models import Exercise
 
 
 class TestSimulatorBasicRun:
@@ -45,23 +45,23 @@ class TestSimulatorBasicRun:
     def test_simulator_updates_mastery(
         self, knowledge_points, default_simulator_config
     ):
-        """Simulator should update BKT mastery estimates."""
+        """Simulator should update FSRS retrievability estimates."""
         random.seed(42)
 
         simulator = Simulator(knowledge_points, default_simulator_config)
         results = simulator.run(days=1, exercises_per_day=10, verbose=False)
 
-        # At least some KPs should have non-zero mastery
+        # At least some KPs should have non-zero retrievability
         assert len(results.kp_trajectories) > 0
         assert any(
-            traj.snapshots[-1].bkt_p_known > 0
+            traj.snapshots[-1].retrievability > 0
             for traj in results.kp_trajectories.values()
             if traj.snapshots
         )
 
 
 class TestSimulatorMasteryValidation:
-    """Tests validating BKT estimates against ground truth."""
+    """Tests validating FSRS estimates against ground truth."""
 
     @pytest.fixture
     def knowledge_points(self):
@@ -76,13 +76,13 @@ class TestSimulatorMasteryValidation:
 
         # Should have some progress
         assert results.total_correct > 0
-        # Average mastery should increase
-        final_avg_mastery = sum(
-            traj.snapshots[-1].bkt_p_known
+        # Average retrievability should be positive
+        final_avg_retrievability = sum(
+            traj.snapshots[-1].retrievability
             for traj in results.kp_trajectories.values()
             if traj.snapshots
         ) / max(1, len(results.kp_trajectories))
-        assert final_avg_mastery > 0
+        assert final_avg_retrievability > 0
 
     def test_slow_learner_slower_progress(
         self, knowledge_points, fast_learner_config, slow_learner_config
@@ -106,26 +106,6 @@ class TestSimulatorMasteryValidation:
         assert fast_results.total_exercises == slow_results.total_exercises
         assert 0.0 <= fast_results.overall_accuracy <= 1.0
         assert 0.0 <= slow_results.overall_accuracy <= 1.0
-
-
-class TestFSRSTransition:
-    """Tests for BKT to FSRS transitions in simulation."""
-
-    @pytest.fixture
-    def knowledge_points(self):
-        return load_knowledge_points()
-
-    def test_fsrs_transitions_tracked(self, knowledge_points, fast_learner_config):
-        """FSRS transitions should be tracked in results."""
-        random.seed(42)
-
-        simulator = Simulator(knowledge_points, fast_learner_config)
-        results = simulator.run(days=10, exercises_per_day=15, verbose=False)
-
-        # final_kps_in_fsrs should be a valid count
-        # Can be >= trajectories because vocabulary starts in FSRS without needing practice
-        assert results.final_kps_in_fsrs >= 0
-        assert results.final_kps_in_fsrs >= len(results.kp_trajectories)
 
 
 class TestResponseGenerator:
@@ -242,10 +222,9 @@ class TestQuickSanityChecks:
         # Should have updated some masteries
         assert len(simulator.student_state.masteries) > 0
 
-        # At least one should have been initialized
+        # At least one should have been initialized with FSRS state
         has_initialized = any(
-            (m.p_known is not None and m.p_known > 0)
-            or m.scheduling_mode == SchedulingMode.FSRS
+            m.fsrs_state is not None
             for m in simulator.student_state.masteries.values()
         )
         assert has_initialized

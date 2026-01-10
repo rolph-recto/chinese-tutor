@@ -8,12 +8,10 @@ from pathlib import Path
 from models import (
     Exercise,
     KnowledgePoint,
-    SchedulingMode,
     StudentState,
 )
-from bkt import update_mastery
 from scheduler import select_next_knowledge_point, update_practice_stats
-from fsrs_scheduler import initialize_fsrs_for_mastery
+from fsrs_scheduler import initialize_fsrs_for_mastery, process_fsrs_review, get_fsrs_retrievability
 from exercises import segmented_translation, minimal_pair
 from simulator_models import (
     SimulatedStudentConfig,
@@ -54,7 +52,7 @@ class ResponseGenerator:
 
         effective_knowledge = avg_knowledge * difficulty_factor
 
-        # Apply slip/guess model (same as BKT)
+        # Apply slip/guess model
         # P(correct) = P(knows) * (1 - P(slip)) + P(not knows) * P(guess)
         p_correct = (
             effective_knowledge * (1 - self.student.config.slip_rate)
@@ -88,15 +86,14 @@ class Simulator:
 
     def _get_mastery_for_kp(self, kp_id: str):
         """
-        Get mastery for a KP, initializing with correct type and FSRS state.
+        Get mastery for a KP, initializing FSRS state if needed.
         """
         kp = self.kp_dict.get(kp_id)
         kp_type = kp.type if kp else None
         mastery = self.student_state.get_mastery(kp_id, kp_type)
 
-        # Initialize FSRS state for vocabulary items that don't have it
-        if (mastery.scheduling_mode == SchedulingMode.FSRS
-                and mastery.fsrs_state is None):
+        # Initialize FSRS state for new items
+        if mastery.fsrs_state is None:
             initialize_fsrs_for_mastery(mastery)
 
         return mastery
@@ -149,7 +146,6 @@ class Simulator:
         mp_count = 0
         mp_correct = 0
         kps_practiced: set[str] = set()
-        kps_transitioned: list[str] = []
 
         for ex_num in range(1, exercises_per_day + 1):
             # Select next KP (uses existing scheduler)
@@ -171,12 +167,6 @@ class Simulator:
 
             # Generate simulated response
             is_correct = self.response_generator.generate_response(exercise)
-
-            # Check which KPs are about to transition (before update)
-            pre_transition_modes = {
-                kp_id: self._get_mastery_for_kp(kp_id).scheduling_mode
-                for kp_id in exercise.knowledge_point_ids
-            }
 
             # Update systems
             post_state = self._process_exercise_result(
@@ -201,18 +191,6 @@ class Simulator:
                 if is_correct:
                     mp_correct += 1
 
-            # Check for FSRS transitions
-            for kp_id in exercise.knowledge_point_ids:
-                mastery = self._get_mastery_for_kp(kp_id)
-                if (
-                    pre_transition_modes[kp_id] == SchedulingMode.BKT
-                    and mastery.scheduling_mode == SchedulingMode.FSRS
-                ):
-                    kps_transitioned.append(kp_id)
-                    # Update trajectory with transition time
-                    if kp_id in self.kp_trajectories:
-                        self.kp_trajectories[kp_id].transitioned_to_fsrs = current_time
-
             # Record exercise result
             self.exercise_results.append(
                 ExerciseResult(
@@ -223,12 +201,8 @@ class Simulator:
                     knowledge_point_ids=exercise.knowledge_point_ids,
                     is_correct=is_correct,
                     true_knowledge_before=pre_state["true"],
-                    bkt_p_known_before=pre_state["bkt"],
-                    bkt_p_known_after=post_state["bkt"],
-                    scheduling_modes={
-                        kp_id: self._get_mastery_for_kp(kp_id).scheduling_mode.value
-                        for kp_id in exercise.knowledge_point_ids
-                    },
+                    retrievability_before=pre_state["retrievability"],
+                    retrievability_after=post_state["retrievability"],
                 )
             )
 
@@ -258,11 +232,8 @@ class Simulator:
             minimal_pair_count=mp_count,
             minimal_pair_correct=mp_correct,
             kps_practiced=list(kps_practiced),
-            kps_transitioned_to_fsrs=kps_transitioned,
             avg_true_knowledge=self._calc_avg_true_knowledge(),
-            avg_bkt_p_known=self._calc_avg_bkt_p_known(),
-            kps_in_bkt_mode=self._count_kps_by_mode(SchedulingMode.BKT),
-            kps_in_fsrs_mode=self._count_kps_by_mode(SchedulingMode.FSRS),
+            avg_retrievability=self._calc_avg_retrievability(),
         )
 
         self.daily_summaries.append(summary)
@@ -290,17 +261,17 @@ class Simulator:
 
     def _capture_kp_states(self, kp_ids: list[str]) -> dict:
         """Capture current state of knowledge points."""
-        bkt_states = {}
+        retrievability_states = {}
         for kp_id in kp_ids:
             mastery = self._get_mastery_for_kp(kp_id)
-            # For FSRS items, p_known is None; use 1.0 as they're considered mastered
-            bkt_states[kp_id] = mastery.p_known if mastery.p_known is not None else 1.0
+            ret = get_fsrs_retrievability(mastery)
+            retrievability_states[kp_id] = ret if ret is not None else 1.0
 
         return {
             "true": {
                 kp_id: self.student.get_true_knowledge(kp_id) for kp_id in kp_ids
             },
-            "bkt": bkt_states,
+            "retrievability": retrievability_states,
         }
 
     def _process_exercise_result(
@@ -309,8 +280,8 @@ class Simulator:
         is_correct: bool,
         current_time: datetime,
     ) -> dict:
-        """Process exercise result through BKT/FSRS and update true knowledge."""
-        post_state = {"bkt": {}, "true": {}}
+        """Process exercise result through FSRS and update true knowledge."""
+        post_state = {"retrievability": {}, "true": {}}
 
         for kp_id in exercise.knowledge_point_ids:
             if kp_id not in self.kp_dict:
@@ -319,12 +290,13 @@ class Simulator:
             # Update true knowledge (simulated student's internal state)
             self.student.update_true_knowledge(kp_id, is_correct, current_time)
 
-            # Update BKT/FSRS (the system's estimate)
+            # Update FSRS (the system's estimate)
             mastery = self._get_mastery_for_kp(kp_id)
-            new_p = update_mastery(mastery, is_correct)
+            process_fsrs_review(mastery, is_correct)
             update_practice_stats(mastery, is_correct)
 
-            post_state["bkt"][kp_id] = new_p
+            ret = get_fsrs_retrievability(mastery)
+            post_state["retrievability"][kp_id] = ret if ret is not None else 1.0
             post_state["true"][kp_id] = self.student.get_true_knowledge(kp_id)
 
         return post_state
@@ -358,23 +330,22 @@ class Simulator:
 
             mastery = self._get_mastery_for_kp(kp_id)
 
-            # Get FSRS state if applicable
+            # Get FSRS state
             fsrs_stability = None
             fsrs_difficulty = None
             if mastery.fsrs_state:
                 fsrs_stability = mastery.fsrs_state.stability
                 fsrs_difficulty = mastery.fsrs_state.difficulty
 
-            # For FSRS-only items, p_known is None
-            bkt_p_known = mastery.p_known if mastery.p_known is not None else 1.0
+            ret = get_fsrs_retrievability(mastery)
+            retrievability = ret if ret is not None else 1.0
 
             snapshot = KnowledgePointSnapshot(
                 timestamp=current_time,
                 day=day,
                 exercise_number=exercise_number,
                 true_knowledge=self.student.get_true_knowledge(kp_id),
-                bkt_p_known=bkt_p_known,
-                scheduling_mode=mastery.scheduling_mode.value,
+                retrievability=retrievability,
                 practice_count=mastery.practice_count,
                 correct_count=mastery.correct_count,
                 fsrs_stability=fsrs_stability,
@@ -391,24 +362,18 @@ class Simulator:
             self.student.true_knowledge
         )
 
-    def _calc_avg_bkt_p_known(self) -> float:
-        """Calculate average BKT p_known across all masteries."""
+    def _calc_avg_retrievability(self) -> float:
+        """Calculate average FSRS retrievability across all masteries."""
         if not self.student_state.masteries:
             return 0.0
-        # For FSRS-only items, p_known is None; treat as 1.0 (mastered)
-        total = sum(
-            m.p_known if m.p_known is not None else 1.0
-            for m in self.student_state.masteries.values()
-        )
-        return total / len(self.student_state.masteries)
-
-    def _count_kps_by_mode(self, mode: SchedulingMode) -> int:
-        """Count KPs in a specific scheduling mode."""
-        return sum(
-            1
-            for m in self.student_state.masteries.values()
-            if m.scheduling_mode == mode
-        )
+        total = 0.0
+        count = 0
+        for m in self.student_state.masteries.values():
+            ret = get_fsrs_retrievability(m)
+            if ret is not None:
+                total += ret
+                count += 1
+        return total / count if count > 0 else 0.0
 
     def _print_exercise_result(
         self,
@@ -421,10 +386,11 @@ class Simulator:
         status = "correct" if is_correct else "incorrect"
         mastery = self._get_mastery_for_kp(target_kp.id)
         true_k = self.student.get_true_knowledge(target_kp.id)
-        p_known = mastery.p_known if mastery.p_known is not None else 1.0
+        ret = get_fsrs_retrievability(mastery)
+        ret_val = ret if ret is not None else 1.0
         print(
             f"  Day {day}, Ex {ex_num}: {target_kp.chinese} ({target_kp.english}) "
-            f"- {status} | true={true_k:.2f}, bkt={p_known:.2f}"
+            f"- {status} | true={true_k:.2f}, ret={ret_val:.2f}"
         )
 
     def _compile_results(
@@ -438,14 +404,8 @@ class Simulator:
         total_correct = sum(1 for r in self.exercise_results if r.is_correct)
         total_exercises = len(self.exercise_results)
 
-        # Count final mastered/FSRS KPs
-        # FSRS items are always considered mastered (p_known is None)
-        final_mastered = sum(
-            1
-            for m in self.student_state.masteries.values()
-            if m.is_mastered
-        )
-        final_fsrs = self._count_kps_by_mode(SchedulingMode.FSRS)
+        # Count practiced KPs
+        final_practiced = len(self.kp_trajectories)
 
         return SimulationResults(
             config=self.config,
@@ -460,8 +420,7 @@ class Simulator:
             daily_summaries=self.daily_summaries,
             exercise_results=self.exercise_results,
             kp_trajectories=self.kp_trajectories,
-            final_kps_mastered=final_mastered,
-            final_kps_in_fsrs=final_fsrs,
+            final_kps_practiced=final_practiced,
         )
 
 
@@ -512,32 +471,28 @@ def print_console_summary(results: SimulationResults, kp_dict: dict[str, Knowled
         )
     print()
     print("Knowledge Points:")
-    print(f"  Total KPs encountered:     {len(results.kp_trajectories)}")
-    print(f"  KPs mastered (p >= 0.8):   {results.final_kps_mastered}")
-    print(f"  KPs in FSRS mode:          {results.final_kps_in_fsrs}")
+    print(f"  Total KPs practiced:   {results.final_kps_practiced}")
     print()
     print("=" * 80)
     print("                        DAILY BREAKDOWN")
     print("=" * 80)
     print()
-    print("Day   Exercises  Correct  Accuracy  FSRS Transitions")
-    print("----  ---------  -------  --------  ----------------")
+    print("Day   Exercises  Correct  Accuracy")
+    print("----  ---------  -------  --------")
 
     for summary in results.daily_summaries:
-        transitions = len(summary.kps_transitioned_to_fsrs)
         print(
             f"{summary.day:4d}  {summary.total_exercises:9d}  "
-            f"{summary.correct_count:7d}  {summary.accuracy * 100:7.1f}%  "
-            f"{transitions:16d}"
+            f"{summary.correct_count:7d}  {summary.accuracy * 100:7.1f}%"
         )
 
     print()
     print("=" * 80)
-    print("                        BKT vs TRUE KNOWLEDGE")
+    print("                        RETRIEVABILITY vs TRUE KNOWLEDGE")
     print("=" * 80)
     print()
-    print("KP ID   Chinese   True Knowledge   BKT p_known   Mode    Practices")
-    print("------  -------   --------------   -----------   -----   ---------")
+    print("KP ID   Chinese   True Knowledge   Retrievability   Practices")
+    print("------  -------   --------------   --------------   ---------")
 
     # Sort by practice count descending
     sorted_trajectories = sorted(
@@ -552,7 +507,7 @@ def print_console_summary(results: SimulationResults, kp_dict: dict[str, Knowled
         final = traj.snapshots[-1]
         print(
             f"{traj.kp_id:6s}  {traj.kp_chinese:8s}  {final.true_knowledge:14.2f}   "
-            f"{final.bkt_p_known:11.2f}   {final.scheduling_mode:5s}   "
+            f"{final.retrievability:14.2f}   "
             f"{final.practice_count:9d}"
         )
 

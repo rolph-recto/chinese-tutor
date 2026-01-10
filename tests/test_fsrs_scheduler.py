@@ -12,7 +12,7 @@ from fsrs_scheduler import (
     get_fsrs_retrievability,
     is_fsrs_due,
 )
-from models import StudentMastery, SchedulingMode, FSRSState
+from models import StudentMastery, FSRSState
 
 
 class TestFSRSStateConversion:
@@ -56,23 +56,21 @@ class TestFSRSStateConversion:
 class TestInitializeFSRS:
     """Tests for FSRS initialization."""
 
-    def test_initializes_fsrs_state(self, mastered_bkt):
-        """Should initialize FSRS state for a mastered BKT item."""
-        assert mastered_bkt.fsrs_state is None
+    def test_initializes_fsrs_state(self, new_mastery):
+        """Should initialize FSRS state for a new item."""
+        assert new_mastery.fsrs_state is None
 
-        initialize_fsrs_for_mastery(mastered_bkt)
+        initialize_fsrs_for_mastery(new_mastery)
 
-        assert mastered_bkt.scheduling_mode == SchedulingMode.FSRS
-        assert mastered_bkt.fsrs_state is not None
-        assert mastered_bkt.transitioned_to_fsrs_at is not None
-        assert mastered_bkt.fsrs_state.due is not None
+        assert new_mastery.fsrs_state is not None
+        assert new_mastery.fsrs_state.due is not None
 
-    def test_sets_initial_stability(self, mastered_bkt):
+    def test_sets_initial_stability(self, new_mastery):
         """FSRS initialization should set initial stability."""
-        initialize_fsrs_for_mastery(mastered_bkt)
+        initialize_fsrs_for_mastery(new_mastery)
 
-        assert mastered_bkt.fsrs_state.stability is not None
-        assert mastered_bkt.fsrs_state.stability > 0
+        assert new_mastery.fsrs_state.stability is not None
+        assert new_mastery.fsrs_state.stability > 0
 
 
 class TestProcessFSRSReview:
@@ -93,13 +91,11 @@ class TestProcessFSRSReview:
 
         assert fsrs_mastery.fsrs_state is not None
 
-    def test_raises_without_fsrs_state(self, fresh_mastery):
+    def test_raises_without_fsrs_state(self, new_mastery):
         """Should raise error if no FSRS state exists."""
-        fresh_mastery.scheduling_mode = SchedulingMode.FSRS
         # fsrs_state is None
-
         with pytest.raises(ValueError):
-            process_fsrs_review(fresh_mastery, correct=True)
+            process_fsrs_review(new_mastery, correct=True)
 
     def test_correct_increases_stability(self, fsrs_mastery):
         """Correct review should generally increase stability."""
@@ -121,9 +117,9 @@ class TestFSRSDueDate:
         assert result is not None
         assert isinstance(result, datetime)
 
-    def test_none_for_bkt_mode(self, partial_mastery):
-        """Should return None for BKT mode items."""
-        result = get_fsrs_due_date(partial_mastery)
+    def test_none_for_no_fsrs_state(self, new_mastery):
+        """Should return None for items without FSRS state."""
+        result = get_fsrs_due_date(new_mastery)
 
         assert result is None
 
@@ -143,9 +139,9 @@ class TestFSRSDueDate:
 
         assert result is False
 
-    def test_is_fsrs_due_none_state(self, fresh_mastery):
+    def test_is_fsrs_due_none_state(self, new_mastery):
         """Should return False if no FSRS state."""
-        result = is_fsrs_due(fresh_mastery)
+        result = is_fsrs_due(new_mastery)
 
         assert result is False
 
@@ -160,17 +156,16 @@ class TestFSRSRetrievability:
         assert result is not None
         assert 0.0 <= result <= 1.0
 
-    def test_none_for_bkt_mode(self, partial_mastery):
-        """Should return None for BKT mode items."""
-        result = get_fsrs_retrievability(partial_mastery)
+    def test_none_for_no_fsrs_state(self, new_mastery):
+        """Should return None for items without FSRS state."""
+        result = get_fsrs_retrievability(new_mastery)
 
         assert result is None
 
     def test_none_without_fsrs_state(self):
-        """Should return None if FSRS mode but no state."""
+        """Should return None if no FSRS state."""
         mastery = StudentMastery(
             knowledge_point_id="test",
-            scheduling_mode=SchedulingMode.FSRS,
             fsrs_state=None,
         )
 

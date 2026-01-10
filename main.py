@@ -398,12 +398,6 @@ def run_interactive() -> None:
         save_student_state(student_state)
 
         print()
-        continue_input = input("Continue? (y/n): ").strip().lower()
-        if continue_input != "y":
-            print("\nGoodbye! Your progress has been saved.")
-            break
-
-        print()
 
 
 def main():

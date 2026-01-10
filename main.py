@@ -184,13 +184,16 @@ def run_interactive() -> None:
         session_state=session_state,
     )
 
-    while True:
-        # Select next knowledge point to test
-        target_kp = scheduler.select_next_knowledge_point()
+    kp_queue = scheduler.compose_session_queue()
 
-        if target_kp is None:
-            print("No exercises available.")
-            break
+    if len(kp_queue) > 0:
+        print(f"{len(kp_queue)} knowledge points due.")
+
+    else:
+        print("No knowledge points due.")
+
+    for target_kp_id in kp_queue:
+        target_kp = scheduler.knowledge_points.get(target_kp_id)
 
         # Randomly select exercise type
         exercise_type = random.choice([

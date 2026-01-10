@@ -1,6 +1,6 @@
 """Unit tests for the scheduler module."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from scheduler import (
     prerequisites_met,
@@ -15,6 +15,14 @@ from models import (
     SessionState,
     FSRSState,
 )
+
+
+def make_due_now(mastery):
+    """Helper to make a mastery item due now (set due date to the past)."""
+    initialize_fsrs_for_mastery(mastery)
+    if mastery.fsrs_state:
+        # Set the due date to 1 hour in the past
+        mastery.fsrs_state.due = datetime.now(timezone.utc) - timedelta(hours=1)
 
 
 class TestPrerequisites:
@@ -186,29 +194,22 @@ class TestExerciseScheduler:
     """Tests for the ExerciseScheduler class."""
 
     def test_compose_session_queue(self, sample_knowledge_points, empty_student_state):
-        """Should compose a session queue with items."""
+        """Should compose a session queue with due items."""
         session_state = SessionState()
         scheduler = ExerciseScheduler(
             sample_knowledge_points, empty_student_state, session_state
         )
+
+        # Make some items due
+        for kp in sample_knowledge_points[:3]:
+            mastery = empty_student_state.get_mastery(kp.id, kp.type)
+            make_due_now(mastery)
 
         queue = scheduler.compose_session_queue(session_size=4)
 
-        # Should have items
+        # Should have items that are due
         assert len(queue) > 0
         assert len(queue) <= 4
-
-    def test_select_next_knowledge_point(self, sample_knowledge_points, empty_student_state):
-        """Should select a knowledge point."""
-        session_state = SessionState()
-        scheduler = ExerciseScheduler(
-            sample_knowledge_points, empty_student_state, session_state
-        )
-
-        result = scheduler.select_next_knowledge_point()
-
-        assert result is not None
-        assert result.id in [kp.id for kp in sample_knowledge_points]
 
     def test_update_multi_skill_exercise(self, sample_knowledge_points, empty_student_state):
         """Should update practice stats for multiple KPs."""
@@ -227,11 +228,16 @@ class TestExerciseScheduler:
             assert mastery.correct_count == 1
 
     def test_prerequisites_filtering(self, sample_knowledge_points, empty_student_state):
-        """Should respect prerequisites when selecting KPs."""
+        """Should respect prerequisites when selecting due KPs."""
         session_state = SessionState()
         scheduler = ExerciseScheduler(
             sample_knowledge_points, empty_student_state, session_state
         )
+
+        # Make all items due
+        for kp in sample_knowledge_points:
+            mastery = empty_student_state.get_mastery(kp.id, kp.type)
+            make_due_now(mastery)
 
         # Grammar KP (g001) requires v005
         # After scheduler initializes FSRS for all, prerequisites are met

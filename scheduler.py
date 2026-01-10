@@ -14,6 +14,7 @@ from fsrs_scheduler import (
     get_fsrs_due_date,
     get_fsrs_retrievability,
     initialize_fsrs_for_mastery,
+    is_fsrs_due,
     process_fsrs_review,
 )
 from models import (
@@ -59,9 +60,10 @@ class ExerciseScheduler:
     # Session Composition
     # =========================================================================
 
-    def compose_session_queue(self, session_size: int = 10) -> list[str]:
+    def compose_session_queue(self, session_size: int | None = None) -> list[str]:
         """
         Compose exercise queue based on FSRS scheduling.
+        Only includes items that are currently due.
         Prioritizes items with lowest retrievability (most overdue).
         """
         # Get all KPs with met prerequisites
@@ -73,9 +75,19 @@ class ExerciseScheduler:
         if not eligible:
             return []
 
+        # Filter to only due items
+        due_items: list[str] = []
+        for kp_id in eligible:
+            mastery = self._get_mastery_for_kp(kp_id)
+            if is_fsrs_due(mastery):
+                due_items.append(kp_id)
+
+        if not due_items:
+            return []
+
         # Score and select based on FSRS retrievability
         scored: list[tuple[str, float]] = []
-        for kp_id in eligible:
+        for kp_id in due_items:
             mastery = self._get_mastery_for_kp(kp_id)
             retrievability = get_fsrs_retrievability(mastery)
             if retrievability is not None:
@@ -86,7 +98,11 @@ class ExerciseScheduler:
                 scored.append((kp_id, 0.5))
 
         scored.sort(key=lambda x: x[1], reverse=True)
-        return [kp_id for kp_id, _ in scored[:session_size]]
+
+        if session_size is not None:
+            scored = scored[:session_size]
+
+        return [kp_id for kp_id, _ in scored]
 
     # =========================================================================
     # Multi-Skill Exercise Handling
@@ -106,27 +122,6 @@ class ExerciseScheduler:
             update_practice_stats(mastery, is_correct)
 
     # =========================================================================
-    # Main Selection Method
-    # =========================================================================
-
-    def select_next_knowledge_point(self) -> KnowledgePoint | None:
-        """
-        Select the next knowledge point to test.
-        Uses FSRS retrievability to prioritize overdue items.
-        """
-        # Get next from queue (compose on demand for single item)
-        queue = self.compose_session_queue(session_size=1)
-
-        if not queue:
-            # Fallback: return any available KP
-            for kp in self.knowledge_points_list:
-                return kp
-            return None
-
-        kp_id = queue[0]
-        return self.knowledge_points.get(kp_id)
-
-    # =========================================================================
     # Helper Methods
     # =========================================================================
 
@@ -142,6 +137,19 @@ class ExerciseScheduler:
                 return False
 
         return True
+
+    def get_next_due_time(self) -> datetime | None:
+        """Get the earliest due time among all eligible knowledge points."""
+        earliest_due: datetime | None = None
+        for kp_id in self.knowledge_points:
+            if not self._prerequisites_met(kp_id):
+                continue
+            mastery = self._get_mastery_for_kp(kp_id)
+            due = get_fsrs_due_date(mastery)
+            if due is not None:
+                if earliest_due is None or due < earliest_due:
+                    earliest_due = due
+        return earliest_due
 
 
 # =========================================================================

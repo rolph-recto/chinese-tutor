@@ -105,6 +105,18 @@ class MultipleChoiceVocabExercise(Exercise):
     correct_index: int  # Index of correct answer (0-3)
 
 
+class ClozeDeletionExercise(Exercise):
+    """Cloze deletion exercise - select word to fill in blank."""
+
+    chinese_sentence: str  # Sentence with _____ placeholder
+    english_translation: str  # English translation for context
+    target_word: str  # Chinese word for blank
+    target_pinyin: str  # Pinyin for feedback
+    target_english: str  # English meaning for feedback
+    options: list[str]  # Chinese (pinyin) format options
+    correct_index: int  # Index of correct answer (0-3)
+
+
 class StudentMastery(BaseModel):
     knowledge_point_id: str
 

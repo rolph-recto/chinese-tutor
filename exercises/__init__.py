@@ -12,6 +12,7 @@ To add a new exercise type:
 
 from exercises.base import ExerciseHandler, parse_letter_input, select_distractors
 from exercises.chinese_to_english import ChineseToEnglishHandler
+from exercises.cloze_deletion import ClozeDeletionHandler
 from exercises.english_to_chinese import EnglishToChineseHandler
 from exercises.minimal_pair import MinimalPairHandler
 from exercises.segmented_translation import SegmentedTranslationHandler
@@ -21,6 +22,7 @@ __all__ = [
     "parse_letter_input",
     "select_distractors",
     "ChineseToEnglishHandler",
+    "ClozeDeletionHandler",
     "EnglishToChineseHandler",
     "MinimalPairHandler",
     "SegmentedTranslationHandler",

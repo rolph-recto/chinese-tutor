@@ -1,0 +1,23 @@
+[
+  {
+    "id": "t001",
+    "chinese": "_____ 是我的朋友",
+    "english": "_____ is my friend",
+    "target_vocab_id": "v003",
+    "tags": ["hsk1", "pronouns"]
+  },
+  {
+    "id": "t002",
+    "chinese": "我喜欢喝_____",
+    "english": "I like to drink _____",
+    "target_vocab_id": "v015",
+    "tags": ["hsk1", "food-drink"]
+  },
+  {
+    "id": "t003",
+    "chinese": "_____ 是学生",
+    "english": "_____ is a student",
+    "target_vocab_id": "v003",
+    "tags": ["hsk1", "pronouns"]
+  }
+]

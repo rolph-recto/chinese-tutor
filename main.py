@@ -12,6 +12,7 @@ from scheduler import ExerciseScheduler
 from exercises import (
     ExerciseHandler,
     ChineseToEnglishHandler,
+    ClozeDeletionHandler,
     EnglishToChineseHandler,
     MinimalPairHandler,
     SegmentedTranslationHandler,
@@ -23,6 +24,7 @@ EXERCISE_HANDLERS: dict[str, type[ExerciseHandler]] = {
     "minimal_pair": MinimalPairHandler,
     "chinese_to_english": ChineseToEnglishHandler,
     "english_to_chinese": EnglishToChineseHandler,
+    "cloze_deletion": ClozeDeletionHandler,
 }
 
 
@@ -286,6 +288,7 @@ def run_interactive() -> None:
         exercise_type = random.choice(
             [
                 "segmented_translation",
+                "cloze_deletion",
                 "minimal_pair",
                 "chinese_to_english",
                 "english_to_chinese",

@@ -147,3 +147,18 @@ class MinimalPairHandler(ExerciseHandler[MinimalPairExercise]):
     def get_input_prompt(self) -> str:
         """Return the input prompt string."""
         return "Enter your choice (A/B/C or 1/2/3): "
+
+    def get_options(self) -> list[str]:
+        """Return the exercise options for UI display."""
+        return [opt.chinese for opt in self.exercise.options]
+
+    def get_prompt_text(self) -> str:
+        """Return the prompt text for UI display."""
+        return f'Select the character for "{self.exercise.target_english}" ({self.exercise.target_pinyin})'
+
+    def format_feedback(self, is_correct: bool, correct_answer: str) -> str:
+        """Return formatted feedback string."""
+        if is_correct:
+            return f"\n✓ Correct! {correct_answer}"
+        else:
+            return f"\n✗ Incorrect. The correct answer is: {correct_answer}"

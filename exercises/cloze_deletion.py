@@ -137,3 +137,18 @@ class ClozeDeletionHandler(ExerciseHandler[ClozeDeletionExercise]):
     def get_input_prompt(self) -> str:
         """Return the input prompt string."""
         return "Enter your choice (A/B/C/D or 1/2/3/4): "
+
+    def get_options(self) -> list[str]:
+        """Return the exercise options for UI display."""
+        return self.exercise.options
+
+    def get_prompt_text(self) -> str:
+        """Return the prompt text for UI display."""
+        return f"Complete the sentence:\n  {self.exercise.chinese_sentence}\n  ({self.exercise.english_translation})"
+
+    def format_feedback(self, is_correct: bool, correct_answer: str) -> str:
+        """Return formatted feedback string."""
+        if is_correct:
+            return f"\n✓ Correct! {correct_answer}"
+        else:
+            return f"\n✗ Incorrect. The correct answer is: {correct_answer}"

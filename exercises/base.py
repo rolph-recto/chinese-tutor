@@ -78,8 +78,13 @@ class ExerciseHandler(ABC, Generic[E]):
         """Return the input prompt to show the user."""
         ...
 
-    def process_user_input(self) -> tuple[bool, bool | None, str]:
-        """Process user input for this exercise.
+    def process_user_input_with_input(
+        self, user_input: str
+    ) -> tuple[bool, bool | None, str]:
+        """Process user input for this exercise with pre-collected input.
+
+        Args:
+            user_input: Raw user input string.
 
         Returns:
             Tuple of (should_retry, is_correct_or_None, correct_answer_display).
@@ -87,14 +92,20 @@ class ExerciseHandler(ABC, Generic[E]):
             - is_correct_or_None: True/False for correct/incorrect, None if quit.
             - correct_answer_display: String showing the correct answer.
         """
-        context = self.present()
-        user_input = input(self.get_input_prompt()).strip()
-
         if user_input.lower() == "q":
             return False, None, ""
 
+        context = self.present()
         is_correct, correct_answer = self.check_answer(user_input, context)
         return False, is_correct, correct_answer
+
+    def get_prompt_text(self) -> str:
+        """Return the prompt text to display to the user."""
+        return self.get_input_prompt()
+
+    def get_options(self) -> list[str]:
+        """Return options for multiple choice exercises."""
+        return []
 
     def format_feedback(self, is_correct: bool, correct_answer: str) -> str:
         """Return formatted feedback string.

@@ -21,6 +21,20 @@ uv run python main.py
 - **main.py** - Interactive CLI loop that orchestrates exercise selection, presentation, and mastery updates
 - **simulate.py** - Simulator
 
+## Terminal UI (ui/)
+
+The application uses the [rich](https://github.com/Textualize/rich) library for a styled terminal interface.
+
+- **app.py** - `TutorUI` class that orchestrates UI components and handles user input
+- **components.py** - Rich-based UI components:
+  - `ExercisePanel` - Displays exercises with progress bar and options
+  - `FeedbackPanel` - Shows correct/incorrect feedback with styling
+  - `RatingMenu` - Difficulty rating selection (1-4 FSRS scale)
+  - `MasteryTable` - Displays mastery updates after exercises
+  - `WelcomeScreen` - Welcome banner with session stats
+  - `ProgressTracker` - Tracks and displays session progress
+- **styles.py** - Color scheme and style definitions (Chinese red/gold theme)
+
 ## Exercise Types (exercises/)
 
 - **segmented_translation.py** - English sentence → reorder Chinese chunks (template-based)

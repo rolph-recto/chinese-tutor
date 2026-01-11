@@ -90,6 +90,8 @@ class SegmentedTranslationHandler(ExerciseHandler[SegmentedTranslationExercise])
 
     # Store knowledge points for feedback formatting
     _knowledge_points: list[KnowledgePoint] | None = None
+    # Store shuffled indices for consistent answer checking
+    _shuffled_indices: list[int] | None = None
 
     @classmethod
     def generate(
@@ -167,6 +169,7 @@ class SegmentedTranslationHandler(ExerciseHandler[SegmentedTranslationExercise])
         """Initialize handler with exercise and optional knowledge points for feedback."""
         super().__init__(exercise)
         self._knowledge_points = knowledge_points
+        self._shuffled_indices = None
 
     def present(self) -> list[str]:
         """Present the exercise to the user.
@@ -226,30 +229,44 @@ class SegmentedTranslationHandler(ExerciseHandler[SegmentedTranslationExercise])
         """Return the input prompt string."""
         return "Enter the numbers in correct order (e.g., 2 1 3): "
 
-    def process_user_input(self) -> tuple[bool, bool | None, str]:
-        """Process user input for a segmented translation exercise.
+    def get_options(self) -> list[str]:
+        """Return shuffled chunks for UI display.
 
-        Overrides default to handle invalid input retry behavior.
-
-        Returns:
-            Tuple of (should_retry, is_correct_or_None, correct_answer_display).
+        Stores the shuffle state so answer checking uses the same order.
         """
-        shuffled_chunks = self.present()
+        if self._shuffled_indices is None:
+            self._shuffled_indices = list(range(len(self.exercise.chinese_chunks)))
+            random.shuffle(self._shuffled_indices)
+        return [self.exercise.chinese_chunks[i] for i in self._shuffled_indices]
 
-        user_input = input(self.get_input_prompt()).strip()
+    def get_prompt_text(self) -> str:
+        """Return the prompt text for UI display."""
+        return f'Translate: "{self.exercise.english_sentence}"'
+
+    def process_user_input_with_input(
+        self, user_input: str
+    ) -> tuple[bool, bool | None, str]:
+        """Process user input with pre-collected input.
+
+        Uses the stored shuffle state from get_options() for consistent answer checking.
+        """
+        # Ensure shuffle is initialized (get_options should have been called first)
+        if self._shuffled_indices is None:
+            self.get_options()
+
+        shuffled_chunks = [
+            self.exercise.chinese_chunks[i] for i in self._shuffled_indices
+        ]
 
         if user_input.lower() == "q":
             return False, None, ""
 
         try:
-            # Validate that input can be parsed as integers
             [int(x) for x in user_input.split()]
         except ValueError:
-            print("Invalid input. Please enter numbers separated by spaces.\n")
             return True, False, ""
 
         is_correct, correct_sentence = self.check_answer(user_input, shuffled_chunks)
-
         return False, is_correct, correct_sentence
 
     def format_feedback(self, is_correct: bool, correct_answer: str) -> str:
@@ -269,9 +286,9 @@ class SegmentedTranslationHandler(ExerciseHandler[SegmentedTranslationExercise])
                 pinyin_parts.append("")
 
         if is_correct:
-            return f"\nCorrect! {correct_answer} ({' '.join(pinyin_parts)})"
+            return f"\n✓ Correct! {correct_answer} ({' '.join(pinyin_parts)})"
         else:
             return (
-                f"\nIncorrect. The correct answer is: {correct_answer}\n"
+                f"\n✗ Incorrect. The correct answer is: {correct_answer}\n"
                 f"Pinyin: {' '.join(pinyin_parts)}"
             )

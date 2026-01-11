@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import fsrs
+from rich.console import Console
 
 from models import KnowledgePoint, SessionState, StudentState
 from scheduler import ExerciseScheduler
@@ -17,6 +18,7 @@ from exercises import (
     MinimalPairHandler,
     SegmentedTranslationHandler,
 )
+from ui import TutorUI
 
 # Registry of exercise handler classes
 EXERCISE_HANDLERS: dict[str, type[ExerciseHandler]] = {
@@ -33,26 +35,9 @@ def get_exercise_handler(exercise_type: str) -> type[ExerciseHandler]:
     return EXERCISE_HANDLERS[exercise_type]
 
 
-def prompt_for_rating() -> fsrs.Rating:
+def prompt_for_rating(ui: TutorUI) -> fsrs.Rating:
     """Prompt the user to rate the difficulty of recall."""
-    print("\nHow easy was that?")
-    print("  1) Again - I forgot / got lucky")
-    print("  2) Hard  - Difficult to recall")
-    print("  3) Good  - Correct with some effort")
-    print("  4) Easy  - Effortless recall")
-
-    while True:
-        choice = input("Rating (1-4): ").strip()
-        if choice == "1":
-            return fsrs.Rating.Again
-        elif choice == "2":
-            return fsrs.Rating.Hard
-        elif choice == "3":
-            return fsrs.Rating.Good
-        elif choice == "4":
-            return fsrs.Rating.Easy
-        else:
-            print("Please enter 1, 2, 3, or 4.")
+    return ui.show_rating_prompt()
 
 
 def generate_exercise_with_fallback(
@@ -88,7 +73,7 @@ STATE_FILE = Path(__file__).parent / "student_state.json"
 
 def create_parser() -> argparse.ArgumentParser:
     """Create argument parser with subcommands."""
-    parser = argparse.ArgumentParser(description="Chinese Tutor - HSK1 Learning System")
+    parser = argparse.ArgumentParser(description="Chinese Tutor")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # Simulate subcommand
@@ -191,18 +176,18 @@ def save_student_state(state: StudentState) -> None:
         f.write(state.model_dump_json(indent=2))
 
 
-def handle_quit(student_state: StudentState) -> None:
+def handle_quit(ui: TutorUI, student_state: StudentState) -> None:
     """Print quit message, save state, and exit."""
-    print("\nGoodbye! Your progress has been saved.")
+    ui.show_quit_message()
     save_student_state(student_state)
     sys.exit(0)
 
 
-def create_sigint_handler(student_state: StudentState):
+def create_sigint_handler(ui: TutorUI, student_state: StudentState):
     """Create a SIGINT handler that saves state before exiting."""
 
     def sigint_handler(signum, frame):
-        handle_quit(student_state)
+        handle_quit(ui, student_state)
 
     return sigint_handler
 
@@ -225,14 +210,21 @@ def run_simulation(args) -> None:
         print("Error: No knowledge points found. Check data/ directory.")
         return
 
-    print("=" * 40)
-    print("    Student Simulator")
-    print("=" * 40)
-    print()
-    print(f"Simulating {args.days} days with {args.exercises_per_day} exercises/day...")
+    from rich.console import Console
+
+    console = Console()
+
+    console.print("=" * 40, style="bold blue")
+    console.print("    Student Simulator", style="bold blue")
+    console.print("=" * 40, style="bold blue")
+    console.print()
+
+    console.print(
+        f"Simulating {args.days} days with {args.exercises_per_day} exercises/day..."
+    )
     if args.seed is not None:
-        print(f"Random seed: {args.seed}")
-    print()
+        console.print(f"Random seed: {args.seed}")
+    console.print()
 
     run_simulation_and_report(
         knowledge_points=knowledge_points,
@@ -247,26 +239,28 @@ def run_simulation(args) -> None:
 
 def run_interactive() -> None:
     """Run the interactive tutoring session."""
-    print("=" * 40)
-    print("       Chinese Tutor")
-    print("=" * 40)
-    print()
+    console = Console()
+    ui = TutorUI(console)
+
+    ui.clear_screen()
 
     knowledge_points = load_knowledge_points()
     student_state = load_student_state()
 
     if not knowledge_points:
-        print("Error: No knowledge points found. Check data/ directory.")
+        ui.show_error("No knowledge points found. Check data/ directory.")
         return
 
-    print(f"Loaded {len(knowledge_points)} knowledge points.")
-    print("Type 'q' to quit at any time.\n")
+    ui.show_welcome(
+        knowledge_point_count=len(knowledge_points),
+        due_count=0,
+        streak=0,
+    )
 
-    signal.signal(signal.SIGINT, create_sigint_handler(student_state))
+    signal.signal(signal.SIGINT, create_sigint_handler(ui, student_state))
 
     kp_dict = {kp.id: kp for kp in knowledge_points}
 
-    # Initialize session state and scheduler
     session_state = SessionState()
     scheduler = ExerciseScheduler(
         knowledge_points=knowledge_points,
@@ -277,12 +271,15 @@ def run_interactive() -> None:
     kp_queue = scheduler.compose_session_queue()
 
     if len(kp_queue) > 0:
-        print(f"{len(kp_queue)} knowledge points due.")
-
+        ui.show_info(f"{len(kp_queue)} knowledge points due.")
     else:
-        print("No knowledge points due.")
+        ui.show_no_items_due()
+        return
 
-    for target_kp_id in kp_queue:
+    ui.create_progress_tracker(len(kp_queue))
+
+    for exercise_index, target_kp_id in enumerate(kp_queue):
+        ui.clear_screen()
         target_kp = scheduler.knowledge_points.get(target_kp_id)
 
         exercise_type = random.choice(
@@ -299,35 +296,54 @@ def run_interactive() -> None:
             exercise_type, knowledge_points, target_kp
         )
 
-        should_retry, is_correct, correct_answer = handler.process_user_input()
+        options = handler.get_options() if hasattr(handler, "get_options") else []
 
-        if is_correct is None:
-            print("\nGoodbye! Your progress has been saved.")
+        # Use ordering mode for segmented translation, choice mode for others
+        input_mode = (
+            "ordering" if exercise_type == "segmented_translation" else "choice"
+        )
+
+        user_input = ui.show_exercise(
+            prompt_text=handler.get_prompt_text(),
+            options=options,
+            exercise_number=exercise_index + 1,
+            total_exercises=len(kp_queue),
+            input_mode=input_mode,
+        )
+
+        if user_input == "quit":
+            ui.show_quit_message()
             save_student_state(student_state)
             break
 
-        if not should_retry:
-            feedback = handler.format_feedback(is_correct, correct_answer)
-            print(feedback)
+        should_retry, is_correct, correct_answer = (
+            handler.process_user_input_with_input(user_input)
+        )
 
-        # Determine FSRS rating
+        if is_correct is None:
+            ui.show_quit_message()
+            save_student_state(student_state)
+            break
+
+        ui.show_feedback(is_correct, correct_answer, user_input)
+
         if is_correct:
-            rating = prompt_for_rating()
+            rating = prompt_for_rating(ui)
         else:
             rating = fsrs.Rating.Again
+            ui.wait_for_continue()
 
-        # Update mastery for each knowledge point in the exercise
-        print("\nMastery updates:")
+        ui.update_progress(is_correct)
+
+        mastery_updates = []
         for kp_id in handler.exercise.knowledge_point_ids:
             if kp_id not in kp_dict:
                 continue
             kp = kp_dict[kp_id]
             mastery = student_state.get_mastery(kp_id, kp.type)
 
-            # Process FSRS review with the rating
             mastery.process_review(rating)
 
-            # Display FSRS information
             retrievability = mastery.retrievability
             due_str = (
                 mastery.fsrs_state.due.strftime("%Y-%m-%d %H:%M")
@@ -335,17 +351,27 @@ def run_interactive() -> None:
                 else "N/A"
             )
             ret_pct = retrievability * 100 if retrievability else 0
-            print(
-                f"  {kp.chinese} ({kp.english}): "
-                f"retrievability={ret_pct:.0f}%, due={due_str}"
+
+            mastery_updates.append(
+                {
+                    "chinese": kp.chinese,
+                    "english": kp.english,
+                    "retrievability": ret_pct / 100,
+                    "due": due_str,
+                }
             )
 
-        # Update last KP type for interleaving
+        if mastery_updates:
+            ui.show_mastery_updates(mastery_updates)
+
         if target_kp:
             student_state.last_kp_type = target_kp.type
 
-        # Save state after each exercise
         save_student_state(student_state)
+
+    tracker = ui.get_progress_tracker()
+    if tracker:
+        ui.show_session_complete(tracker)
 
 
 def main():

@@ -7,11 +7,6 @@ from pathlib import Path
 
 from models import KnowledgePoint, SessionState, StudentState
 from scheduler import ExerciseScheduler, update_practice_stats
-from fsrs_scheduler import (
-    initialize_fsrs_for_mastery,
-    process_fsrs_review,
-    get_fsrs_retrievability,
-)
 from exercises import (
     segmented_translation,
     minimal_pair,
@@ -283,16 +278,12 @@ def run_interactive() -> None:
             kp = kp_dict[kp_id]
             mastery = student_state.get_mastery(kp_id, kp.type)
 
-            # Initialize FSRS if needed
-            if mastery.fsrs_state is None:
-                initialize_fsrs_for_mastery(mastery)
-
             # Process FSRS review
-            process_fsrs_review(mastery, is_correct)
+            mastery.process_review(is_correct)
             update_practice_stats(mastery, is_correct)
 
             # Display FSRS information
-            retrievability = get_fsrs_retrievability(mastery)
+            retrievability = mastery.retrievability
             due_str = (
                 mastery.fsrs_state.due.strftime("%Y-%m-%d %H:%M")
                 if mastery.fsrs_state and mastery.fsrs_state.due

@@ -8,9 +8,10 @@ from pathlib import Path
 from models import (
     Exercise,
     KnowledgePoint,
+    SessionState,
     StudentState,
 )
-from scheduler import select_next_knowledge_point, update_practice_stats
+from scheduler import ExerciseScheduler, update_practice_stats
 from exercises import segmented_translation, minimal_pair
 from simulator_models import (
     SimulatedStudentConfig,
@@ -89,13 +90,7 @@ class Simulator:
         """
         kp = self.kp_dict.get(kp_id)
         kp_type = kp.type if kp else None
-        mastery = self.student_state.get_mastery(kp_id, kp_type)
-
-        # Initialize FSRS state for new items
-        if mastery.fsrs_state is None:
-            mastery.initialize_fsrs()
-
-        return mastery
+        return self.student_state.get_mastery(kp_id, kp_type)
 
     def run(
         self,
@@ -146,14 +141,15 @@ class Simulator:
         mp_correct = 0
         kps_practiced: set[str] = set()
 
-        for ex_num in range(1, exercises_per_day + 1):
-            # Select next KP (uses existing scheduler)
-            target_kp = select_next_knowledge_point(
-                self.student_state, self.knowledge_points
-            )
+        session = SessionState(exercises_completed=0)
+        scheduler = ExerciseScheduler(self.knowledge_points, self.student_state, session)
+        kp_queue = scheduler.compose_session_queue(exercises_per_day)
 
-            if target_kp is None:
-                continue
+        print(f"day {day}, {len(kp_queue)} knowledge points due")
+
+        for ex_num, target_kp_id in enumerate(kp_queue):
+            target_kp: KnowledgePoint | None = scheduler.knowledge_points.get(target_kp_id)
+            assert target_kp is not None
 
             # Generate exercise
             exercise, exercise_type = self._generate_exercise(target_kp)
@@ -195,7 +191,7 @@ class Simulator:
                 ExerciseResult(
                     timestamp=current_time,
                     day=day,
-                    exercise_number=ex_num,
+                    exercise_number=ex_num+1,
                     exercise_type=exercise_type,
                     knowledge_point_ids=exercise.knowledge_point_ids,
                     is_correct=is_correct,

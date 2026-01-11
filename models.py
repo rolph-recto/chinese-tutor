@@ -60,7 +60,6 @@ class KnowledgePoint(BaseModel):
     pinyin: str
     english: str
     tags: list[str] = Field(default_factory=list)  # e.g., ["hsk1", "cluster:pronouns"]
-    prerequisites: list[str] = Field(default_factory=list)
 
 
 class Exercise(BaseModel):
@@ -111,11 +110,6 @@ class StudentMastery(BaseModel):
     fsrs_state: FSRSState | None = None
 
     @property
-    def is_mastered(self) -> bool:
-        """Returns True if skill has been practiced (has FSRS state)."""
-        return self.fsrs_state is not None
-
-    @property
     def due_date(self) -> datetime | None:
         """
         Get the due date for a knowledge point.
@@ -154,7 +148,7 @@ class StudentMastery(BaseModel):
         scheduler = get_scheduler()
         return scheduler.get_card_retrievability(card)
 
-    def initialize_fsrs(self) -> None:
+    def initialize_fsrs(self, rating: fsrs.Rating) -> None:
         """
         Initialize FSRS state for a new knowledge point.
 
@@ -164,7 +158,7 @@ class StudentMastery(BaseModel):
         # Create a new card and do an initial "Good" review to establish baseline
         card = fsrs.Card()
         scheduler = get_scheduler()
-        card, _ = scheduler.review_card(card, fsrs.Rating.Good)
+        card, _ = scheduler.review_card(card, rating)
 
         # Store the FSRS state
         self.fsrs_state = FSRSState.from_fsrs_card(card)
@@ -177,14 +171,14 @@ class StudentMastery(BaseModel):
         - Correct: Rating.Good (remembered)
         - Incorrect: Rating.Again (forgot)
         """
-        if self.fsrs_state is None:
-            raise ValueError("Cannot process FSRS review without FSRS state")
+        # Map binary response to FSRS rating
+        rating = fsrs.Rating.Good if correct else fsrs.Rating.Again
+
+        self.initialize_fsrs(rating)
+        assert self.fsrs_state is not None
 
         # Convert stored state to Card
         card = self.fsrs_state.to_card()
-
-        # Map binary response to FSRS rating
-        rating = fsrs.Rating.Good if correct else fsrs.Rating.Again
 
         # Process the review
         scheduler = get_scheduler()

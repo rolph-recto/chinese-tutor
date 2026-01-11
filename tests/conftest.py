@@ -29,7 +29,6 @@ def sample_vocabulary_kp() -> KnowledgePoint:
         pinyin="wǒ",
         english="I, me",
         tags=["hsk1", "cluster:pronouns"],
-        prerequisites=[],
     )
 
 
@@ -43,7 +42,6 @@ def sample_grammar_kp() -> KnowledgePoint:
         pinyin="Subject + shì + Noun",
         english="Subject is Noun (using 是)",
         tags=["hsk1", "cluster:sentence-patterns"],
-        prerequisites=["v005"],
     )
 
 
@@ -58,7 +56,6 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             pinyin="wǒ",
             english="I, me",
             tags=["hsk1", "cluster:pronouns"],
-            prerequisites=[],
         ),
         KnowledgePoint(
             id="v002",
@@ -67,7 +64,6 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             pinyin="nǐ",
             english="you",
             tags=["hsk1", "cluster:pronouns"],
-            prerequisites=[],
         ),
         KnowledgePoint(
             id="v005",
@@ -76,7 +72,6 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             pinyin="shì",
             english="to be",
             tags=["hsk1", "cluster:basic-verbs"],
-            prerequisites=[],
         ),
         KnowledgePoint(
             id="g001",
@@ -85,7 +80,6 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
             pinyin="Subject + shì + Noun",
             english="Subject is Noun",
             tags=["hsk1", "cluster:sentence-patterns"],
-            prerequisites=["v005"],
         ),
     ]
 
@@ -147,13 +141,12 @@ def populated_student_state() -> StudentState:
     """Create a student state with some mastery records (all with FSRS state)."""
     state = StudentState()
 
-    # v001 - recently practiced
     state.masteries["v001"] = StudentMastery(
         knowledge_point_id="v001",
         fsrs_state=FSRSState(
             stability=3.0,
             difficulty=5.0,
-            due=datetime.now() + timedelta(hours=12),
+            due=datetime.now() - timedelta(hours=12),
             last_review=datetime.now(),
             state=2,
             step=None,
@@ -162,13 +155,12 @@ def populated_student_state() -> StudentState:
         correct_count=2,
     )
 
-    # v002 - practiced more
     state.masteries["v002"] = StudentMastery(
         knowledge_point_id="v002",
         fsrs_state=FSRSState(
             stability=8.0,
             difficulty=4.5,
-            due=datetime.now() + timedelta(days=2),
+            due=datetime.now() - timedelta(days=2),
             last_review=datetime.now(),
             state=2,
             step=None,
@@ -177,13 +169,12 @@ def populated_student_state() -> StudentState:
         correct_count=6,
     )
 
-    # v005 - well practiced (mastered)
     state.masteries["v005"] = StudentMastery(
         knowledge_point_id="v005",
         fsrs_state=FSRSState(
             stability=15.0,
             difficulty=4.0,
-            due=datetime.now() + timedelta(days=5),
+            due=datetime.now() - timedelta(days=5),
             last_review=datetime.now(),
             state=2,
             step=None,

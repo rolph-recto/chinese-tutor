@@ -14,8 +14,7 @@
     "chinese": "Subject + 不 + Verb",
     "pinyin": "Subject + bù + Verb",
     "english": "Negation with 不",
-    "tags": ["hsk1", "cluster:sentence-patterns"],
-    "prerequisites": ["v006", "g001"]
+    "tags": ["hsk1", "cluster:sentence-patterns"]
   },
   {
     "id": "g003",
@@ -23,8 +22,7 @@
     "chinese": "Subject + Verb + Object + 吗?",
     "pinyin": "Subject + Verb + Object + ma?",
     "english": "Yes/no questions with 吗",
-    "tags": ["hsk1", "cluster:question-patterns"],
-    "prerequisites": ["g001"]
+    "tags": ["hsk1", "cluster:question-patterns"]
   },
   {
     "id": "g004",
@@ -32,8 +30,7 @@
     "chinese": "Subject + 很 + Adjective",
     "pinyin": "Subject + hěn + Adjective",
     "english": "Subject is very Adjective (using 很)",
-    "tags": ["hsk1", "cluster:sentence-patterns"],
-    "prerequisites": ["v018"]
+    "tags": ["hsk1", "cluster:sentence-patterns"]
   },
   {
     "id": "g005",
@@ -41,7 +38,6 @@
     "chinese": "Subject + 喜欢 + Object",
     "pinyin": "Subject + xǐhuan + Object",
     "english": "Subject likes Object",
-    "tags": ["hsk1", "cluster:sentence-patterns"],
-    "prerequisites": ["v019"]
+    "tags": ["hsk1", "cluster:sentence-patterns"]
   }
 ]

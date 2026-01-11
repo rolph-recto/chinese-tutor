@@ -17,46 +17,46 @@
     },
     "v002": {
       "knowledge_point_id": "v002",
-      "last_practiced": "2026-01-10T17:11:18.482715",
-      "practice_count": 21,
-      "correct_count": 7,
-      "consecutive_correct": 0,
+      "last_practiced": "2026-01-10T19:35:28.746565",
+      "practice_count": 22,
+      "correct_count": 8,
+      "consecutive_correct": 1,
       "fsrs_state": {
-        "stability": 0.001,
-        "difficulty": 9.977650127159702,
-        "due": "2026-01-10T22:21:18.482538",
-        "last_review": "2026-01-10T22:11:18.482538",
-        "state": 3,
-        "step": 0
+        "stability": 2.3065,
+        "difficulty": 2.111214235785395,
+        "due": "2026-01-13T00:35:28.746402",
+        "last_review": "2026-01-11T00:35:28.746402",
+        "state": 2,
+        "step": null
       }
     },
     "v003": {
       "knowledge_point_id": "v003",
-      "last_practiced": "2026-01-10T17:11:19.792682",
-      "practice_count": 19,
+      "last_practiced": "2026-01-10T19:36:37.613257",
+      "practice_count": 20,
       "correct_count": 2,
       "consecutive_correct": 0,
       "fsrs_state": {
-        "stability": 0.001,
-        "difficulty": 9.977994901234604,
-        "due": "2026-01-10T22:12:19.792473",
-        "last_review": "2026-01-10T22:11:19.792473",
+        "stability": 0.08335671711031604,
+        "difficulty": 8.806304468856837,
+        "due": "2026-01-11T00:37:37.613186",
+        "last_review": "2026-01-11T00:36:37.613186",
         "state": 1,
         "step": 0
       }
     },
     "v004": {
       "knowledge_point_id": "v004",
-      "last_practiced": "2026-01-10T17:11:13.884152",
-      "practice_count": 21,
+      "last_practiced": "2026-01-10T19:36:38.763027",
+      "practice_count": 23,
       "correct_count": 7,
       "consecutive_correct": 0,
       "fsrs_state": {
-        "stability": 0.001,
-        "difficulty": 9.974808871374984,
-        "due": "2026-01-10T22:21:13.883902",
-        "last_review": "2026-01-10T22:11:13.883902",
-        "state": 3,
+        "stability": 0.08335671711031604,
+        "difficulty": 8.806304468856837,
+        "due": "2026-01-11T00:37:38.762923",
+        "last_review": "2026-01-11T00:36:38.762923",
+        "state": 1,
         "step": 0
       }
     },
@@ -152,15 +152,15 @@
     },
     "v011": {
       "knowledge_point_id": "v011",
-      "last_practiced": "2026-01-10T17:11:10.756397",
-      "practice_count": 8,
+      "last_practiced": "2026-01-10T19:36:38.771490",
+      "practice_count": 9,
       "correct_count": 3,
       "consecutive_correct": 0,
       "fsrs_state": {
-        "stability": 0.025413078108399066,
-        "difficulty": 9.9457834381747,
-        "due": "2026-01-10T22:12:10.756223",
-        "last_review": "2026-01-10T22:11:10.756223",
+        "stability": 0.08335671711031604,
+        "difficulty": 8.806304468856837,
+        "due": "2026-01-11T00:37:38.771430",
+        "last_review": "2026-01-11T00:36:38.771430",
         "state": 1,
         "step": 0
       }
@@ -362,19 +362,19 @@
     },
     "g005": {
       "knowledge_point_id": "g005",
-      "last_practiced": "2026-01-10T15:50:47.068781",
-      "practice_count": 3,
+      "last_practiced": "2026-01-10T19:36:38.775702",
+      "practice_count": 4,
       "correct_count": 0,
       "consecutive_correct": 0,
       "fsrs_state": {
-        "stability": 0.10803846327184491,
-        "difficulty": 9.698877143900798,
-        "due": "2026-01-10T20:51:47.068707",
-        "last_review": "2026-01-10T20:50:47.068707",
+        "stability": 0.08335671711031604,
+        "difficulty": 8.806304468856837,
+        "due": "2026-01-11T00:37:38.775662",
+        "last_review": "2026-01-11T00:36:38.775662",
         "state": 1,
         "step": 0
       }
     }
   },
-  "last_kp_type": "grammar"
+  "last_kp_type": "vocabulary"
 }

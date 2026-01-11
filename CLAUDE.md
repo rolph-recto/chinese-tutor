@@ -14,6 +14,12 @@ Whenever you add a new feature, be sure to add tests using the existing Pytest h
 uv run pytest -v
 ```
 
+After writing code and you have ensured all tests pass and you have run the ruff
+linter, make sure you run the ruff formatter:
+```
+uvx ruff format
+```
+
 Add plans you make in the plan/ directory.
 
 Add specifications you make in the specs/ directory.

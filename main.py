@@ -10,23 +10,25 @@ import fsrs
 from models import KnowledgePoint, SessionState, StudentState
 from scheduler import ExerciseScheduler
 from exercises import (
-    segmented_translation,
-    minimal_pair,
-    chinese_to_english,
-    english_to_chinese,
+    ExerciseHandler,
+    ChineseToEnglishHandler,
+    EnglishToChineseHandler,
+    MinimalPairHandler,
+    SegmentedTranslationHandler,
 )
 
-EXERCISE_MODULES = {
-    "segmented_translation": segmented_translation,
-    "minimal_pair": minimal_pair,
-    "chinese_to_english": chinese_to_english,
-    "english_to_chinese": english_to_chinese,
+# Registry of exercise handler classes
+EXERCISE_HANDLERS: dict[str, type[ExerciseHandler]] = {
+    "segmented_translation": SegmentedTranslationHandler,
+    "minimal_pair": MinimalPairHandler,
+    "chinese_to_english": ChineseToEnglishHandler,
+    "english_to_chinese": EnglishToChineseHandler,
 }
 
 
-def get_exercise_module(exercise_type: str):
-    """Get the exercise module for the given type."""
-    return EXERCISE_MODULES[exercise_type]
+def get_exercise_handler(exercise_type: str) -> type[ExerciseHandler]:
+    """Get the exercise handler class for the given type."""
+    return EXERCISE_HANDLERS[exercise_type]
 
 
 def prompt_for_rating() -> fsrs.Rating:
@@ -56,14 +58,26 @@ def generate_exercise_with_fallback(
     knowledge_points: list[KnowledgePoint],
     target_kp: KnowledgePoint | None = None,
 ):
-    """Generate an exercise of the given type, falling back to segmented_translation if needed."""
-    module = get_exercise_module(exercise_type)
-    exercise = module.generate_exercise(knowledge_points, target_kp)
+    """Generate an exercise of the given type, falling back to segmented_translation if needed.
+
+    Returns a tuple of (exercise_type, handler) where handler is an initialized
+    ExerciseHandler instance.
+    """
+    handler_class = get_exercise_handler(exercise_type)
+    exercise = handler_class.generate(knowledge_points, target_kp)
+
     if exercise is not None:
-        return exercise_type, exercise
-    return "segmented_translation", segmented_translation.generate_exercise(
-        knowledge_points, target_kp
-    )
+        # Special handling for SegmentedTranslationHandler which needs knowledge_points
+        if exercise_type == "segmented_translation":
+            handler = SegmentedTranslationHandler(exercise, knowledge_points)
+        else:
+            handler = handler_class(exercise)
+        return exercise_type, handler
+
+    # Fall back to segmented translation
+    exercise = SegmentedTranslationHandler.generate(knowledge_points, target_kp)
+    handler = SegmentedTranslationHandler(exercise, knowledge_points)
+    return "segmented_translation", handler
 
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -278,12 +292,11 @@ def run_interactive() -> None:
             ]
         )
 
-        exercise_type, exercise = generate_exercise_with_fallback(
+        exercise_type, handler = generate_exercise_with_fallback(
             exercise_type, knowledge_points, target_kp
         )
 
-        module = get_exercise_module(exercise_type)
-        should_retry, is_correct, correct_answer = module.process_user_input(exercise)
+        should_retry, is_correct, correct_answer = handler.process_user_input()
 
         if is_correct is None:
             print("\nGoodbye! Your progress has been saved.")
@@ -291,7 +304,7 @@ def run_interactive() -> None:
             break
 
         if not should_retry:
-            feedback = module.format_feedback(is_correct, correct_answer)
+            feedback = handler.format_feedback(is_correct, correct_answer)
             print(feedback)
 
         # Determine FSRS rating
@@ -302,7 +315,7 @@ def run_interactive() -> None:
 
         # Update mastery for each knowledge point in the exercise
         print("\nMastery updates:")
-        for kp_id in exercise.knowledge_point_ids:
+        for kp_id in handler.exercise.knowledge_point_ids:
             if kp_id not in kp_dict:
                 continue
             kp = kp_dict[kp_id]

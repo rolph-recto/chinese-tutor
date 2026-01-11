@@ -3,7 +3,7 @@
 import pytest
 
 from models import KnowledgePoint, KnowledgePointType
-from exercises import english_to_chinese
+from exercises.english_to_chinese import EnglishToChineseHandler
 
 
 @pytest.fixture
@@ -66,7 +66,7 @@ class TestGenerateExercise:
 
     def test_generate_exercise_returns_exercise(self, vocab_knowledge_points):
         """Should generate a valid exercise."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
 
         assert exercise is not None
         assert exercise.direction == "english_to_chinese"
@@ -76,21 +76,21 @@ class TestGenerateExercise:
 
     def test_generate_exercise_has_4_options(self, vocab_knowledge_points):
         """Should generate exactly 4 options."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
 
         assert exercise is not None
         assert len(exercise.options) == 4
 
     def test_generate_exercise_no_duplicate_options(self, vocab_knowledge_points):
         """All options should be distinct."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
 
         assert exercise is not None
         assert len(set(exercise.options)) == 4
 
     def test_generate_exercise_options_include_pinyin(self, vocab_knowledge_points):
         """Options should include Chinese with pinyin."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
 
         assert exercise is not None
         # Each option should have format "中文 (pīnyīn)"
@@ -99,7 +99,7 @@ class TestGenerateExercise:
 
     def test_generate_exercise_correct_index_valid(self, vocab_knowledge_points):
         """Correct index should be within bounds."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
 
         assert exercise is not None
         assert 0 <= exercise.correct_index < 4
@@ -107,7 +107,7 @@ class TestGenerateExercise:
     def test_generate_exercise_with_target_kp(self, vocab_knowledge_points):
         """Should use target knowledge point when provided."""
         target = vocab_knowledge_points[0]  # "我"
-        exercise = english_to_chinese.generate_exercise(
+        exercise = EnglishToChineseHandler.generate(
             vocab_knowledge_points, target_kp=target
         )
 
@@ -138,7 +138,7 @@ class TestGenerateExercise:
                 tags=[],
             ),
         ]
-        exercise = english_to_chinese.generate_exercise(small_vocab)
+        exercise = EnglishToChineseHandler.generate(small_vocab)
 
         assert exercise is None
 
@@ -154,7 +154,7 @@ class TestGenerateExercise:
                 tags=["hsk1"],
             )
         ]
-        exercise = english_to_chinese.generate_exercise(kps_with_grammar)
+        exercise = EnglishToChineseHandler.generate(kps_with_grammar)
 
         assert exercise is not None
         # Should not include grammar in knowledge_point_ids
@@ -170,7 +170,7 @@ class TestGenerateExercise:
         trials = 20
 
         for _ in range(trials):
-            exercise = english_to_chinese.generate_exercise(
+            exercise = EnglishToChineseHandler.generate(
                 vocab_knowledge_points, target_kp=target
             )
             assert exercise is not None
@@ -192,81 +192,87 @@ class TestCheckAnswer:
 
     def test_check_answer_correct_letter(self, vocab_knowledge_points):
         """Correct letter answer should return True."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
+        handler = EnglishToChineseHandler(exercise)
         correct_letter = ["A", "B", "C", "D"][exercise.correct_index]
-        is_correct, _ = english_to_chinese.check_answer(exercise, correct_letter)
+        is_correct, _ = handler.check_answer(correct_letter)
 
         assert is_correct is True
 
     def test_check_answer_correct_number(self, vocab_knowledge_points):
         """Correct number answer should return True."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
+        handler = EnglishToChineseHandler(exercise)
         correct_number = str(exercise.correct_index + 1)
-        is_correct, _ = english_to_chinese.check_answer(exercise, correct_number)
+        is_correct, _ = handler.check_answer(correct_number)
 
         assert is_correct is True
 
     def test_check_answer_incorrect(self, vocab_knowledge_points):
         """Incorrect answer should return False."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
+        handler = EnglishToChineseHandler(exercise)
         # Pick a wrong index
         wrong_index = (exercise.correct_index + 1) % 4
         wrong_letter = ["A", "B", "C", "D"][wrong_index]
-        is_correct, _ = english_to_chinese.check_answer(exercise, wrong_letter)
+        is_correct, _ = handler.check_answer(wrong_letter)
 
         assert is_correct is False
 
     def test_check_answer_returns_correct_answer(self, vocab_knowledge_points):
         """Should return the correct answer in the result."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
-        _, correct_answer = english_to_chinese.check_answer(exercise, "X")
+        handler = EnglishToChineseHandler(exercise)
+        _, correct_answer = handler.check_answer("X")
 
         assert correct_answer == exercise.options[exercise.correct_index]
 
     def test_check_answer_invalid_input(self, vocab_knowledge_points):
         """Invalid input should return False."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
-        is_correct, _ = english_to_chinese.check_answer(exercise, "invalid")
+        handler = EnglishToChineseHandler(exercise)
+        is_correct, _ = handler.check_answer("invalid")
 
         assert is_correct is False
 
     def test_check_answer_out_of_bounds(self, vocab_knowledge_points):
         """Out of bounds number should return False."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
-        is_correct, _ = english_to_chinese.check_answer(exercise, "5")
+        handler = EnglishToChineseHandler(exercise)
+        is_correct, _ = handler.check_answer("5")
 
         assert is_correct is False
 
     def test_check_answer_lowercase_letter(self, vocab_knowledge_points):
         """Lowercase letters should be accepted."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
+        handler = EnglishToChineseHandler(exercise)
         correct_letter = ["a", "b", "c", "d"][exercise.correct_index]
-        is_correct, _ = english_to_chinese.check_answer(exercise, correct_letter)
+        is_correct, _ = handler.check_answer(correct_letter)
 
         assert is_correct is True
 
     def test_check_answer_with_whitespace(self, vocab_knowledge_points):
         """Input with whitespace should be handled."""
-        exercise = english_to_chinese.generate_exercise(vocab_knowledge_points)
+        exercise = EnglishToChineseHandler.generate(vocab_knowledge_points)
         assert exercise is not None
 
+        handler = EnglishToChineseHandler(exercise)
         correct_letter = ["A", "B", "C", "D"][exercise.correct_index]
-        is_correct, _ = english_to_chinese.check_answer(
-            exercise, f"  {correct_letter}  "
-        )
+        is_correct, _ = handler.check_answer(f"  {correct_letter}  ")
 
         assert is_correct is True

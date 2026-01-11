@@ -14,7 +14,7 @@ from models import (
     StudentState,
 )
 from scheduler import ExerciseScheduler
-from exercises import segmented_translation, minimal_pair
+from exercises import SegmentedTranslationHandler, MinimalPairHandler
 from simulator_models import (
     SimulatedStudentConfig,
     SimulatedStudent,
@@ -247,14 +247,14 @@ class Simulator:
         exercise_type = random.choice(["segmented_translation", "minimal_pair"])
 
         if exercise_type == "minimal_pair":
-            exercise = minimal_pair.generate_exercise(self.knowledge_points, target_kp)
+            exercise = MinimalPairHandler.generate(self.knowledge_points, target_kp)
             if exercise is None:
                 exercise_type = "segmented_translation"
-                exercise = segmented_translation.generate_exercise(
+                exercise = SegmentedTranslationHandler.generate(
                     self.knowledge_points, target_kp
                 )
         else:
-            exercise = segmented_translation.generate_exercise(
+            exercise = SegmentedTranslationHandler.generate(
                 self.knowledge_points, target_kp
             )
 

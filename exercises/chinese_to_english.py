@@ -8,180 +8,106 @@ import random
 import uuid
 from typing import Any
 
+from exercises.base import ExerciseHandler, parse_letter_input, select_distractors
 from models import KnowledgePoint, MultipleChoiceVocabExercise
 
 
-def _select_distractors(
-    target_kp: KnowledgePoint,
-    all_vocab: list[KnowledgePoint],
-    count: int = 3,
-) -> list[KnowledgePoint]:
-    """
-    Select distractor vocabulary items using mixed approach.
+class ChineseToEnglishHandler(ExerciseHandler[MultipleChoiceVocabExercise]):
+    """Handler for Chinese to English multiple choice exercises."""
 
-    Prefers items from the same cluster as the target, falls back to random.
-    """
-    distractors = []
-    used_ids = {target_kp.id}
+    @classmethod
+    def generate(
+        cls,
+        knowledge_points: list[KnowledgePoint],
+        target_kp: KnowledgePoint | None = None,
+    ) -> MultipleChoiceVocabExercise | None:
+        """Generate a Chinese to English multiple choice exercise.
 
-    # Get target's cluster tags
-    cluster_tags = [t for t in target_kp.tags if t.startswith("cluster:")]
+        If target_kp is provided, uses that knowledge point as the target.
+        Returns None if there aren't enough vocabulary items (need at least 4).
+        """
+        # Filter to vocabulary knowledge points only
+        vocab_kps = [kp for kp in knowledge_points if kp.type.value == "vocabulary"]
 
-    # First pass: same cluster
-    if cluster_tags:
-        same_cluster = [
-            kp
-            for kp in all_vocab
-            if kp.id not in used_ids and any(t in kp.tags for t in cluster_tags)
-        ]
-        random.shuffle(same_cluster)
-        for kp in same_cluster[:count]:
-            distractors.append(kp)
-            used_ids.add(kp.id)
+        if len(vocab_kps) < 4:
+            return None
 
-    # Second pass: fill with random
-    remaining = count - len(distractors)
-    if remaining > 0:
-        other_vocab = [kp for kp in all_vocab if kp.id not in used_ids]
-        random.shuffle(other_vocab)
-        distractors.extend(other_vocab[:remaining])
+        # Select target (use provided or random)
+        if target_kp and target_kp.type.value == "vocabulary":
+            selected_kp = target_kp
+        else:
+            selected_kp = random.choice(vocab_kps)
 
-    return distractors
+        # Get distractors
+        distractors = select_distractors(selected_kp, vocab_kps, count=3)
 
+        if len(distractors) < 3:
+            return None
 
-def generate_exercise(
-    knowledge_points: list[KnowledgePoint],
-    target_kp: KnowledgePoint | None = None,
-) -> MultipleChoiceVocabExercise | None:
-    """
-    Generate a Chinese to English multiple choice exercise.
+        # Build options: correct English + distractor English translations
+        # Use first translation if multiple are provided (split by comma)
+        correct_english = selected_kp.english.split(",")[0].strip()
+        distractor_english = [d.english.split(",")[0].strip() for d in distractors]
 
-    If target_kp is provided, uses that knowledge point as the target.
-    Returns None if there aren't enough vocabulary items (need at least 4).
-    """
-    # Filter to vocabulary knowledge points only
-    vocab_kps = [kp for kp in knowledge_points if kp.type.value == "vocabulary"]
+        all_options = [correct_english] + distractor_english
+        random.shuffle(all_options)
 
-    if len(vocab_kps) < 4:
-        return None
+        # Find correct index after shuffling
+        correct_index = all_options.index(correct_english)
 
-    # Select target (use provided or random)
-    if target_kp and target_kp.type.value == "vocabulary":
-        selected_kp = target_kp
-    else:
-        selected_kp = random.choice(vocab_kps)
+        return MultipleChoiceVocabExercise(
+            id=str(uuid.uuid4()),
+            knowledge_point_ids=[selected_kp.id],
+            difficulty=0.3,
+            direction="chinese_to_english",
+            prompt=selected_kp.chinese,
+            prompt_pinyin=selected_kp.pinyin,
+            options=all_options,
+            correct_index=correct_index,
+        )
 
-    # Get distractors
-    distractors = _select_distractors(selected_kp, vocab_kps, count=3)
+    def present(self) -> list[str]:
+        """Present the exercise to the user.
 
-    if len(distractors) < 3:
-        return None
+        Returns the options list for answer checking.
+        """
+        print(
+            f'\nWhat is the English for "{self.exercise.prompt}" '
+            f"({self.exercise.prompt_pinyin})?"
+        )
+        print()
 
-    # Build options: correct English + distractor English translations
-    # Use first translation if multiple are provided (split by comma)
-    correct_english = selected_kp.english.split(",")[0].strip()
-    distractor_english = [d.english.split(",")[0].strip() for d in distractors]
+        labels = ["A", "B", "C", "D"]
+        for i, option in enumerate(self.exercise.options):
+            label = labels[i] if i < len(labels) else str(i + 1)
+            print(f"  {label}. {option}")
+        print()
 
-    all_options = [correct_english] + distractor_english
-    random.shuffle(all_options)
+        return self.exercise.options
 
-    # Find correct index after shuffling
-    correct_index = all_options.index(correct_english)
+    def check_answer(
+        self,
+        user_input: str,
+        context: Any = None,
+    ) -> tuple[bool, str]:
+        """Check if the user's answer is correct.
 
-    return MultipleChoiceVocabExercise(
-        id=str(uuid.uuid4()),
-        knowledge_point_ids=[selected_kp.id],
-        difficulty=0.3,
-        direction="chinese_to_english",
-        prompt=selected_kp.chinese,
-        prompt_pinyin=selected_kp.pinyin,
-        options=all_options,
-        correct_index=correct_index,
-    )
+        Args:
+            user_input: Letter (A/B/C/D) or number (1/2/3/4).
+            context: Unused, kept for interface consistency.
 
+        Returns:
+            Tuple of (is_correct, correct_answer_display).
+        """
+        correct_answer = self.exercise.options[self.exercise.correct_index]
+        user_index = parse_letter_input(user_input, len(self.exercise.options))
 
-def present_exercise(exercise: MultipleChoiceVocabExercise) -> list[str]:
-    """
-    Present the exercise to the user.
+        if user_index is None:
+            return False, correct_answer
 
-    Returns the options list for answer checking.
-    """
-    print(f'\nWhat is the English for "{exercise.prompt}" ({exercise.prompt_pinyin})?')
-    print()
+        is_correct = user_index == self.exercise.correct_index
+        return is_correct, correct_answer
 
-    labels = ["A", "B", "C", "D"]
-    for i, option in enumerate(exercise.options):
-        label = labels[i] if i < len(labels) else str(i + 1)
-        print(f"  {label}. {option}")
-    print()
-
-    return exercise.options
-
-
-def check_answer(
-    exercise: MultipleChoiceVocabExercise,
-    user_input: str,
-    options: Any = None,
-) -> tuple[bool, str]:
-    """
-    Check if the user's answer is correct.
-
-    user_input: letter (A/B/C/D) or number (1/2/3/4)
-    options: unused, kept for interface consistency
-
-    Returns (is_correct, correct_answer_display)
-    """
-    user_input = user_input.strip().upper()
-
-    # Map letters to indices
-    letter_map = {"A": 0, "B": 1, "C": 2, "D": 3}
-
-    if user_input in letter_map:
-        user_index = letter_map[user_input]
-    elif user_input.isdigit():
-        user_index = int(user_input) - 1
-    else:
-        # Invalid input
-        correct_answer = exercise.options[exercise.correct_index]
-        return False, correct_answer
-
-    # Check bounds
-    if user_index < 0 or user_index >= len(exercise.options):
-        correct_answer = exercise.options[exercise.correct_index]
-        return False, correct_answer
-
-    is_correct = user_index == exercise.correct_index
-    correct_answer = exercise.options[exercise.correct_index]
-
-    return is_correct, correct_answer
-
-
-def process_user_input(
-    exercise: MultipleChoiceVocabExercise,
-) -> tuple[bool, bool | None, str]:
-    """
-    Process user input for a Chinese to English exercise.
-
-    Returns (should_retry, is_correct_or_None, correct_answer_display):
-    - should_retry: True if invalid input, user should retry same exercise
-    - is_correct_or_None: True if correct, False if incorrect, None if quit
-    - correct_answer_display: String to show the correct answer
-    """
-    present_exercise(exercise)
-
-    user_input = input("Enter your choice (A/B/C/D or 1/2/3/4): ").strip()
-
-    if user_input.lower() == "q":
-        return False, None, ""
-
-    is_correct, correct_answer_display = check_answer(exercise, user_input)
-
-    return False, is_correct, correct_answer_display
-
-
-def format_feedback(is_correct: bool, correct_answer: str) -> str:
-    """Return formatted feedback string for a Chinese to English exercise."""
-    if is_correct:
-        return f"\nCorrect! {correct_answer}"
-    else:
-        return f"\nIncorrect. The correct answer is: {correct_answer}"
+    def get_input_prompt(self) -> str:
+        """Return the input prompt string."""
+        return "Enter your choice (A/B/C/D or 1/2/3/4): "

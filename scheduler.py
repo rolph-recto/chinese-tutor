@@ -9,6 +9,9 @@ This module handles:
 """
 
 from datetime import datetime
+
+import fsrs
+
 from models import (
     KnowledgePoint,
     SessionState,
@@ -85,15 +88,14 @@ class ExerciseScheduler:
     def update_multi_skill_exercise(
         self,
         kp_ids: list[str],
-        is_correct: bool,
+        rating: fsrs.Rating,
     ) -> None:
         """
         Update all skills associated with a multi-skill exercise.
         """
         for kp_id in kp_ids:
             mastery = self._get_mastery_for_kp(kp_id)
-            mastery.process_review(is_correct)
-            update_practice_stats(mastery, is_correct)
+            mastery.process_review(rating)
 
     # =========================================================================
     # Helper Methods
@@ -108,25 +110,3 @@ class ExerciseScheduler:
                 if earliest_due is None or mastery.due_date < earliest_due:
                     earliest_due = mastery.due_date
         return earliest_due
-
-
-# =========================================================================
-# Standalone Functions (for backward compatibility)
-# =========================================================================
-
-
-def update_practice_stats(
-    mastery: StudentMastery,
-    correct: bool,
-) -> None:
-    """
-    Update practice statistics after an exercise.
-    """
-    mastery.last_practiced = datetime.now()
-    mastery.practice_count += 1
-
-    if correct:
-        mastery.correct_count += 1
-        mastery.consecutive_correct += 1
-    else:
-        mastery.consecutive_correct = 0

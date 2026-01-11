@@ -108,12 +108,6 @@ class MultipleChoiceVocabExercise(Exercise):
 class StudentMastery(BaseModel):
     knowledge_point_id: str
 
-    # Practice stats
-    last_practiced: datetime | None = None
-    practice_count: int = 0
-    correct_count: int = 0
-    consecutive_correct: int = 0
-
     # FSRS state for spaced repetition scheduling
     fsrs_state: FSRSState | None = None
 
@@ -171,17 +165,14 @@ class StudentMastery(BaseModel):
         # Store the FSRS state
         self.fsrs_state = FSRSState.from_fsrs_card(card)
 
-    def process_review(self, correct: bool) -> fsrs.ReviewLog:
+    def process_review(self, rating: fsrs.Rating) -> fsrs.ReviewLog:
         """
         Process a review for a knowledge point in FSRS mode.
 
-        Maps the binary correct/incorrect to FSRS ratings:
-        - Correct: Rating.Good (remembered)
-        - Incorrect: Rating.Again (forgot)
+        The rating is passed in directly from the caller:
+        - Incorrect answers: Rating.Again
+        - Correct answers: User chooses from Again, Hard, Good, or Easy
         """
-        # Map binary response to FSRS rating
-        rating = fsrs.Rating.Good if correct else fsrs.Rating.Again
-
         self.initialize_fsrs(rating)
         assert self.fsrs_state is not None
 

@@ -4,10 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import fsrs
 
-from scheduler import (
-    update_practice_stats,
-    ExerciseScheduler,
-)
+from scheduler import ExerciseScheduler
 from models import (
     SessionState,
     StudentMastery,
@@ -21,34 +18,6 @@ def make_due_now(mastery: StudentMastery):
 
     # Set the due date to 1 hour in the past
     mastery.fsrs_state.due = datetime.now(timezone.utc) - timedelta(hours=1)
-
-
-class TestUpdatePracticeStats:
-    """Tests for practice statistics updates."""
-
-    def test_correct_updates_stats(self, new_mastery):
-        """Correct answer should update all relevant stats."""
-        initial_count = new_mastery.practice_count
-
-        update_practice_stats(new_mastery, correct=True)
-
-        assert new_mastery.practice_count == initial_count + 1
-        assert new_mastery.correct_count == 1
-        assert new_mastery.consecutive_correct == 1
-        assert new_mastery.last_practiced is not None
-
-    def test_incorrect_resets_consecutive(self, practiced_mastery):
-        """Incorrect answer should reset consecutive correct count."""
-        practiced_mastery.consecutive_correct = 5
-
-        update_practice_stats(practiced_mastery, correct=False)
-
-        assert practiced_mastery.consecutive_correct == 0
-
-
-# =============================================================================
-# Tests for ExerciseScheduler class
-# =============================================================================
 
 
 class TestExerciseScheduler:
@@ -75,17 +44,17 @@ class TestExerciseScheduler:
     def test_update_multi_skill_exercise(
         self, sample_knowledge_points, empty_student_state
     ):
-        """Should update practice stats for multiple KPs."""
+        """Should update FSRS state for multiple KPs."""
         session_state = SessionState()
         scheduler = ExerciseScheduler(
             sample_knowledge_points, empty_student_state, session_state
         )
 
         kp_ids = ["v001", "v002"]
-        scheduler.update_multi_skill_exercise(kp_ids, is_correct=True)
+        scheduler.update_multi_skill_exercise(kp_ids, rating=fsrs.Rating.Good)
 
-        # Check that both were updated
+        # Check that both were updated with FSRS state
         for kp_id in kp_ids:
             mastery = empty_student_state.masteries[kp_id]
-            assert mastery.practice_count == 1
-            assert mastery.correct_count == 1
+            assert mastery.fsrs_state is not None
+            assert mastery.due_date is not None

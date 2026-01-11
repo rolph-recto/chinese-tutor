@@ -5,13 +5,15 @@ import random
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import fsrs
+
 from models import (
     Exercise,
     KnowledgePoint,
     SessionState,
     StudentState,
 )
-from scheduler import ExerciseScheduler, update_practice_stats
+from scheduler import ExerciseScheduler
 from exercises import segmented_translation, minimal_pair
 from simulator_models import (
     SimulatedStudentConfig,
@@ -280,6 +282,9 @@ class Simulator:
         """Process exercise result through FSRS and update true knowledge."""
         post_state = {"retrievability": {}, "true": {}}
 
+        # Map boolean to FSRS rating (simulator uses Good for correct, Again for incorrect)
+        rating = fsrs.Rating.Good if is_correct else fsrs.Rating.Again
+
         for kp_id in exercise.knowledge_point_ids:
             if kp_id not in self.kp_dict:
                 continue
@@ -289,8 +294,7 @@ class Simulator:
 
             # Update FSRS (the system's estimate)
             mastery = self._get_mastery_for_kp(kp_id)
-            mastery.process_review(is_correct)
-            update_practice_stats(mastery, is_correct)
+            mastery.process_review(rating)
 
             ret = mastery.retrievability
             post_state["retrievability"][kp_id] = ret if ret is not None else 1.0
@@ -343,8 +347,6 @@ class Simulator:
                 exercise_number=exercise_number,
                 true_knowledge=self.student.get_true_knowledge(kp_id),
                 retrievability=retrievability,
-                practice_count=mastery.practice_count,
-                correct_count=mastery.correct_count,
                 fsrs_stability=fsrs_stability,
                 fsrs_difficulty=fsrs_difficulty,
             )
@@ -495,10 +497,10 @@ def print_console_summary(
     print("KP ID   Chinese   True Knowledge   Retrievability   Practices")
     print("------  -------   --------------   --------------   ---------")
 
-    # Sort by practice count descending
+    # Sort by number of snapshots (practice count) descending
     sorted_trajectories = sorted(
         results.kp_trajectories.values(),
-        key=lambda t: t.snapshots[-1].practice_count if t.snapshots else 0,
+        key=lambda t: len(t.snapshots),
         reverse=True,
     )
 
@@ -509,7 +511,7 @@ def print_console_summary(
         print(
             f"{traj.kp_id:6s}  {traj.kp_chinese:8s}  {final.true_knowledge:14.2f}   "
             f"{final.retrievability:14.2f}   "
-            f"{final.practice_count:9d}"
+            f"{len(traj.snapshots):9d}"
         )
 
     print()

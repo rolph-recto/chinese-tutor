@@ -5,8 +5,10 @@ import signal
 import sys
 from pathlib import Path
 
+import fsrs
+
 from models import KnowledgePoint, SessionState, StudentState
-from scheduler import ExerciseScheduler, update_practice_stats
+from scheduler import ExerciseScheduler
 from exercises import (
     segmented_translation,
     minimal_pair,
@@ -25,6 +27,28 @@ EXERCISE_MODULES = {
 def get_exercise_module(exercise_type: str):
     """Get the exercise module for the given type."""
     return EXERCISE_MODULES[exercise_type]
+
+
+def prompt_for_rating() -> fsrs.Rating:
+    """Prompt the user to rate the difficulty of recall."""
+    print("\nHow easy was that?")
+    print("  1) Again - I forgot / got lucky")
+    print("  2) Hard  - Difficult to recall")
+    print("  3) Good  - Correct with some effort")
+    print("  4) Easy  - Effortless recall")
+
+    while True:
+        choice = input("Rating (1-4): ").strip()
+        if choice == "1":
+            return fsrs.Rating.Again
+        elif choice == "2":
+            return fsrs.Rating.Hard
+        elif choice == "3":
+            return fsrs.Rating.Good
+        elif choice == "4":
+            return fsrs.Rating.Easy
+        else:
+            print("Please enter 1, 2, 3, or 4.")
 
 
 def generate_exercise_with_fallback(
@@ -270,7 +294,13 @@ def run_interactive() -> None:
             feedback = module.format_feedback(is_correct, correct_answer)
             print(feedback)
 
-        # Update mastery and practice stats for each knowledge point in the exercise
+        # Determine FSRS rating
+        if is_correct:
+            rating = prompt_for_rating()
+        else:
+            rating = fsrs.Rating.Again
+
+        # Update mastery for each knowledge point in the exercise
         print("\nMastery updates:")
         for kp_id in exercise.knowledge_point_ids:
             if kp_id not in kp_dict:
@@ -278,9 +308,8 @@ def run_interactive() -> None:
             kp = kp_dict[kp_id]
             mastery = student_state.get_mastery(kp_id, kp.type)
 
-            # Process FSRS review
-            mastery.process_review(is_correct)
-            update_practice_stats(mastery, is_correct)
+            # Process FSRS review with the rating
+            mastery.process_review(rating)
 
             # Display FSRS information
             retrievability = mastery.retrievability

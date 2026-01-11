@@ -97,9 +97,6 @@ def fsrs_mastery() -> StudentMastery:
             state=2,  # Review state
             step=None,
         ),
-        last_practiced=datetime.now(),
-        practice_count=20,
-        correct_count=18,
     )
 
 
@@ -124,9 +121,6 @@ def practiced_mastery() -> StudentMastery:
             state=2,  # Review state
             step=None,
         ),
-        last_practiced=datetime.now() - timedelta(days=1),
-        practice_count=5,
-        correct_count=4,
     )
 
 
@@ -151,8 +145,6 @@ def populated_student_state() -> StudentState:
             state=2,
             step=None,
         ),
-        practice_count=3,
-        correct_count=2,
     )
 
     state.masteries["v002"] = StudentMastery(
@@ -165,8 +157,6 @@ def populated_student_state() -> StudentState:
             state=2,
             step=None,
         ),
-        practice_count=7,
-        correct_count=6,
     )
 
     state.masteries["v005"] = StudentMastery(
@@ -179,8 +169,6 @@ def populated_student_state() -> StudentState:
             state=2,
             step=None,
         ),
-        practice_count=15,
-        correct_count=14,
     )
 
     return state

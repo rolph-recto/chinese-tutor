@@ -118,8 +118,6 @@ class KnowledgePointSnapshot(BaseModel):
 
     true_knowledge: float
     retrievability: float
-    practice_count: int
-    correct_count: int
 
     # FSRS state
     fsrs_stability: float | None = None

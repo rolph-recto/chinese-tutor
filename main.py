@@ -364,9 +364,6 @@ def run_interactive() -> None:
         if mastery_updates:
             ui.show_mastery_updates(mastery_updates)
 
-        if target_kp:
-            student_state.last_kp_type = target_kp.type
-
         save_student_state(student_state)
 
     tracker = ui.get_progress_tracker()

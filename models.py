@@ -202,7 +202,6 @@ class StudentMastery(BaseModel):
 
 class StudentState(BaseModel):
     masteries: dict[str, StudentMastery] = Field(default_factory=dict)
-    last_kp_type: KnowledgePointType | None = None
 
     def get_mastery(
         self,

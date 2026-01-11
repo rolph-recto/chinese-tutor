@@ -215,9 +215,6 @@ class Simulator:
                 current_time=current_time,
             )
 
-            # Update last KP type for interleaving
-            self.student_state.last_kp_type = target_kp.type
-
             if verbose:
                 self._print_exercise_result(day, ex_num, target_kp, is_correct)
 

@@ -1,0 +1,4257 @@
+{
+  "config": {
+    "learning_rate": 0.3,
+    "retention_rate": 0.85,
+    "slip_rate": 0.1,
+    "guess_rate": 0.25
+  },
+  "days_simulated": 30,
+  "exercises_per_day": 10,
+  "random_seed": null,
+  "start_time": "2026-01-11T11:42:42.211670",
+  "end_time": "2026-01-11T11:42:44.197128",
+  "total_exercises": 93,
+  "total_correct": 18,
+  "overall_accuracy": 0.1935483870967742,
+  "daily_summaries": [
+    {
+      "day": 1,
+      "date": "2026-01-11T11:42:42.211670",
+      "total_exercises": 10,
+      "correct_count": 1,
+      "accuracy": 0.1,
+      "segmented_translation_count": 4,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 6,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "g001",
+        "v002",
+        "v003",
+        "v013",
+        "v004",
+        "v019",
+        "v014",
+        "v007",
+        "v006",
+        "v005",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.02727272727272727,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 2,
+      "date": "2026-01-12T11:42:42.211670",
+      "total_exercises": 10,
+      "correct_count": 1,
+      "accuracy": 0.1,
+      "segmented_translation_count": 3,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 7,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v018",
+        "v017",
+        "v020",
+        "v001",
+        "v002",
+        "v003",
+        "v014",
+        "g004",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.07125,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 3,
+      "date": "2026-01-13T11:42:42.211670",
+      "total_exercises": 9,
+      "correct_count": 2,
+      "accuracy": 0.2222222222222222,
+      "segmented_translation_count": 3,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 6,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v015",
+        "g001",
+        "v017",
+        "v001",
+        "v002",
+        "v003",
+        "v019",
+        "v004",
+        "v011",
+        "v012",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.0937046052631579,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 4,
+      "date": "2026-01-14T11:42:42.211670",
+      "total_exercises": 6,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 5,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v004",
+        "v006",
+        "v014",
+        "v003"
+      ],
+      "avg_true_knowledge": 0.07964891447368422,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 5,
+      "date": "2026-01-15T11:42:42.211670",
+      "total_exercises": 6,
+      "correct_count": 1,
+      "accuracy": 0.16666666666666666,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 4,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v006",
+        "v005",
+        "v001",
+        "g005",
+        "v009",
+        "v014",
+        "v008",
+        "v012"
+      ],
+      "avg_true_knowledge": 0.06972522911931818,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 6,
+      "date": "2026-01-16T11:42:42.211670",
+      "total_exercises": 3,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g001",
+        "v017",
+        "v001",
+        "v002",
+        "v013",
+        "v011",
+        "g004"
+      ],
+      "avg_true_knowledge": 0.057986575102627835,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 7,
+      "date": "2026-01-17T11:42:42.211670",
+      "total_exercises": 3,
+      "correct_count": 1,
+      "accuracy": 0.3333333333333333,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g002",
+        "v001",
+        "v011",
+        "v003",
+        "v014",
+        "v008"
+      ],
+      "avg_true_knowledge": 0.0830115181991525,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 8,
+      "date": "2026-01-18T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g002",
+        "v003",
+        "v004",
+        "v009",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.06971606961330137,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 9,
+      "date": "2026-01-19T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v013",
+        "v018"
+      ],
+      "avg_true_knowledge": 0.05925865917130616,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 10,
+      "date": "2026-01-20T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v006",
+        "v005"
+      ],
+      "avg_true_knowledge": 0.06326983675280434,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 11,
+      "date": "2026-01-21T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v004",
+        "v009",
+        "g005",
+        "v006"
+      ],
+      "avg_true_knowledge": 0.06349675254423151,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 12,
+      "date": "2026-01-22T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v004",
+        "v005",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.05373024180842358,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 13,
+      "date": "2026-01-23T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g001",
+        "g005",
+        "v002",
+        "v004",
+        "v007"
+      ],
+      "avg_true_knowledge": 0.04567070553716004,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 14,
+      "date": "2026-01-24T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g002",
+        "v002",
+        "v003",
+        "v007",
+        "v014"
+      ],
+      "avg_true_knowledge": 0.06384742699288073,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 15,
+      "date": "2026-01-25T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v017",
+        "v001",
+        "g004",
+        "v005"
+      ],
+      "avg_true_knowledge": 0.0538038217706326,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 16,
+      "date": "2026-01-26T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v020",
+        "v014",
+        "v003"
+      ],
+      "avg_true_knowledge": 0.06855757489048017,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 17,
+      "date": "2026-01-27T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v006",
+        "v012"
+      ],
+      "avg_true_knowledge": 0.07054306435663778,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 18,
+      "date": "2026-01-28T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v017",
+        "v003"
+      ],
+      "avg_true_knowledge": 0.059450966894136516,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 19,
+      "date": "2026-01-29T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v017",
+        "g005",
+        "v003",
+        "v004",
+        "v008",
+        "g004"
+      ],
+      "avg_true_knowledge": 0.08877651611387796,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 20,
+      "date": "2026-01-30T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v012",
+        "v015"
+      ],
+      "avg_true_knowledge": 0.07503215037516915,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 21,
+      "date": "2026-01-31T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v004",
+        "v014",
+        "v017"
+      ],
+      "avg_true_knowledge": 0.08380021626344425,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 22,
+      "date": "2026-02-01T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v004",
+        "v018",
+        "v014"
+      ],
+      "avg_true_knowledge": 0.08734679154362221,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 23,
+      "date": "2026-02-02T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v017",
+        "v001",
+        "v004",
+        "g004",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.07241348278279347,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 24,
+      "date": "2026-02-03T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g002",
+        "v007",
+        "v003"
+      ],
+      "avg_true_knowledge": 0.06120156310845143,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 25,
+      "date": "2026-02-04T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v004",
+        "v020"
+      ],
+      "avg_true_knowledge": 0.05129994863841842,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 26,
+      "date": "2026-02-05T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g005",
+        "v002",
+        "v003",
+        "v008",
+        "v011"
+      ],
+      "avg_true_knowledge": 0.08198689514927038,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 27,
+      "date": "2026-02-06T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 1,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 1,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v005",
+        "v001",
+        "g002",
+        "v007"
+      ],
+      "avg_true_knowledge": 0.08262986246429924,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 28,
+      "date": "2026-02-07T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 0,
+      "accuracy": 0.0,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "v001",
+        "g005",
+        "v004",
+        "v011",
+        "v016"
+      ],
+      "avg_true_knowledge": 0.06883488182194997,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 29,
+      "date": "2026-02-08T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 0,
+      "segmented_translation_correct": 0,
+      "minimal_pair_count": 2,
+      "minimal_pair_correct": 1,
+      "kps_practiced": [
+        "v013",
+        "v003"
+      ],
+      "avg_true_knowledge": 0.06888028512906512,
+      "avg_retrievability": 1.0
+    },
+    {
+      "day": 30,
+      "date": "2026-02-09T11:42:42.211670",
+      "total_exercises": 2,
+      "correct_count": 1,
+      "accuracy": 0.5,
+      "segmented_translation_count": 2,
+      "segmented_translation_correct": 1,
+      "minimal_pair_count": 0,
+      "minimal_pair_correct": 0,
+      "kps_practiced": [
+        "g005",
+        "v002",
+        "v004",
+        "v014",
+        "v008"
+      ],
+      "avg_true_knowledge": 0.09353941784636559,
+      "avg_retrievability": 1.0
+    }
+  ],
+  "exercise_results": [
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v013"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v013": 0.0
+      },
+      "retrievability_before": {
+        "v013": 1.0
+      },
+      "retrievability_after": {
+        "v013": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v016": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 3,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 4,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 5,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v005"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v005": 0.0
+      },
+      "retrievability_before": {
+        "v005": 1.0
+      },
+      "retrievability_after": {
+        "v005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 6,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v006": 0.0
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 7,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v016": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 8,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v019"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v019": 0.0
+      },
+      "retrievability_before": {
+        "v019": 1.0
+      },
+      "retrievability_after": {
+        "v019": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 9,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v014"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v014": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-11T11:42:42.211670",
+      "day": 1,
+      "exercise_number": 10,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v007",
+        "g001"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.0,
+        "v007": 0.0,
+        "g001": 0.0
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v007": 1.0,
+        "g001": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v007": 1.0,
+        "g001": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v017",
+        "g004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v017": 0.0,
+        "g004": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 3,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v018"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v018": 0.0
+      },
+      "retrievability_before": {
+        "v018": 1.0
+      },
+      "retrievability_after": {
+        "v018": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 4,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 5,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v014"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v014": 0.0
+      },
+      "retrievability_before": {
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 6,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v017",
+        "g004"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v001": 0.0,
+        "v017": 0.0,
+        "g004": 0.0
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 7,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.0,
+        "v016": 0.0
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 8,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v017"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v017": 0.3
+      },
+      "retrievability_before": {
+        "v017": 1.0
+      },
+      "retrievability_after": {
+        "v017": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 9,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v018"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v018": 0.0
+      },
+      "retrievability_before": {
+        "v018": 1.0
+      },
+      "retrievability_after": {
+        "v018": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-12T11:42:42.211670",
+      "day": 2,
+      "exercise_number": 10,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v020"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v020": 0.0
+      },
+      "retrievability_before": {
+        "v020": 1.0
+      },
+      "retrievability_after": {
+        "v020": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v011",
+        "g001"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.0,
+        "v011": 0.0,
+        "g001": 0.0
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v011": 1.0,
+        "g001": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v011": 1.0,
+        "g001": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 3,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v017"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v017": 0.24224999999999997
+      },
+      "retrievability_before": {
+        "v017": 1.0
+      },
+      "retrievability_after": {
+        "v017": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 4,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v012"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v012": 0.0
+      },
+      "retrievability_before": {
+        "v012": 1.0
+      },
+      "retrievability_after": {
+        "v012": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 5,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v016"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v001": 0.255,
+        "v016": 0.0
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 6,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v015"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v015": 0.0
+      },
+      "retrievability_before": {
+        "v015": 1.0
+      },
+      "retrievability_after": {
+        "v015": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 7,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v019"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v019": 0.0
+      },
+      "retrievability_before": {
+        "v019": 1.0
+      },
+      "retrievability_after": {
+        "v019": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 8,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v015"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v015": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v015": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v015": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-13T11:42:42.211670",
+      "day": 3,
+      "exercise_number": 9,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v012"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v012": 0.0
+      },
+      "retrievability_before": {
+        "v012": 1.0
+      },
+      "retrievability_after": {
+        "v012": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-14T11:42:42.211670",
+      "day": 4,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v014"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v014": 0.0
+      },
+      "retrievability_before": {
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-14T11:42:42.211670",
+      "day": 4,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-14T11:42:42.211670",
+      "day": 4,
+      "exercise_number": 3,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-14T11:42:42.211670",
+      "day": 4,
+      "exercise_number": 4,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v006": 0.0
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-14T11:42:42.211670",
+      "day": 4,
+      "exercise_number": 5,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v006": 0.0
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-14T11:42:42.211670",
+      "day": 4,
+      "exercise_number": 6,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v014"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v014": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-15T11:42:42.211670",
+      "day": 5,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v008",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.34571625,
+        "v008": 0.0,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-15T11:42:42.211670",
+      "day": 5,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v006": 0.0
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-15T11:42:42.211670",
+      "day": 5,
+      "exercise_number": 3,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v014"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v014": 0.0
+      },
+      "retrievability_before": {
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-15T11:42:42.211670",
+      "day": 5,
+      "exercise_number": 4,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v012"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v012": 0.21675
+      },
+      "retrievability_before": {
+        "v012": 1.0
+      },
+      "retrievability_after": {
+        "v012": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-15T11:42:42.211670",
+      "day": 5,
+      "exercise_number": 5,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v005": 0.156601875
+      },
+      "retrievability_before": {
+        "v005": 1.0
+      },
+      "retrievability_after": {
+        "v005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-15T11:42:42.211670",
+      "day": 5,
+      "exercise_number": 6,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v009",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.3284304375,
+        "v009": 0.0,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v009": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v009": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-16T11:42:42.211670",
+      "day": 6,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v017",
+        "g004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.26520757828124997,
+        "v017": 0.14133319218749998,
+        "g004": 0.156601875
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-16T11:42:42.211670",
+      "day": 6,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v013"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v013": 0.0
+      },
+      "retrievability_before": {
+        "v013": 1.0
+      },
+      "retrievability_after": {
+        "v013": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-16T11:42:42.211670",
+      "day": 6,
+      "exercise_number": 3,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v011",
+        "g001"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.0,
+        "v011": 0.0,
+        "g001": 0.0
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v011": 1.0,
+        "g001": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v011": 1.0,
+        "g001": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-17T11:42:42.211670",
+      "day": 7,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v011",
+        "g002"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v011": 0.0,
+        "g002": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v011": 1.0,
+        "g002": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v011": 1.0,
+        "g002": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-17T11:42:42.211670",
+      "day": 7,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v008",
+        "g002"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v001": 0.21415511946210933,
+        "v008": 0.0,
+        "g002": 0.0
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v008": 1.0,
+        "g002": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v008": 1.0,
+        "g002": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-17T11:42:42.211670",
+      "day": 7,
+      "exercise_number": 3,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v014"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v014": 0.21675
+      },
+      "retrievability_before": {
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-18T11:42:42.211670",
+      "day": 8,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v009",
+        "g002"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v009": 0.0,
+        "g002": 0.255
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v009": 1.0,
+        "g002": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v009": 1.0,
+        "g002": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-18T11:42:42.211670",
+      "day": 8,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v016": 0.13311159375
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-19T11:42:42.211670",
+      "day": 9,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v018"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v018": 0.0
+      },
+      "retrievability_before": {
+        "v018": 1.0
+      },
+      "retrievability_after": {
+        "v018": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-19T11:42:42.211670",
+      "day": 9,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v013"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v013": 0.0
+      },
+      "retrievability_before": {
+        "v013": 1.0
+      },
+      "retrievability_after": {
+        "v013": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-20T11:42:42.211670",
+      "day": 10,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v006": 0.0
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-20T11:42:42.211670",
+      "day": 10,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v005": 0.06601082969071287
+      },
+      "retrievability_before": {
+        "v005": 1.0
+      },
+      "retrievability_after": {
+        "v005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-21T11:42:42.211670",
+      "day": 11,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v009",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v009": 0.0,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v009": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v009": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-21T11:42:42.211670",
+      "day": 11,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v006": 0.255
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-22T11:42:42.211670",
+      "day": 12,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v005": 0.04530818322896304
+      },
+      "retrievability_before": {
+        "v005": 1.0
+      },
+      "retrievability_after": {
+        "v005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-22T11:42:42.211670",
+      "day": 12,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v016": 0.0660108296907129
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-23T11:42:42.211670",
+      "day": 13,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v007",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v007": 0.0,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v007": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v007": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-23T11:42:42.211670",
+      "day": 13,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v007",
+        "g001"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.0,
+        "v007": 0.0,
+        "g001": 0.0
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v007": 1.0,
+        "g001": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v007": 1.0,
+        "g001": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-24T11:42:42.211670",
+      "day": 14,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v014"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v002": 0.0,
+        "v014": 0.06601082969071287
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-24T11:42:42.211670",
+      "day": 14,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v007",
+        "g002"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v007": 0.0,
+        "g002": 0.09136447016015622
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v007": 1.0,
+        "g002": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v007": 1.0,
+        "g002": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-25T11:42:42.211670",
+      "day": 15,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v005": 0.026433643624212577
+      },
+      "retrievability_before": {
+        "v005": 1.0
+      },
+      "retrievability_after": {
+        "v005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-25T11:42:42.211670",
+      "day": 15,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v017",
+        "g004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.12259582617114205,
+        "v017": 0.031098404263779512,
+        "g004": 0.03445806566623768
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-26T11:42:42.211670",
+      "day": 16,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v014"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v003": 0.0,
+        "v014": 0.250134977116078
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-26T11:42:42.211670",
+      "day": 16,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v020"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v020": 0.0
+      },
+      "retrievability_before": {
+        "v020": 1.0
+      },
+      "retrievability_after": {
+        "v020": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-27T11:42:42.211670",
+      "day": 17,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v006"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v006": 0.1804660432265625
+      },
+      "retrievability_before": {
+        "v006": 1.0
+      },
+      "retrievability_after": {
+        "v006": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-27T11:42:42.211670",
+      "day": 17,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v012"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v012": 0.029289355816302026
+      },
+      "retrievability_before": {
+        "v012": 1.0
+      },
+      "retrievability_after": {
+        "v012": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-28T11:42:42.211670",
+      "day": 18,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.21675
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-28T11:42:42.211670",
+      "day": 18,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v017"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v017": 0.018143392142568913
+      },
+      "retrievability_before": {
+        "v017": 1.0
+      },
+      "retrievability_after": {
+        "v017": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-29T11:42:42.211670",
+      "day": 19,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v017",
+        "g004"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v004": 0.0,
+        "v017": 0.014650789155124395,
+        "g004": 0.017087959358652156
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-29T11:42:42.211670",
+      "day": 19,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v008",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.175025625,
+        "v008": 0.04267252714085163,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-30T11:42:42.211670",
+      "day": 20,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v012"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v012": 0.19682862794848052
+      },
+      "retrievability_before": {
+        "v012": 1.0
+      },
+      "retrievability_after": {
+        "v012": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-30T11:42:42.211670",
+      "day": 20,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v015"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v015": 0.0
+      },
+      "retrievability_before": {
+        "v015": 1.0
+      },
+      "retrievability_after": {
+        "v015": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-31T11:42:42.211670",
+      "day": 21,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v017"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v017": 0.2241596366152042
+      },
+      "retrievability_before": {
+        "v017": 1.0
+      },
+      "retrievability_after": {
+        "v017": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-01-31T11:42:42.211670",
+      "day": 21,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v014"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v004": 0.21675,
+        "v014": 0.2108019464819288
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-01T11:42:42.211670",
+      "day": 22,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v018"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v018": 0.0
+      },
+      "retrievability_before": {
+        "v018": 1.0
+      },
+      "retrievability_after": {
+        "v018": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-01T11:42:42.211670",
+      "day": 22,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v014"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v004": 0.38396624999999995,
+        "v014": 0.3804271581567476
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v014": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-02T11:42:42.211670",
+      "day": 23,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v017",
+        "g004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.03173589098892352,
+        "v017": 0.15385757058176075,
+        "g004": 0.16284589010947367
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v017": 1.0,
+        "g004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-02T11:42:42.211670",
+      "day": 23,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.48345991875,
+        "v016": 0.010494143041132258
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-03T11:42:42.211670",
+      "day": 24,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.07377680965432615
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-03T11:42:42.211670",
+      "day": 24,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v007",
+        "g002"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v003": 0.07008796917160984,
+        "v007": 0.0,
+        "g002": 0.017087959358652156
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v007": 1.0,
+        "g002": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v007": 1.0,
+        "g002": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-04T11:42:42.211670",
+      "day": 25,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v020"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v020": 0.0
+      },
+      "retrievability_before": {
+        "v020": 1.0
+      },
+      "retrievability_after": {
+        "v020": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-04T11:42:42.211670",
+      "day": 25,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v004"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.3318348017320312
+      },
+      "retrievability_before": {
+        "v004": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-05T11:42:42.211670",
+      "day": 26,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v008",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.04267252714085163,
+        "v008": 0.012995842775395988,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-05T11:42:42.211670",
+      "day": 26,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v003",
+        "v011",
+        "g005"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v003": 0.048106629840163694,
+        "v011": 0.0,
+        "g005": 0.0
+      },
+      "retrievability_before": {
+        "v003": 1.0,
+        "v011": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0,
+        "v011": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-06T11:42:42.211670",
+      "day": 27,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v007",
+        "g002"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.01573801677325992,
+        "v007": 0.0,
+        "g002": 0.009969435889075642
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v007": 1.0,
+        "g002": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v007": 1.0,
+        "g002": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-06T11:42:42.211670",
+      "day": 27,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v005"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v005": 0.0035719695207884006
+      },
+      "retrievability_before": {
+        "v005": 1.0
+      },
+      "retrievability_after": {
+        "v005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-07T11:42:42.211670",
+      "day": 28,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v001",
+        "v016"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v001": 0.012708448544407383,
+        "v016": 0.004423491666611023
+      },
+      "retrievability_before": {
+        "v001": 1.0,
+        "v016": 1.0
+      },
+      "retrievability_after": {
+        "v001": 1.0,
+        "v016": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-07T11:42:42.211670",
+      "day": 28,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v011",
+        "g005"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v004": 0.19359864523299947,
+        "v011": 0.21675,
+        "g005": 0.21675
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v011": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v011": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-08T11:42:42.211670",
+      "day": 29,
+      "exercise_number": 1,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v013"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v013": 0.0
+      },
+      "retrievability_before": {
+        "v013": 1.0
+      },
+      "retrievability_after": {
+        "v013": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-08T11:42:42.211670",
+      "day": 29,
+      "exercise_number": 2,
+      "exercise_type": "minimal_pair",
+      "knowledge_point_ids": [
+        "v003"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v003": 0.20491793883541334
+      },
+      "retrievability_before": {
+        "v003": 1.0
+      },
+      "retrievability_after": {
+        "v003": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-09T11:42:42.211670",
+      "day": 30,
+      "exercise_number": 1,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v004",
+        "v008",
+        "g005"
+      ],
+      "is_correct": true,
+      "true_knowledge_before": {
+        "v004": 0.1328812701218,
+        "v008": 0.006444715595135349,
+        "g005": 0.14877178124999998
+      },
+      "retrievability_before": {
+        "v004": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      },
+      "retrievability_after": {
+        "v004": 1.0,
+        "v008": 1.0,
+        "g005": 1.0
+      }
+    },
+    {
+      "timestamp": "2026-02-09T11:42:42.211670",
+      "day": 30,
+      "exercise_number": 2,
+      "exercise_type": "segmented_translation",
+      "knowledge_point_ids": [
+        "v002",
+        "v014"
+      ],
+      "is_correct": false,
+      "true_knowledge_before": {
+        "v002": 0.02116155957727822,
+        "v014": 0.15431111475739417
+      },
+      "retrievability_before": {
+        "v002": 1.0,
+        "v014": 1.0
+      },
+      "retrievability_after": {
+        "v002": 1.0,
+        "v014": 1.0
+      }
+    }
+  ],
+  "kp_trajectories": {
+    "v013": {
+      "kp_id": "v013",
+      "kp_chinese": "\u559d",
+      "kp_english": "to drink",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-19T11:42:42.211670",
+          "day": 9,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-08T11:42:42.211670",
+          "day": 29,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v004": {
+      "kp_id": "v004",
+      "kp_chinese": "\u5979",
+      "kp_english": "she, her",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 3,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 8,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 5,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-18T11:42:42.211670",
+          "day": 8,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-21T11:42:42.211670",
+          "day": 11,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-22T11:42:42.211670",
+          "day": 12,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-23T11:42:42.211670",
+          "day": 13,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-29T11:42:42.211670",
+          "day": 19,
+          "exercise_number": 0,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-31T11:42:42.211670",
+          "day": 21,
+          "exercise_number": 1,
+          "true_knowledge": 0.451725,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-01T11:42:42.211670",
+          "day": 22,
+          "exercise_number": 1,
+          "true_knowledge": 0.568776375,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-02T11:42:42.211670",
+          "day": 23,
+          "exercise_number": 1,
+          "true_knowledge": 0.4592869228125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-04T11:42:42.211670",
+          "day": 25,
+          "exercise_number": 1,
+          "true_knowledge": 0.31524306164542965,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-07T11:42:42.211670",
+          "day": 28,
+          "exercise_number": 1,
+          "true_knowledge": 0.18391871297134949,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-09T11:42:42.211670",
+          "day": 30,
+          "exercise_number": 0,
+          "true_knowledge": 0.39301688908526,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        }
+      ]
+    },
+    "v016": {
+      "kp_id": "v016",
+      "kp_chinese": "\u7c73\u996d",
+      "kp_english": "rice",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 6,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 6,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 4,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-18T11:42:42.211670",
+          "day": 8,
+          "exercise_number": 1,
+          "true_knowledge": 0.1264560140625,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-22T11:42:42.211670",
+          "day": 12,
+          "exercise_number": 1,
+          "true_knowledge": 0.06271028820617724,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-02T11:42:42.211670",
+          "day": 23,
+          "exercise_number": 1,
+          "true_knowledge": 0.009969435889075645,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-07T11:42:42.211670",
+          "day": 28,
+          "exercise_number": 0,
+          "true_knowledge": 0.004202317083280472,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v003": {
+      "kp_id": "v003",
+      "kp_chinese": "\u4ed6",
+      "kp_english": "he, him",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 2,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 6,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 3,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 7,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 2,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-18T11:42:42.211670",
+          "day": 8,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-24T11:42:42.211670",
+          "day": 14,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-26T11:42:42.211670",
+          "day": 16,
+          "exercise_number": 0,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-28T11:42:42.211670",
+          "day": 18,
+          "exercise_number": 0,
+          "true_knowledge": 0.2059125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-29T11:42:42.211670",
+          "day": 19,
+          "exercise_number": 1,
+          "true_knowledge": 0.16627434374999997,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-03T11:42:42.211670",
+          "day": 24,
+          "exercise_number": 0,
+          "true_knowledge": 0.07008796917160984,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-03T11:42:42.211670",
+          "day": 24,
+          "exercise_number": 1,
+          "true_knowledge": 0.06658357071302934,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-05T11:42:42.211670",
+          "day": 26,
+          "exercise_number": 1,
+          "true_knowledge": 0.33367464088811455,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-08T11:42:42.211670",
+          "day": 29,
+          "exercise_number": 1,
+          "true_knowledge": 0.4434425571847893,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        }
+      ]
+    },
+    "v005": {
+      "kp_id": "v005",
+      "kp_chinese": "\u662f",
+      "kp_english": "to be",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 4,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 4,
+          "true_knowledge": 0.14877178124999998,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-20T11:42:42.211670",
+          "day": 10,
+          "exercise_number": 1,
+          "true_knowledge": 0.06271028820617722,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-22T11:42:42.211670",
+          "day": 12,
+          "exercise_number": 0,
+          "true_knowledge": 0.04304277406751488,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-25T11:42:42.211670",
+          "day": 15,
+          "exercise_number": 0,
+          "true_knowledge": 0.025111961443001946,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-06T11:42:42.211670",
+          "day": 27,
+          "exercise_number": 1,
+          "true_knowledge": 0.30250037866455187,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        }
+      ]
+    },
+    "v006": {
+      "kp_id": "v006",
+      "kp_chinese": "\u4e0d",
+      "kp_english": "not, no",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 5,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 3,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 4,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-20T11:42:42.211670",
+          "day": 10,
+          "exercise_number": 0,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-21T11:42:42.211670",
+          "day": 11,
+          "exercise_number": 1,
+          "true_knowledge": 0.47850000000000004,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-27T11:42:42.211670",
+          "day": 17,
+          "exercise_number": 0,
+          "true_knowledge": 0.17144274106523438,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v019": {
+      "kp_id": "v019",
+      "kp_chinese": "\u559c\u6b22",
+      "kp_english": "to like",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 7,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 6,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v014": {
+      "kp_id": "v014",
+      "kp_chinese": "\u6c34",
+      "kp_english": "water",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 8,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 4,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-14T11:42:42.211670",
+          "day": 4,
+          "exercise_number": 5,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 2,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 2,
+          "true_knowledge": 0.2059125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-24T11:42:42.211670",
+          "day": 14,
+          "exercise_number": 0,
+          "true_knowledge": 0.346207580783499,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-26T11:42:42.211670",
+          "day": 16,
+          "exercise_number": 0,
+          "true_knowledge": 0.47509448398125464,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-31T11:42:42.211670",
+          "day": 21,
+          "exercise_number": 1,
+          "true_knowledge": 0.4475613625373501,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-01T11:42:42.211670",
+          "day": 22,
+          "exercise_number": 1,
+          "true_knowledge": 0.5662990107097233,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-09T11:42:42.211670",
+          "day": 30,
+          "exercise_number": 1,
+          "true_knowledge": 0.14659555901952445,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v002": {
+      "kp_id": "v002",
+      "kp_chinese": "\u4f60",
+      "kp_english": "you",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 9,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 6,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 2,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-23T11:42:42.211670",
+          "day": 13,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-24T11:42:42.211670",
+          "day": 14,
+          "exercise_number": 0,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-05T11:42:42.211670",
+          "day": 26,
+          "exercise_number": 0,
+          "true_knowledge": 0.04053890078380905,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-09T11:42:42.211670",
+          "day": 30,
+          "exercise_number": 1,
+          "true_knowledge": 0.02010348159841431,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v007": {
+      "kp_id": "v007",
+      "kp_chinese": "\u5b66\u751f",
+      "kp_english": "student",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 9,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-23T11:42:42.211670",
+          "day": 13,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-23T11:42:42.211670",
+          "day": 13,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-24T11:42:42.211670",
+          "day": 14,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-03T11:42:42.211670",
+          "day": 24,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-06T11:42:42.211670",
+          "day": 27,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "g001": {
+      "kp_id": "g001",
+      "kp_chinese": "Subject + \u662f + Noun",
+      "kp_english": "Subject is Noun (using \u662f)",
+      "first_practiced": "2026-01-11T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-11T11:42:42.211670",
+          "day": 1,
+          "exercise_number": 9,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 2,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-23T11:42:42.211670",
+          "day": 13,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v017": {
+      "kp_id": "v017",
+      "kp_chinese": "\u597d",
+      "kp_english": "good",
+      "first_practiced": "2026-01-12T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 5,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 7,
+          "true_knowledge": 0.285,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 2,
+          "true_knowledge": 0.23013749999999997,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 0,
+          "true_knowledge": 0.134266532578125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-25T11:42:42.211670",
+          "day": 15,
+          "exercise_number": 1,
+          "true_knowledge": 0.029543484050590534,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-28T11:42:42.211670",
+          "day": 18,
+          "exercise_number": 1,
+          "true_knowledge": 0.017236222535440465,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-29T11:42:42.211670",
+          "day": 19,
+          "exercise_number": 0,
+          "true_knowledge": 0.3102555524085871,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-31T11:42:42.211670",
+          "day": 21,
+          "exercise_number": 0,
+          "true_knowledge": 0.21295165478444397,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-02T11:42:42.211670",
+          "day": 23,
+          "exercise_number": 0,
+          "true_knowledge": 0.1461646920526727,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "g004": {
+      "kp_id": "g004",
+      "kp_chinese": "Subject + \u5f88 + Adjective",
+      "kp_english": "Subject is very Adjective (using \u5f88)",
+      "first_practiced": "2026-01-12T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 5,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 0,
+          "true_knowledge": 0.14877178124999998,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-25T11:42:42.211670",
+          "day": 15,
+          "exercise_number": 1,
+          "true_knowledge": 0.03273516238292579,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-29T11:42:42.211670",
+          "day": 19,
+          "exercise_number": 0,
+          "true_knowledge": 0.31196157155105647,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-02T11:42:42.211670",
+          "day": 23,
+          "exercise_number": 0,
+          "true_knowledge": 0.154703595604,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v018": {
+      "kp_id": "v018",
+      "kp_chinese": "\u5f88",
+      "kp_english": "very",
+      "first_practiced": "2026-01-12T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 2,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 8,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-19T11:42:42.211670",
+          "day": 9,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-01T11:42:42.211670",
+          "day": 22,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v001": {
+      "kp_id": "v001",
+      "kp_chinese": "\u6211",
+      "kp_english": "I, me",
+      "first_practiced": "2026-01-12T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 5,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 4,
+          "true_knowledge": 0.47850000000000004,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 0,
+          "true_knowledge": 0.3284304375,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 5,
+          "true_knowledge": 0.312008915625,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 0,
+          "true_knowledge": 0.25194719936718746,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 1,
+          "true_knowledge": 0.4499085836234765,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-25T11:42:42.211670",
+          "day": 15,
+          "exercise_number": 1,
+          "true_knowledge": 0.11646603486258494,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-02T11:42:42.211670",
+          "day": 23,
+          "exercise_number": 0,
+          "true_knowledge": 0.030149096439477344,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-06T11:42:42.211670",
+          "day": 27,
+          "exercise_number": 0,
+          "true_knowledge": 0.014951115934596922,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-07T11:42:42.211670",
+          "day": 28,
+          "exercise_number": 0,
+          "true_knowledge": 0.012073026117187012,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v020": {
+      "kp_id": "v020",
+      "kp_chinese": "\u4ec0\u4e48",
+      "kp_english": "what",
+      "first_practiced": "2026-01-12T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-12T11:42:42.211670",
+          "day": 2,
+          "exercise_number": 9,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-26T11:42:42.211670",
+          "day": 16,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-04T11:42:42.211670",
+          "day": 25,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v011": {
+      "kp_id": "v011",
+      "kp_chinese": "\u4eba",
+      "kp_english": "person, people",
+      "first_practiced": "2026-01-13T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-16T11:42:42.211670",
+          "day": 6,
+          "exercise_number": 2,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-05T11:42:42.211670",
+          "day": 26,
+          "exercise_number": 1,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-07T11:42:42.211670",
+          "day": 28,
+          "exercise_number": 1,
+          "true_knowledge": 0.2059125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v012": {
+      "kp_id": "v012",
+      "kp_chinese": "\u5403",
+      "kp_english": "to eat",
+      "first_practiced": "2026-01-13T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 3,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 8,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 3,
+          "true_knowledge": 0.2059125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-27T11:42:42.211670",
+          "day": 17,
+          "exercise_number": 1,
+          "true_knowledge": 0.32050254907141146,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-30T11:42:42.211670",
+          "day": 20,
+          "exercise_number": 0,
+          "true_knowledge": 0.1869871965510565,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v015": {
+      "kp_id": "v015",
+      "kp_chinese": "\u8336",
+      "kp_english": "tea",
+      "first_practiced": "2026-01-13T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 5,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-13T11:42:42.211670",
+          "day": 3,
+          "exercise_number": 7,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-30T11:42:42.211670",
+          "day": 20,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "v008": {
+      "kp_id": "v008",
+      "kp_chinese": "\u8001\u5e08",
+      "kp_english": "teacher",
+      "first_practiced": "2026-01-15T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 1,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-29T11:42:42.211670",
+          "day": 19,
+          "exercise_number": 1,
+          "true_knowledge": 0.04053890078380905,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-05T11:42:42.211670",
+          "day": 26,
+          "exercise_number": 0,
+          "true_knowledge": 0.012346050636626188,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-09T11:42:42.211670",
+          "day": 30,
+          "exercise_number": 0,
+          "true_knowledge": 0.30451130091659473,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        }
+      ]
+    },
+    "g005": {
+      "kp_id": "g005",
+      "kp_chinese": "Subject + \u559c\u6b22 + Object",
+      "kp_english": "Subject likes Object",
+      "first_practiced": "2026-01-15T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 5,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-21T11:42:42.211670",
+          "day": 11,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-23T11:42:42.211670",
+          "day": 13,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-29T11:42:42.211670",
+          "day": 19,
+          "exercise_number": 1,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-05T11:42:42.211670",
+          "day": 26,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-05T11:42:42.211670",
+          "day": 26,
+          "exercise_number": 1,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-02-07T11:42:42.211670",
+          "day": 28,
+          "exercise_number": 1,
+          "true_knowledge": 0.2059125,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-09T11:42:42.211670",
+          "day": 30,
+          "exercise_number": 0,
+          "true_knowledge": 0.40414024687499994,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        }
+      ]
+    },
+    "v009": {
+      "kp_id": "v009",
+      "kp_chinese": "\u670b\u53cb",
+      "kp_english": "friend",
+      "first_practiced": "2026-01-15T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-15T11:42:42.211670",
+          "day": 5,
+          "exercise_number": 5,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-18T11:42:42.211670",
+          "day": 8,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-21T11:42:42.211670",
+          "day": 11,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    },
+    "g002": {
+      "kp_id": "g002",
+      "kp_chinese": "Subject + \u4e0d + Verb",
+      "kp_english": "Negation with \u4e0d",
+      "first_practiced": "2026-01-17T11:42:42.211670",
+      "snapshots": [
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 0,
+          "true_knowledge": 0.0,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-17T11:42:42.211670",
+          "day": 7,
+          "exercise_number": 1,
+          "true_knowledge": 0.3,
+          "retrievability": 1.0,
+          "fsrs_stability": 2.3065,
+          "fsrs_difficulty": 2.111214235785395
+        },
+        {
+          "timestamp": "2026-01-18T11:42:42.211670",
+          "day": 8,
+          "exercise_number": 0,
+          "true_knowledge": 0.24225,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-01-24T11:42:42.211670",
+          "day": 14,
+          "exercise_number": 1,
+          "true_knowledge": 0.08679624665214841,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-03T11:42:42.211670",
+          "day": 24,
+          "exercise_number": 1,
+          "true_knowledge": 0.016233561390719548,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        },
+        {
+          "timestamp": "2026-02-06T11:42:42.211670",
+          "day": 27,
+          "exercise_number": 0,
+          "true_knowledge": 0.009470964094621859,
+          "retrievability": 1.0,
+          "fsrs_stability": 0.08335671711031604,
+          "fsrs_difficulty": 8.806304468856837
+        }
+      ]
+    }
+  },
+  "final_kps_practiced": 23
+}

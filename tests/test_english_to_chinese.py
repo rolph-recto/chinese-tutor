@@ -178,9 +178,7 @@ class TestGenerateExercise:
             # Check if options contain pronoun characters
             pronoun_chars = {"我", "你", "他", "她"}
             options_from_pronouns = sum(
-                1
-                for opt in exercise.options
-                if any(c in opt for c in pronoun_chars)
+                1 for opt in exercise.options if any(c in opt for c in pronoun_chars)
             )
             if options_from_pronouns >= 3:  # At least 3 from same cluster
                 same_cluster_count += 1
@@ -267,6 +265,8 @@ class TestCheckAnswer:
         assert exercise is not None
 
         correct_letter = ["A", "B", "C", "D"][exercise.correct_index]
-        is_correct, _ = english_to_chinese.check_answer(exercise, f"  {correct_letter}  ")
+        is_correct, _ = english_to_chinese.check_answer(
+            exercise, f"  {correct_letter}  "
+        )
 
         assert is_correct is True

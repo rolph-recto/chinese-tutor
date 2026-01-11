@@ -22,6 +22,7 @@ def make_due_now(mastery: StudentMastery):
     # Set the due date to 1 hour in the past
     mastery.fsrs_state.due = datetime.now(timezone.utc) - timedelta(hours=1)
 
+
 class TestUpdatePracticeStats:
     """Tests for practice statistics updates."""
 
@@ -71,7 +72,9 @@ class TestExerciseScheduler:
         assert len(queue) > 0
         assert len(queue) <= 4
 
-    def test_update_multi_skill_exercise(self, sample_knowledge_points, empty_student_state):
+    def test_update_multi_skill_exercise(
+        self, sample_knowledge_points, empty_student_state
+    ):
         """Should update practice stats for multiple KPs."""
         session_state = SessionState()
         scheduler = ExerciseScheduler(

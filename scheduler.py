@@ -16,6 +16,7 @@ from models import (
     StudentState,
 )
 
+
 class ExerciseScheduler:
     """
     Main scheduler implementing FSRS-based spaced repetition.
@@ -112,6 +113,7 @@ class ExerciseScheduler:
 # =========================================================================
 # Standalone Functions (for backward compatibility)
 # =========================================================================
+
 
 def update_practice_stats(
     mastery: StudentMastery,

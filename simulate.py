@@ -142,13 +142,17 @@ class Simulator:
         kps_practiced: set[str] = set()
 
         session = SessionState(exercises_completed=0)
-        scheduler = ExerciseScheduler(self.knowledge_points, self.student_state, session)
+        scheduler = ExerciseScheduler(
+            self.knowledge_points, self.student_state, session
+        )
         kp_queue = scheduler.compose_session_queue(exercises_per_day)
 
         print(f"day {day}, {len(kp_queue)} knowledge points due")
 
         for ex_num, target_kp_id in enumerate(kp_queue):
-            target_kp: KnowledgePoint | None = scheduler.knowledge_points.get(target_kp_id)
+            target_kp: KnowledgePoint | None = scheduler.knowledge_points.get(
+                target_kp_id
+            )
             assert target_kp is not None
 
             # Generate exercise
@@ -191,7 +195,7 @@ class Simulator:
                 ExerciseResult(
                     timestamp=current_time,
                     day=day,
-                    exercise_number=ex_num+1,
+                    exercise_number=ex_num + 1,
                     exercise_type=exercise_type,
                     knowledge_point_ids=exercise.knowledge_point_ids,
                     is_correct=is_correct,
@@ -263,9 +267,7 @@ class Simulator:
             retrievability_states[kp_id] = ret if ret is not None else 1.0
 
         return {
-            "true": {
-                kp_id: self.student.get_true_knowledge(kp_id) for kp_id in kp_ids
-            },
+            "true": {kp_id: self.student.get_true_knowledge(kp_id) for kp_id in kp_ids},
             "retrievability": retrievability_states,
         }
 
@@ -411,7 +413,9 @@ class Simulator:
             end_time=end_time,
             total_exercises=total_exercises,
             total_correct=total_correct,
-            overall_accuracy=total_correct / total_exercises if total_exercises > 0 else 0.0,
+            overall_accuracy=total_correct / total_exercises
+            if total_exercises > 0
+            else 0.0,
             daily_summaries=self.daily_summaries,
             exercise_results=self.exercise_results,
             kp_trajectories=self.kp_trajectories,
@@ -419,7 +423,9 @@ class Simulator:
         )
 
 
-def print_console_summary(results: SimulationResults, kp_dict: dict[str, KnowledgePoint]) -> None:
+def print_console_summary(
+    results: SimulationResults, kp_dict: dict[str, KnowledgePoint]
+) -> None:
     """Print formatted console summary of simulation results."""
     print()
     print("=" * 80)

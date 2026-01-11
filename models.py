@@ -6,19 +6,23 @@ import fsrs
 
 _scheduler = fsrs.Scheduler()
 
+
 def get_scheduler() -> fsrs.Scheduler:
     """Get the global FSRS scheduler instance."""
     return _scheduler
 
+
 class KnowledgePointType(str, Enum):
     VOCABULARY = "vocabulary"
     GRAMMAR = "grammar"
+
 
 class FSRSState(BaseModel):
     """
     Stores FSRS card state. These fields mirror the py-fsrs Card class
     but are stored as primitives for JSON serialization with Pydantic.
     """
+
     stability: float | None = None
     difficulty: float | None = None
     due: datetime | None = None
@@ -48,10 +52,13 @@ class FSRSState(BaseModel):
             stability=card.stability,
             difficulty=card.difficulty,
             due=card.due.replace(tzinfo=None) if card.due else None,
-            last_review=card.last_review.replace(tzinfo=None) if card.last_review else None,
+            last_review=card.last_review.replace(tzinfo=None)
+            if card.last_review
+            else None,
             state=card.state.value,
             step=card.step,
         )
+
 
 class KnowledgePoint(BaseModel):
     id: str
@@ -90,6 +97,7 @@ class MinimalPairExercise(Exercise):
 
 class MultipleChoiceVocabExercise(Exercise):
     """Multiple choice vocabulary exercise (both directions)."""
+
     direction: str  # "chinese_to_english" or "english_to_chinese"
     prompt: str  # The word being asked about
     prompt_pinyin: str  # Pinyin (shown when prompt is Chinese)
@@ -188,6 +196,7 @@ class StudentMastery(BaseModel):
         self.fsrs_state = FSRSState.from_fsrs_card(card)
         return review_log
 
+
 class StudentState(BaseModel):
     masteries: dict[str, StudentMastery] = Field(default_factory=dict)
     last_kp_type: KnowledgePointType | None = None
@@ -216,4 +225,5 @@ class StudentState(BaseModel):
 
 class SessionState(BaseModel):
     """Tracks the current session's scheduling state."""
+
     exercises_completed: int = 0

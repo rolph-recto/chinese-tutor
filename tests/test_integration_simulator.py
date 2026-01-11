@@ -224,8 +224,7 @@ class TestQuickSanityChecks:
 
         # At least one should have been initialized with FSRS state
         has_initialized = any(
-            m.fsrs_state is not None
-            for m in simulator.student_state.masteries.values()
+            m.fsrs_state is not None for m in simulator.student_state.masteries.values()
         )
         assert has_initialized
 

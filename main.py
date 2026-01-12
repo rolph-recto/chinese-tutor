@@ -251,12 +251,6 @@ def run_interactive() -> None:
         ui.show_error("No knowledge points found. Check data/ directory.")
         return
 
-    ui.show_welcome(
-        knowledge_point_count=len(knowledge_points),
-        due_count=0,
-        streak=0,
-    )
-
     signal.signal(signal.SIGINT, create_sigint_handler(ui, student_state))
 
     kp_dict = {kp.id: kp for kp in knowledge_points}
@@ -269,6 +263,12 @@ def run_interactive() -> None:
     )
 
     kp_queue = scheduler.compose_session_queue()
+
+    ui.show_welcome(
+        knowledge_point_count=len(knowledge_points),
+        due_count=len(kp_queue),
+        streak=0,
+    )
 
     if len(kp_queue) > 0:
         ui.show_info(f"{len(kp_queue)} knowledge points due.")

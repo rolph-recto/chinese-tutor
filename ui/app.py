@@ -29,14 +29,12 @@ class TutorUI:
     def show_welcome(
         self,
         knowledge_point_count: int,
-        due_count: int,
-        streak: int = 0,
+        due_count: int
     ) -> None:
         """Display the welcome screen and wait for user to press Enter."""
         welcome = WelcomeScreen(
             knowledge_point_count=knowledge_point_count,
-            due_count=due_count,
-            streak=streak,
+            due_count=due_count
         )
         self.console.print(welcome)
         self.console.print()

@@ -234,12 +234,10 @@ class WelcomeScreen:
     def __init__(
         self,
         knowledge_point_count: int,
-        due_count: int,
-        streak: int = 0,
+        due_count: int
     ):
         self.knowledge_point_count = knowledge_point_count
         self.due_count = due_count
-        self.streak = streak
 
     def render(self) -> Panel:
         banner = Text()
@@ -285,10 +283,6 @@ class WelcomeScreen:
         stats.add_row(
             Text("Due Today", style=Style(color=MUTED_GRAY)),
             Text(str(self.due_count), style=Style(color=CHINESE_GOLD, bold=True)),
-        )
-        stats.add_row(
-            Text("Streak", style=Style(color=MUTED_GRAY)),
-            Text(f"{self.streak} days", style=Style(color=CHINESE_GOLD, bold=True)),
         )
 
         # content = Text()

@@ -3,6 +3,7 @@
 These tests simulate user input through stdin by mocking Console.input().
 """
 
+import json
 import random
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -13,6 +14,12 @@ from rich.console import Console
 
 import main
 from models import StudentState, StudentMastery, FSRSState
+from storage import (
+    init_schema,
+    get_connection,
+    get_student_state_repo,
+    get_knowledge_point_repo,
+)
 
 
 class InputSequence:
@@ -47,6 +54,92 @@ class InputSequence:
         return len(self.inputs) - self.index
 
 
+def _populate_test_db_from_json(db_path: Path, data_dir: Path) -> None:
+    """Populate test database from JSON data files."""
+    conn = get_connection(db_path)
+    try:
+        # Migrate vocabulary
+        vocab_file = data_dir / "vocabulary.json"
+        if vocab_file.exists():
+            with open(vocab_file) as f:
+                items = json.load(f)
+            for item in items:
+                conn.execute(
+                    """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
+                    VALUES (?, ?, ?, ?, ?, ?)""",
+                    (
+                        item["id"],
+                        item["type"],
+                        item["chinese"],
+                        item["pinyin"],
+                        item["english"],
+                        json.dumps(item.get("tags", [])),
+                    ),
+                )
+
+        # Migrate grammar
+        grammar_file = data_dir / "grammar.json"
+        if grammar_file.exists():
+            with open(grammar_file) as f:
+                items = json.load(f)
+            for item in items:
+                conn.execute(
+                    """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
+                    VALUES (?, ?, ?, ?, ?, ?)""",
+                    (
+                        item["id"],
+                        item["type"],
+                        item["chinese"],
+                        item["pinyin"],
+                        item["english"],
+                        json.dumps(item.get("tags", [])),
+                    ),
+                )
+
+        # Migrate minimal pairs
+        pairs_file = data_dir / "minimal_pairs.json"
+        if pairs_file.exists():
+            with open(pairs_file) as f:
+                pairs = json.load(f)
+            for pair in pairs:
+                target_id = pair["target_id"]
+                for distractor in pair["distractors"]:
+                    conn.execute(
+                        """INSERT INTO minimal_pairs
+                        (target_id, distractor_chinese, distractor_pinyin, distractor_english, reason)
+                        VALUES (?, ?, ?, ?, ?)""",
+                        (
+                            target_id,
+                            distractor["chinese"],
+                            distractor["pinyin"],
+                            distractor["english"],
+                            distractor.get("reason"),
+                        ),
+                    )
+
+        # Migrate cloze templates
+        cloze_file = data_dir / "cloze_templates.json"
+        if cloze_file.exists():
+            with open(cloze_file) as f:
+                templates = json.load(f)
+            for template in templates:
+                conn.execute(
+                    """INSERT INTO cloze_templates (id, chinese, english, target_vocab_id, tags)
+                    VALUES (?, ?, ?, ?, ?)""",
+                    (
+                        template["id"],
+                        template["chinese"],
+                        template["english"],
+                        template["target_vocab_id"],
+                        json.dumps(template.get("tags", [])),
+                    ),
+                )
+
+        conn.commit()
+    finally:
+        conn.close()
+
+
 @pytest.fixture
 def knowledge_points():
     """Load actual knowledge points from data files."""
@@ -54,22 +147,26 @@ def knowledge_points():
 
 
 @pytest.fixture
-def interactive_runner(tmp_path, monkeypatch, knowledge_points):
+def interactive_runner(tmp_path, monkeypatch):
     """Fixture providing a patched run_interactive runner.
 
     Patches:
-    - main.STATE_FILE to use temp file (uses real DATA_DIR for knowledge points)
+    - main.DB_PATH to use temp database (migrated from real data files)
     - Console.input to use provided InputSequence
     - Console.clear to no-op (avoid terminal issues)
     - signal.signal to no-op (avoid handler issues in tests)
 
     Returns a callable that takes an InputSequence and runs the session.
-    The callable returns the state file path for assertions.
+    The callable returns the database path for assertions.
     """
-    state_file = tmp_path / "student_state.json"
+    test_db_path = tmp_path / "test_tutor.db"
 
-    # Patch STATE_FILE to use temp file (keep real DATA_DIR for knowledge points)
-    monkeypatch.setattr(main, "STATE_FILE", state_file)
+    # Initialize schema and populate from real data files
+    init_schema(test_db_path)
+    _populate_test_db_from_json(test_db_path, main.DATA_DIR)
+
+    # Patch DB_PATH to use test database
+    monkeypatch.setattr(main, "DB_PATH", test_db_path)
 
     # Disable signal handler (can cause issues in tests)
     monkeypatch.setattr("signal.signal", lambda *args, **kwargs: None)
@@ -90,13 +187,14 @@ def interactive_runner(tmp_path, monkeypatch, knowledge_points):
             initial_state: Optional initial student state to load
 
         Returns:
-            Path to the state file for assertions
+            Path to the database for assertions
         """
         random.seed(seed)
 
-        # Write initial state if provided
+        # Save initial state to database if provided
         if initial_state is not None:
-            state_file.write_text(initial_state.model_dump_json(indent=2))
+            repo = get_student_state_repo(test_db_path)
+            repo.save(initial_state)
 
         # Patch Console.input to use our sequence
         monkeypatch.setattr(Console, "input", input_sequence)
@@ -108,7 +206,7 @@ def interactive_runner(tmp_path, monkeypatch, knowledge_points):
         except SystemExit:
             pass  # Expected on quit
 
-        return state_file
+        return test_db_path
 
     return runner
 
@@ -135,13 +233,14 @@ class TestInteractiveBasicFlow:
             ]
         )
 
-        state_file = interactive_runner(inputs, seed=42)
+        db_path = interactive_runner(inputs, seed=42)
 
-        # Verify state was saved
-        assert state_file.exists()
+        # Verify database exists
+        assert db_path.exists()
 
         # Verify mastery was updated
-        state = StudentState.model_validate_json(state_file.read_text())
+        repo = get_student_state_repo(db_path)
+        state = repo.load()
         assert len(state.masteries) > 0
 
         # At least one mastery should have FSRS state initialized
@@ -164,10 +263,11 @@ class TestInteractiveBasicFlow:
             ]
         )
 
-        state_file = interactive_runner(inputs, seed=42)
+        db_path = interactive_runner(inputs, seed=42)
 
-        assert state_file.exists()
-        state = StudentState.model_validate_json(state_file.read_text())
+        assert db_path.exists()
+        repo = get_student_state_repo(db_path)
+        state = repo.load()
 
         # State should have been saved with mastery updated
         assert len(state.masteries) > 0
@@ -188,10 +288,10 @@ class TestInteractiveQuitHandling:
             ]
         )
 
-        state_file = interactive_runner(inputs, seed=42)
+        db_path = interactive_runner(inputs, seed=42)
 
-        # State should be saved (creates empty state if none existed)
-        assert state_file.exists()
+        # Database should exist
+        assert db_path.exists()
 
 
 class TestInteractiveStatePersistence:
@@ -201,7 +301,7 @@ class TestInteractiveStatePersistence:
         self,
         interactive_runner,
     ):
-        """Should persist mastery updates to student_state.json."""
+        """Should persist mastery updates to database."""
         # With seed=42, first exercise is segmented_translation (ordering mode)
         # The exercise is "he is a teacher" -> 他是老师
         # Options: 1. 是  2. 老师  3. 他  -> Correct order: 3 1 2
@@ -214,10 +314,11 @@ class TestInteractiveStatePersistence:
             ]
         )
 
-        state_file = interactive_runner(inputs, seed=42)
+        db_path = interactive_runner(inputs, seed=42)
 
-        # Read the saved state
-        state = StudentState.model_validate_json(state_file.read_text())
+        # Read the saved state from database
+        repo = get_student_state_repo(db_path)
+        state = repo.load()
 
         # Should have at least one mastery record
         assert len(state.masteries) > 0
@@ -238,9 +339,14 @@ class TestInteractiveEdgeCases:
     def test_no_knowledge_points_due(
         self,
         interactive_runner,
-        knowledge_points,
+        tmp_path,
+        monkeypatch,
     ):
         """Should show 'all caught up' message when no items are due."""
+        # Load knowledge points from the test database (main.DB_PATH is already patched)
+        kp_repo = get_knowledge_point_repo(main.DB_PATH)
+        knowledge_points = kp_repo.get_all()
+
         # Create a state where all items have future due dates
         future_due = datetime.now() + timedelta(days=7)
         initial_state = StudentState()
@@ -265,11 +371,12 @@ class TestInteractiveEdgeCases:
             ]
         )
 
-        state_file = interactive_runner(inputs, seed=42, initial_state=initial_state)
+        db_path = interactive_runner(inputs, seed=42, initial_state=initial_state)
 
         # Session should complete without errors
-        assert state_file.exists()
+        assert db_path.exists()
 
         # State should still have our pre-set masteries
-        state = StudentState.model_validate_json(state_file.read_text())
+        repo = get_student_state_repo(db_path)
+        state = repo.load()
         assert len(state.masteries) == len(knowledge_points)

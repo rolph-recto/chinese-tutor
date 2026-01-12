@@ -1,5 +1,6 @@
 """Shared pytest fixtures for the Chinese Tutor test suite."""
 
+import json
 import pytest
 from datetime import datetime, timedelta
 
@@ -17,6 +18,7 @@ from models import (
     FSRSState,
 )
 from simulator_models import SimulatedStudentConfig
+from storage import init_schema, get_connection
 
 
 @pytest.fixture
@@ -205,3 +207,62 @@ def slow_learner_config() -> SimulatedStudentConfig:
         slip_rate=0.15,
         guess_rate=0.3,
     )
+
+
+@pytest.fixture
+def test_db_path(tmp_path) -> Path:
+    """Create a temporary database path for testing."""
+    db_path = tmp_path / "test_tutor.db"
+    init_schema(db_path)
+    return db_path
+
+
+@pytest.fixture
+def populated_test_db(test_db_path, sample_knowledge_points) -> Path:
+    """Create a test database populated with sample data.
+
+    Includes sample knowledge points, minimal pairs, and cloze templates.
+    """
+    conn = get_connection(test_db_path)
+    try:
+        # Insert knowledge points
+        for kp in sample_knowledge_points:
+            conn.execute(
+                """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
+                VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    kp.id,
+                    kp.type.value,
+                    kp.chinese,
+                    kp.pinyin,
+                    kp.english,
+                    json.dumps(kp.tags),
+                ),
+            )
+
+        # Insert minimal pairs for v001 (我)
+        conn.execute(
+            """INSERT INTO minimal_pairs
+            (target_id, distractor_chinese, distractor_pinyin, distractor_english, reason)
+            VALUES (?, ?, ?, ?, ?)""",
+            ("v001", "找", "zhǎo", "to find", "Similar visual shape"),
+        )
+
+        # Insert cloze template
+        conn.execute(
+            """INSERT INTO cloze_templates (id, chinese, english, target_vocab_id, tags)
+            VALUES (?, ?, ?, ?, ?)""",
+            (
+                "cloze001",
+                "_____ 是学生。",
+                "_____ am a student.",
+                "v001",
+                json.dumps(["hsk1"]),
+            ),
+        )
+
+        conn.commit()
+    finally:
+        conn.close()
+
+    return test_db_path

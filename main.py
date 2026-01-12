@@ -1,5 +1,4 @@
 import argparse
-import json
 import random
 import signal
 import sys
@@ -9,6 +8,7 @@ import fsrs
 from rich.console import Console
 
 from models import KnowledgePoint, SessionState, StudentState
+from storage import get_knowledge_point_repo, get_student_state_repo, DEFAULT_DB_PATH
 from scheduler import ExerciseScheduler
 from exercises import (
     ExerciseHandler,
@@ -68,7 +68,7 @@ def generate_exercise_with_fallback(
 
 
 DATA_DIR = Path(__file__).parent / "data"
-STATE_FILE = Path(__file__).parent / "student_state.json"
+DB_PATH = DEFAULT_DB_PATH
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -144,36 +144,21 @@ def create_parser() -> argparse.ArgumentParser:
 
 
 def load_knowledge_points() -> list[KnowledgePoint]:
-    """Load all knowledge points from JSON files."""
-    knowledge_points = []
-
-    vocab_file = DATA_DIR / "vocabulary.json"
-    if vocab_file.exists():
-        with open(vocab_file) as f:
-            for item in json.load(f):
-                knowledge_points.append(KnowledgePoint(**item))
-
-    grammar_file = DATA_DIR / "grammar.json"
-    if grammar_file.exists():
-        with open(grammar_file) as f:
-            for item in json.load(f):
-                knowledge_points.append(KnowledgePoint(**item))
-
-    return knowledge_points
+    """Load all knowledge points from the database."""
+    repo = get_knowledge_point_repo(DB_PATH)
+    return repo.get_all()
 
 
 def load_student_state() -> StudentState:
-    """Load student state from file, or create new if doesn't exist."""
-    if STATE_FILE.exists():
-        with open(STATE_FILE) as f:
-            return StudentState.model_validate_json(f.read())
-    return StudentState()
+    """Load student state from the database, or create new if empty."""
+    repo = get_student_state_repo(DB_PATH)
+    return repo.load()
 
 
 def save_student_state(state: StudentState) -> None:
-    """Save student state to file."""
-    with open(STATE_FILE, "w") as f:
-        f.write(state.model_dump_json(indent=2))
+    """Save student state to the database."""
+    repo = get_student_state_repo(DB_PATH)
+    repo.save(state)
 
 
 def handle_quit(ui: TutorUI, student_state: StudentState) -> None:
@@ -267,7 +252,6 @@ def run_interactive() -> None:
     ui.show_welcome(
         knowledge_point_count=len(knowledge_points),
         due_count=len(kp_queue),
-        streak=0,
     )
 
     if len(kp_queue) > 0:

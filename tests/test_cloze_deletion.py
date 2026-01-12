@@ -1,9 +1,12 @@
 """Unit tests for cloze deletion exercise."""
 
+import json
 import pytest
 
 from models import KnowledgePoint, KnowledgePointType
 from exercises.cloze_deletion import ClozeDeletionHandler
+from storage import get_connection, init_schema, SQLiteClozeTemplatesRepository
+import exercises.cloze_deletion
 
 
 @pytest.fixture
@@ -59,6 +62,68 @@ def vocab_knowledge_points() -> list[KnowledgePoint]:
             tags=["hsk1", "cluster:food-drink"],
         ),
     ]
+
+
+@pytest.fixture(autouse=True)
+def setup_test_db(tmp_path, monkeypatch, vocab_knowledge_points):
+    """Set up test database with cloze templates for each test."""
+    test_db_path = tmp_path / "test_tutor.db"
+    init_schema(test_db_path)
+
+    conn = get_connection(test_db_path)
+    try:
+        # Insert vocabulary knowledge points
+        for kp in vocab_knowledge_points:
+            conn.execute(
+                """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
+                VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    kp.id,
+                    kp.type.value,
+                    kp.chinese,
+                    kp.pinyin,
+                    kp.english,
+                    json.dumps(kp.tags),
+                ),
+            )
+
+        # Insert cloze templates
+        templates = [
+            (
+                "cloze001",
+                "_____ 是学生。",
+                "_____ am a student.",
+                "v001",
+                json.dumps(["hsk1"]),
+            ),
+            (
+                "cloze002",
+                "_____ 喝茶。",
+                "_____ drink tea.",
+                "v002",
+                json.dumps(["hsk1"]),
+            ),
+        ]
+        for template in templates:
+            conn.execute(
+                """INSERT INTO cloze_templates (id, chinese, english, target_vocab_id, tags)
+                VALUES (?, ?, ?, ?, ?)""",
+                template,
+            )
+
+        conn.commit()
+    finally:
+        conn.close()
+
+    # Patch get_cloze_templates_repo to return a repository using the test database
+    def _get_test_cloze_repo(db_path=None):
+        return SQLiteClozeTemplatesRepository(test_db_path)
+
+    monkeypatch.setattr(
+        exercises.cloze_deletion, "get_cloze_templates_repo", _get_test_cloze_repo
+    )
+
+    return test_db_path
 
 
 class TestGenerateExercise:

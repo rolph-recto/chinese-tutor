@@ -4,20 +4,17 @@ Shows a Chinese sentence with a blank and asks the user to select the correct
 vocabulary word from 4 choices to fill in the blank.
 """
 
-import json
 import random
 import uuid
-from pathlib import Path
 from typing import Any
 
 from exercises.base import ExerciseHandler, parse_letter_input, select_distractors
 from models import ClozeDeletionExercise, KnowledgePoint
+from storage import get_cloze_templates_repo
 
 
 class ClozeDeletionHandler(ExerciseHandler[ClozeDeletionExercise]):
     """Handler for cloze deletion exercises."""
-
-    DATA_DIR = Path(__file__).parent.parent / "data"
 
     @classmethod
     def generate(
@@ -34,7 +31,8 @@ class ClozeDeletionHandler(ExerciseHandler[ClozeDeletionExercise]):
         Returns:
             Generated exercise or None if generation fails.
         """
-        templates = cls._load_templates()
+        repo = get_cloze_templates_repo()
+        templates = repo.get_all()
         if not templates:
             return None
 
@@ -73,15 +71,6 @@ class ClozeDeletionHandler(ExerciseHandler[ClozeDeletionExercise]):
             options=all_options,
             correct_index=correct_index,
         )
-
-    @classmethod
-    def _load_templates(cls) -> list[dict]:
-        """Load cloze templates from JSON file."""
-        template_path = cls.DATA_DIR / "cloze_templates.json"
-        if not template_path.exists():
-            return []
-        with open(template_path, encoding="utf-8") as f:
-            return json.load(f)
 
     @classmethod
     def _find_target_vocab(

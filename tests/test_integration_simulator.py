@@ -1,21 +1,138 @@
 """Integration tests using the student simulator."""
 
+import json
 import pytest
 import random
 
 from simulate import Simulator, ResponseGenerator
 from simulator_models import SimulatedStudent
-from main import load_knowledge_points
+import main
 from models import Exercise
+from storage import init_schema, get_connection
+
+
+def _populate_test_db_from_json(db_path, data_dir):
+    """Populate test database from JSON data files."""
+    conn = get_connection(db_path)
+    try:
+        # Migrate vocabulary
+        vocab_file = data_dir / "vocabulary.json"
+        if vocab_file.exists():
+            with open(vocab_file) as f:
+                items = json.load(f)
+            for item in items:
+                conn.execute(
+                    """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
+                    VALUES (?, ?, ?, ?, ?, ?)""",
+                    (
+                        item["id"],
+                        item["type"],
+                        item["chinese"],
+                        item["pinyin"],
+                        item["english"],
+                        json.dumps(item.get("tags", [])),
+                    ),
+                )
+
+        # Migrate grammar
+        grammar_file = data_dir / "grammar.json"
+        if grammar_file.exists():
+            with open(grammar_file) as f:
+                items = json.load(f)
+            for item in items:
+                conn.execute(
+                    """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
+                    VALUES (?, ?, ?, ?, ?, ?)""",
+                    (
+                        item["id"],
+                        item["type"],
+                        item["chinese"],
+                        item["pinyin"],
+                        item["english"],
+                        json.dumps(item.get("tags", [])),
+                    ),
+                )
+
+        # Migrate minimal pairs
+        pairs_file = data_dir / "minimal_pairs.json"
+        if pairs_file.exists():
+            with open(pairs_file) as f:
+                pairs = json.load(f)
+            for pair in pairs:
+                target_id = pair["target_id"]
+                for distractor in pair["distractors"]:
+                    conn.execute(
+                        """INSERT INTO minimal_pairs
+                        (target_id, distractor_chinese, distractor_pinyin, distractor_english, reason)
+                        VALUES (?, ?, ?, ?, ?)""",
+                        (
+                            target_id,
+                            distractor["chinese"],
+                            distractor["pinyin"],
+                            distractor["english"],
+                            distractor.get("reason"),
+                        ),
+                    )
+
+        # Migrate cloze templates
+        cloze_file = data_dir / "cloze_templates.json"
+        if cloze_file.exists():
+            with open(cloze_file) as f:
+                templates = json.load(f)
+            for template in templates:
+                conn.execute(
+                    """INSERT INTO cloze_templates (id, chinese, english, target_vocab_id, tags)
+                    VALUES (?, ?, ?, ?, ?)""",
+                    (
+                        template["id"],
+                        template["chinese"],
+                        template["english"],
+                        template["target_vocab_id"],
+                        json.dumps(template.get("tags", [])),
+                    ),
+                )
+
+        conn.commit()
+    finally:
+        conn.close()
+
+
+@pytest.fixture
+def test_db_with_data(tmp_path, monkeypatch):
+    """Set up test database with knowledge points for simulator tests."""
+    from storage import SQLiteMinimalPairsRepository, SQLiteClozeTemplatesRepository
+    import exercises.minimal_pair
+    import exercises.cloze_deletion
+
+    test_db_path = tmp_path / "test_tutor.db"
+    init_schema(test_db_path)
+    _populate_test_db_from_json(test_db_path, main.DATA_DIR)
+    monkeypatch.setattr(main, "DB_PATH", test_db_path)
+
+    # Patch exercise handlers to use test database
+    def _get_test_minimal_pairs_repo(db_path=None):
+        return SQLiteMinimalPairsRepository(test_db_path)
+
+    def _get_test_cloze_repo(db_path=None):
+        return SQLiteClozeTemplatesRepository(test_db_path)
+
+    monkeypatch.setattr(
+        exercises.minimal_pair, "get_minimal_pairs_repo", _get_test_minimal_pairs_repo
+    )
+    monkeypatch.setattr(
+        exercises.cloze_deletion, "get_cloze_templates_repo", _get_test_cloze_repo
+    )
+
+    return test_db_path
 
 
 class TestSimulatorBasicRun:
     """Basic simulator execution tests."""
 
     @pytest.fixture
-    def knowledge_points(self):
-        """Load actual knowledge points from data files."""
-        return load_knowledge_points()
+    def knowledge_points(self, test_db_with_data):
+        """Load actual knowledge points from test database."""
+        return main.load_knowledge_points()
 
     def test_simulator_runs_without_error(
         self, knowledge_points, default_simulator_config
@@ -64,8 +181,8 @@ class TestSimulatorMasteryValidation:
     """Tests validating FSRS estimates against ground truth."""
 
     @pytest.fixture
-    def knowledge_points(self):
-        return load_knowledge_points()
+    def knowledge_points(self, test_db_with_data):
+        return main.load_knowledge_points()
 
     def test_fast_learner_shows_progress(self, knowledge_points, fast_learner_config):
         """Fast learner should show mastery improvement."""
@@ -162,8 +279,8 @@ class TestSimulatorReproducibility:
     """Tests for deterministic simulation with seeds."""
 
     @pytest.fixture
-    def knowledge_points(self):
-        return load_knowledge_points()
+    def knowledge_points(self, test_db_with_data):
+        return main.load_knowledge_points()
 
     def test_same_seed_same_results(self, knowledge_points, default_simulator_config):
         """Same random seed should produce identical results."""
@@ -183,8 +300,8 @@ class TestQuickSanityChecks:
     """Quick sanity check tests (5-10 exercises)."""
 
     @pytest.fixture
-    def knowledge_points(self):
-        return load_knowledge_points()
+    def knowledge_points(self, test_db_with_data):
+        return main.load_knowledge_points()
 
     def test_sanity_check_basic(self, knowledge_points, default_simulator_config):
         """Quick sanity check: system runs and produces valid output."""

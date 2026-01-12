@@ -4,28 +4,13 @@ Multiple choice discrimination for visually/phonetically similar characters.
 Shows an English definition and asks the student to pick the correct Chinese character.
 """
 
-import json
 import random
 import uuid
-from pathlib import Path
 from typing import Any
 
 from exercises.base import ExerciseHandler, parse_letter_input
 from models import KnowledgePoint, MinimalPairExercise, MinimalPairOption
-
-DATA_DIR = Path(__file__).parent.parent / "data"
-
-
-def _load_minimal_pairs() -> dict[str, list[dict]]:
-    """Load minimal pairs data and return a dict mapping target_id to distractors."""
-    pairs_file = DATA_DIR / "minimal_pairs.json"
-    if not pairs_file.exists():
-        return {}
-
-    with open(pairs_file) as f:
-        pairs_list = json.load(f)
-
-    return {item["target_id"]: item["distractors"] for item in pairs_list}
+from storage import get_minimal_pairs_repo
 
 
 class MinimalPairHandler(ExerciseHandler[MinimalPairExercise]):
@@ -42,7 +27,8 @@ class MinimalPairHandler(ExerciseHandler[MinimalPairExercise]):
         If target_kp is provided, tries to generate an exercise for that knowledge point.
         Returns None if no minimal pairs are available for the selected vocabulary.
         """
-        minimal_pairs = _load_minimal_pairs()
+        repo = get_minimal_pairs_repo()
+        minimal_pairs = repo.get_all_as_dict()
 
         if not minimal_pairs:
             return None

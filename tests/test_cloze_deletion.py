@@ -7,7 +7,7 @@ from models import KnowledgePoint, KnowledgePointType
 from exercises.chinese_adapter import ChineseExerciseAdapter
 from exercises.generic_handlers import FillBlankHandler
 from storage import get_connection, init_schema, SQLiteClozeTemplatesRepository
-import exercises.chinese_adapter
+import exercises.chinese_populator
 
 
 @pytest.fixture
@@ -121,7 +121,7 @@ def setup_test_db(tmp_path, monkeypatch, vocab_knowledge_points):
         return SQLiteClozeTemplatesRepository(test_db_path)
 
     monkeypatch.setattr(
-        exercises.chinese_adapter, "get_cloze_templates_repo", _get_test_cloze_repo
+        exercises.chinese_populator, "get_cloze_templates_repo", _get_test_cloze_repo
     )
 
     return test_db_path

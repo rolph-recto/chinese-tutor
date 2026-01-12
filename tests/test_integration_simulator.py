@@ -101,14 +101,14 @@ def _populate_test_db_from_json(db_path, data_dir):
 def test_db_with_data(tmp_path, monkeypatch):
     """Set up test database with knowledge points for simulator tests."""
     from storage import SQLiteMinimalPairsRepository, SQLiteClozeTemplatesRepository
-    import exercises.chinese_adapter
+    import exercises.chinese_populator
 
     test_db_path = tmp_path / "test_tutor.db"
     init_schema(test_db_path)
     _populate_test_db_from_json(test_db_path, main.DATA_DIR)
     monkeypatch.setattr(main, "DB_PATH", test_db_path)
 
-    # Patch chinese_adapter to use test database
+    # Patch chinese_populator to use test database
     def _get_test_minimal_pairs_repo(db_path=None):
         return SQLiteMinimalPairsRepository(test_db_path)
 
@@ -116,12 +116,12 @@ def test_db_with_data(tmp_path, monkeypatch):
         return SQLiteClozeTemplatesRepository(test_db_path)
 
     monkeypatch.setattr(
-        exercises.chinese_adapter,
+        exercises.chinese_populator,
         "get_minimal_pairs_repo",
         _get_test_minimal_pairs_repo,
     )
     monkeypatch.setattr(
-        exercises.chinese_adapter, "get_cloze_templates_repo", _get_test_cloze_repo
+        exercises.chinese_populator, "get_cloze_templates_repo", _get_test_cloze_repo
     )
 
     return test_db_path

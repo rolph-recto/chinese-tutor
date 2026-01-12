@@ -69,54 +69,6 @@ class KnowledgePoint(BaseModel):
     tags: list[str] = Field(default_factory=list)  # e.g., ["hsk1", "cluster:pronouns"]
 
 
-class Exercise(BaseModel):
-    id: str
-    knowledge_point_ids: list[str]
-    difficulty: float = Field(ge=0.0, le=1.0)
-
-
-class SegmentedTranslationExercise(Exercise):
-    english_sentence: str
-    chinese_chunks: list[str]
-    correct_order: list[int]
-
-
-class MinimalPairOption(BaseModel):
-    chinese: str
-    pinyin: str
-    english: str
-
-
-class MinimalPairExercise(Exercise):
-    target_chinese: str
-    target_pinyin: str
-    target_english: str
-    options: list[MinimalPairOption]
-    correct_index: int
-
-
-class MultipleChoiceVocabExercise(Exercise):
-    """Multiple choice vocabulary exercise (both directions)."""
-
-    direction: str  # "chinese_to_english" or "english_to_chinese"
-    prompt: str  # The word being asked about
-    prompt_pinyin: str  # Pinyin (shown when prompt is Chinese)
-    options: list[str]  # 4 answer choices
-    correct_index: int  # Index of correct answer (0-3)
-
-
-class ClozeDeletionExercise(Exercise):
-    """Cloze deletion exercise - select word to fill in blank."""
-
-    chinese_sentence: str  # Sentence with _____ placeholder
-    english_translation: str  # English translation for context
-    target_word: str  # Chinese word for blank
-    target_pinyin: str  # Pinyin for feedback
-    target_english: str  # English meaning for feedback
-    options: list[str]  # Chinese (pinyin) format options
-    correct_index: int  # Index of correct answer (0-3)
-
-
 class StudentMastery(BaseModel):
     knowledge_point_id: str
 

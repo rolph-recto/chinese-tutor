@@ -1,29 +1,50 @@
 """Exercise handlers for the Chinese tutor application.
 
-This package provides different exercise types, all implementing the
-ExerciseHandler abstract base class.
+This package provides generic exercise types and a Chinese-specific adapter.
 
-To add a new exercise type:
-1. Create a Pydantic model in models.py extending Exercise
-2. Create a handler class extending ExerciseHandler[YourExerciseModel]
-3. Implement all abstract methods (generate, present, check_answer, get_input_prompt)
-4. Register in EXERCISE_HANDLERS dict in main.py
+Generic exercise models:
+- MultipleChoiceExercise: Pick one option from a list
+- FillBlankExercise: Select word to complete a sentence
+- ReorderExercise: Arrange items in correct sequence
+
+Generic handlers:
+- MultipleChoiceHandler: Handles multiple choice exercises
+- FillBlankHandler: Handles fill-in-blank exercises
+- ReorderHandler: Handles reorder exercises
+
+Chinese adapter:
+- ChineseExerciseAdapter: Transforms Chinese knowledge points to generic exercises
 """
 
-from exercises.base import ExerciseHandler, parse_letter_input, select_distractors
-from exercises.chinese_to_english import ChineseToEnglishHandler
-from exercises.cloze_deletion import ClozeDeletionHandler
-from exercises.english_to_chinese import EnglishToChineseHandler
-from exercises.minimal_pair import MinimalPairHandler
-from exercises.segmented_translation import SegmentedTranslationHandler
+from exercises.base import parse_letter_input, select_distractors
+from exercises.generic_models import (
+    FillBlankExercise,
+    GenericExercise,
+    MultipleChoiceExercise,
+    ReorderExercise,
+)
+from exercises.generic_handlers import (
+    FillBlankHandler,
+    GenericExerciseHandler,
+    MultipleChoiceHandler,
+    ReorderHandler,
+)
+from exercises.chinese_adapter import ChineseExerciseAdapter
 
 __all__ = [
-    "ExerciseHandler",
+    # Utilities
     "parse_letter_input",
     "select_distractors",
-    "ChineseToEnglishHandler",
-    "ClozeDeletionHandler",
-    "EnglishToChineseHandler",
-    "MinimalPairHandler",
-    "SegmentedTranslationHandler",
+    # Generic models
+    "GenericExercise",
+    "MultipleChoiceExercise",
+    "FillBlankExercise",
+    "ReorderExercise",
+    # Generic handlers
+    "GenericExerciseHandler",
+    "MultipleChoiceHandler",
+    "FillBlankHandler",
+    "ReorderHandler",
+    # Chinese adapter
+    "ChineseExerciseAdapter",
 ]

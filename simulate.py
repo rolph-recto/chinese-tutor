@@ -8,13 +8,13 @@ from pathlib import Path
 import fsrs
 
 from models import (
-    Exercise,
     KnowledgePoint,
     SessionState,
     StudentState,
 )
 from scheduler import ExerciseScheduler
-from exercises import SegmentedTranslationHandler, MinimalPairHandler
+from exercises.chinese_adapter import ChineseExerciseAdapter
+from exercises.generic_models import GenericExercise
 from simulator_models import (
     SimulatedStudentConfig,
     SimulatedStudent,
@@ -32,14 +32,14 @@ class ResponseGenerator:
     def __init__(self, student: SimulatedStudent):
         self.student = student
 
-    def generate_response(self, exercise: Exercise) -> bool:
+    def generate_response(self, exercise: GenericExercise) -> bool:
         """
         Generate a response (correct/incorrect) based on:
         1. True knowledge of involved KPs
         2. Exercise difficulty
         3. Slip and guess rates
         """
-        kp_ids = exercise.knowledge_point_ids
+        kp_ids = exercise.source_ids
         if not kp_ids:
             return random.random() < 0.5
 
@@ -164,7 +164,7 @@ class Simulator:
                 continue
 
             # Record pre-exercise state
-            pre_state = self._capture_kp_states(exercise.knowledge_point_ids)
+            pre_state = self._capture_kp_states(exercise.source_ids)
 
             # Generate simulated response
             is_correct = self.response_generator.generate_response(exercise)
@@ -177,7 +177,7 @@ class Simulator:
             )
 
             # Track results
-            kps_practiced.update(exercise.knowledge_point_ids)
+            kps_practiced.update(exercise.source_ids)
             day_exercises += 1
 
             if is_correct:
@@ -199,7 +199,7 @@ class Simulator:
                     day=day,
                     exercise_number=ex_num + 1,
                     exercise_type=exercise_type,
-                    knowledge_point_ids=exercise.knowledge_point_ids,
+                    knowledge_point_ids=exercise.source_ids,
                     is_correct=is_correct,
                     true_knowledge_before=pre_state["true"],
                     retrievability_before=pre_state["retrievability"],
@@ -209,7 +209,7 @@ class Simulator:
 
             # Update KP trajectories
             self._record_kp_snapshots(
-                kp_ids=exercise.knowledge_point_ids,
+                kp_ids=exercise.source_ids,
                 day=day,
                 exercise_number=ex_num,
                 current_time=current_time,
@@ -239,21 +239,18 @@ class Simulator:
 
     def _generate_exercise(
         self, target_kp: KnowledgePoint
-    ) -> tuple[Exercise | None, str]:
+    ) -> tuple[GenericExercise | None, str]:
         """Generate an exercise for the target KP."""
+        adapter = ChineseExerciseAdapter(self.knowledge_points)
         exercise_type = random.choice(["segmented_translation", "minimal_pair"])
 
         if exercise_type == "minimal_pair":
-            exercise = MinimalPairHandler.generate(self.knowledge_points, target_kp)
+            exercise = adapter.create_minimal_pair(target_kp)
             if exercise is None:
                 exercise_type = "segmented_translation"
-                exercise = SegmentedTranslationHandler.generate(
-                    self.knowledge_points, target_kp
-                )
+                exercise = adapter.create_segmented_translation(target_kp)
         else:
-            exercise = SegmentedTranslationHandler.generate(
-                self.knowledge_points, target_kp
-            )
+            exercise = adapter.create_segmented_translation(target_kp)
 
         return exercise, exercise_type
 
@@ -272,7 +269,7 @@ class Simulator:
 
     def _process_exercise_result(
         self,
-        exercise: Exercise,
+        exercise: GenericExercise,
         is_correct: bool,
         current_time: datetime,
     ) -> dict:
@@ -282,7 +279,7 @@ class Simulator:
         # Map boolean to FSRS rating (simulator uses Good for correct, Again for incorrect)
         rating = fsrs.Rating.Good if is_correct else fsrs.Rating.Again
 
-        for kp_id in exercise.knowledge_point_ids:
+        for kp_id in exercise.source_ids:
             if kp_id not in self.kp_dict:
                 continue
 

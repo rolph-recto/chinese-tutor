@@ -231,11 +231,7 @@ class MasteryTable:
 class WelcomeScreen:
     """Welcome screen with banner and session info."""
 
-    def __init__(
-        self,
-        knowledge_point_count: int,
-        due_count: int
-    ):
+    def __init__(self, knowledge_point_count: int, due_count: int):
         self.knowledge_point_count = knowledge_point_count
         self.due_count = due_count
 

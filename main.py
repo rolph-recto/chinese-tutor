@@ -10,29 +10,39 @@ from rich.console import Console
 from models import KnowledgePoint, SessionState, StudentState
 from storage import get_knowledge_point_repo, get_student_state_repo, DEFAULT_DB_PATH
 from scheduler import ExerciseScheduler
-from exercises import (
-    ExerciseHandler,
-    ChineseToEnglishHandler,
-    ClozeDeletionHandler,
-    EnglishToChineseHandler,
-    MinimalPairHandler,
-    SegmentedTranslationHandler,
+from exercises.chinese_adapter import ChineseExerciseAdapter
+from exercises.generic_handlers import (
+    FillBlankHandler,
+    GenericExerciseHandler,
+    MultipleChoiceHandler,
+    ReorderHandler,
+)
+from exercises.generic_models import (
+    FillBlankExercise,
+    MultipleChoiceExercise,
+    ReorderExercise,
 )
 from ui import TutorUI
 
-# Registry of exercise handler classes
-EXERCISE_HANDLERS: dict[str, type[ExerciseHandler]] = {
-    "segmented_translation": SegmentedTranslationHandler,
-    "minimal_pair": MinimalPairHandler,
-    "chinese_to_english": ChineseToEnglishHandler,
-    "english_to_chinese": EnglishToChineseHandler,
-    "cloze_deletion": ClozeDeletionHandler,
+# Registry mapping exercise type names to adapter method names
+EXERCISE_TYPE_METHODS = {
+    "segmented_translation": "create_segmented_translation",
+    "minimal_pair": "create_minimal_pair",
+    "chinese_to_english": "create_chinese_to_english",
+    "english_to_chinese": "create_english_to_chinese",
+    "cloze_deletion": "create_cloze_deletion",
 }
 
 
-def get_exercise_handler(exercise_type: str) -> type[ExerciseHandler]:
-    """Get the exercise handler class for the given type."""
-    return EXERCISE_HANDLERS[exercise_type]
+def get_handler_for_exercise(exercise) -> GenericExerciseHandler:
+    """Get the appropriate handler for an exercise instance."""
+    if isinstance(exercise, MultipleChoiceExercise):
+        return MultipleChoiceHandler(exercise)
+    elif isinstance(exercise, ReorderExercise):
+        return ReorderHandler(exercise)
+    elif isinstance(exercise, FillBlankExercise):
+        return FillBlankHandler(exercise)
+    raise ValueError(f"Unknown exercise type: {type(exercise)}")
 
 
 def prompt_for_rating(ui: TutorUI) -> fsrs.Rating:
@@ -42,28 +52,26 @@ def prompt_for_rating(ui: TutorUI) -> fsrs.Rating:
 
 def generate_exercise_with_fallback(
     exercise_type: str,
-    knowledge_points: list[KnowledgePoint],
+    adapter: ChineseExerciseAdapter,
     target_kp: KnowledgePoint | None = None,
 ):
-    """Generate an exercise of the given type, falling back to segmented_translation if needed.
+    """Generate an exercise using the adapter, with fallback to segmented_translation.
 
     Returns a tuple of (exercise_type, handler) where handler is an initialized
-    ExerciseHandler instance.
+    GenericExerciseHandler instance.
     """
-    handler_class = get_exercise_handler(exercise_type)
-    exercise = handler_class.generate(knowledge_points, target_kp)
+    method_name = EXERCISE_TYPE_METHODS.get(exercise_type)
+    if method_name:
+        method = getattr(adapter, method_name)
+        exercise = method(target_kp)
 
-    if exercise is not None:
-        # Special handling for SegmentedTranslationHandler which needs knowledge_points
-        if exercise_type == "segmented_translation":
-            handler = SegmentedTranslationHandler(exercise, knowledge_points)
-        else:
-            handler = handler_class(exercise)
-        return exercise_type, handler
+        if exercise is not None:
+            handler = get_handler_for_exercise(exercise)
+            return exercise_type, handler
 
     # Fall back to segmented translation
-    exercise = SegmentedTranslationHandler.generate(knowledge_points, target_kp)
-    handler = SegmentedTranslationHandler(exercise, knowledge_points)
+    exercise = adapter.create_segmented_translation(target_kp)
+    handler = get_handler_for_exercise(exercise)
     return "segmented_translation", handler
 
 
@@ -239,6 +247,7 @@ def run_interactive() -> None:
     signal.signal(signal.SIGINT, create_sigint_handler(ui, student_state))
 
     kp_dict = {kp.id: kp for kp in knowledge_points}
+    adapter = ChineseExerciseAdapter(knowledge_points)
 
     session_state = SessionState()
     scheduler = ExerciseScheduler(
@@ -277,7 +286,7 @@ def run_interactive() -> None:
         )
 
         exercise_type, handler = generate_exercise_with_fallback(
-            exercise_type, knowledge_points, target_kp
+            exercise_type, adapter, target_kp
         )
 
         options = handler.get_options() if hasattr(handler, "get_options") else []
@@ -320,7 +329,7 @@ def run_interactive() -> None:
         ui.update_progress(is_correct)
 
         mastery_updates = []
-        for kp_id in handler.exercise.knowledge_point_ids:
+        for kp_id in handler.exercise.source_ids:
             if kp_id not in kp_dict:
                 continue
             kp = kp_dict[kp_id]

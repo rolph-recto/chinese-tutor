@@ -7,7 +7,7 @@ import random
 from simulate import Simulator, ResponseGenerator
 from simulator_models import SimulatedStudent
 import main
-from models import Exercise
+from exercises.generic_models import GenericExercise
 from storage import init_schema, get_connection
 
 
@@ -101,15 +101,14 @@ def _populate_test_db_from_json(db_path, data_dir):
 def test_db_with_data(tmp_path, monkeypatch):
     """Set up test database with knowledge points for simulator tests."""
     from storage import SQLiteMinimalPairsRepository, SQLiteClozeTemplatesRepository
-    import exercises.minimal_pair
-    import exercises.cloze_deletion
+    import exercises.chinese_adapter
 
     test_db_path = tmp_path / "test_tutor.db"
     init_schema(test_db_path)
     _populate_test_db_from_json(test_db_path, main.DATA_DIR)
     monkeypatch.setattr(main, "DB_PATH", test_db_path)
 
-    # Patch exercise handlers to use test database
+    # Patch chinese_adapter to use test database
     def _get_test_minimal_pairs_repo(db_path=None):
         return SQLiteMinimalPairsRepository(test_db_path)
 
@@ -117,10 +116,12 @@ def test_db_with_data(tmp_path, monkeypatch):
         return SQLiteClozeTemplatesRepository(test_db_path)
 
     monkeypatch.setattr(
-        exercises.minimal_pair, "get_minimal_pairs_repo", _get_test_minimal_pairs_repo
+        exercises.chinese_adapter,
+        "get_minimal_pairs_repo",
+        _get_test_minimal_pairs_repo,
     )
     monkeypatch.setattr(
-        exercises.cloze_deletion, "get_cloze_templates_repo", _get_test_cloze_repo
+        exercises.chinese_adapter, "get_cloze_templates_repo", _get_test_cloze_repo
     )
 
     return test_db_path
@@ -235,13 +236,12 @@ class TestResponseGenerator:
 
         generator = ResponseGenerator(student)
 
-        # Create a mock exercise
-        class MockExercise(Exercise):
-            id: str = "test"
-            knowledge_point_ids: list[str] = ["test_kp"]
-            difficulty: float = 0.3
-
-        exercise = MockExercise()
+        # Create a mock exercise using generic model
+        exercise = GenericExercise(
+            id="test",
+            source_ids=["test_kp"],
+            difficulty=0.3,
+        )
 
         # Run multiple times and check accuracy
         random.seed(42)
@@ -259,12 +259,11 @@ class TestResponseGenerator:
 
         generator = ResponseGenerator(student)
 
-        class MockExercise(Exercise):
-            id: str = "test"
-            knowledge_point_ids: list[str] = ["test_kp"]
-            difficulty: float = 0.3
-
-        exercise = MockExercise()
+        exercise = GenericExercise(
+            id="test",
+            source_ids=["test_kp"],
+            difficulty=0.3,
+        )
 
         random.seed(42)
         correct_count = sum(

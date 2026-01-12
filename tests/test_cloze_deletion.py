@@ -1,12 +1,13 @@
-"""Unit tests for cloze deletion exercise."""
+"""Unit tests for cloze deletion exercise generation and handling."""
 
 import json
 import pytest
 
 from models import KnowledgePoint, KnowledgePointType
-from exercises.cloze_deletion import ClozeDeletionHandler
+from exercises.chinese_adapter import ChineseExerciseAdapter
+from exercises.generic_handlers import FillBlankHandler
 from storage import get_connection, init_schema, SQLiteClozeTemplatesRepository
-import exercises.cloze_deletion
+import exercises.chinese_adapter
 
 
 @pytest.fixture
@@ -120,61 +121,70 @@ def setup_test_db(tmp_path, monkeypatch, vocab_knowledge_points):
         return SQLiteClozeTemplatesRepository(test_db_path)
 
     monkeypatch.setattr(
-        exercises.cloze_deletion, "get_cloze_templates_repo", _get_test_cloze_repo
+        exercises.chinese_adapter, "get_cloze_templates_repo", _get_test_cloze_repo
     )
 
     return test_db_path
 
 
 class TestGenerateExercise:
-    """Tests for exercise generation."""
+    """Tests for exercise generation via adapter."""
 
     def test_generate_exercise_returns_exercise(self, vocab_knowledge_points):
         """Should generate a valid exercise."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
-        assert exercise.chinese_sentence != ""
-        assert exercise.english_translation != ""
-        assert exercise.target_word != ""
-        assert len(exercise.knowledge_point_ids) == 1
+        assert exercise.sentence != ""
+        assert exercise.context != ""
+        assert exercise.metadata.get("target_word") != ""
+        assert len(exercise.source_ids) == 1
 
     def test_generate_exercise_has_4_options(self, vocab_knowledge_points):
         """Should generate exactly 4 options."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
         assert len(exercise.options) == 4
 
     def test_generate_exercise_no_duplicate_options(self, vocab_knowledge_points):
         """All options should be distinct."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
         assert len(set(exercise.options)) == 4
 
     def test_generate_exercise_correct_index_valid(self, vocab_knowledge_points):
         """Correct index should be within bounds."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
         assert 0 <= exercise.correct_index < 4
 
     def test_generate_exercise_correct_option_in_options(self, vocab_knowledge_points):
         """Correct word should be present in options."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
-        correct_option = f"{exercise.target_word} ({exercise.target_pinyin})"
+        target_word = exercise.metadata.get("target_word")
+        target_pinyin = exercise.metadata.get("target_pinyin")
+        correct_option = f"{target_word} ({target_pinyin})"
         assert correct_option in exercise.options
 
     def test_generate_exercise_uses_correct_target(self, vocab_knowledge_points):
         """Target word from template should be the correct answer."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
         correct_option = exercise.options[exercise.correct_index]
-        assert exercise.target_word in correct_option
+        target_word = exercise.metadata.get("target_word")
+        assert target_word in correct_option
 
     def test_generate_exercise_insufficient_vocab(self):
         """Should return None if fewer than 4 vocabulary items."""
@@ -196,7 +206,8 @@ class TestGenerateExercise:
                 tags=[],
             ),
         ]
-        exercise = ClozeDeletionHandler.generate(small_vocab)
+        adapter = ChineseExerciseAdapter(small_vocab)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is None
 
@@ -212,21 +223,23 @@ class TestGenerateExercise:
                 tags=["hsk1"],
             )
         ]
-        exercise = ClozeDeletionHandler.generate(kps_with_grammar)
+        adapter = ChineseExerciseAdapter(kps_with_grammar)
+        exercise = adapter.create_cloze_deletion()
 
         assert exercise is not None
-        assert all(kp_id.startswith("v") for kp_id in exercise.knowledge_point_ids)
+        assert all(kp_id.startswith("v") for kp_id in exercise.source_ids)
 
 
 class TestCheckAnswer:
-    """Tests for answer checking."""
+    """Tests for answer checking via generic handler."""
 
     def test_check_answer_correct_letter(self, vocab_knowledge_points):
         """Correct letter answer should return True."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         correct_letter = ["A", "B", "C", "D"][exercise.correct_index]
         is_correct, _ = handler.check_answer(correct_letter)
 
@@ -234,10 +247,11 @@ class TestCheckAnswer:
 
     def test_check_answer_correct_number(self, vocab_knowledge_points):
         """Correct number answer should return True."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         correct_number = str(exercise.correct_index + 1)
         is_correct, _ = handler.check_answer(correct_number)
 
@@ -245,10 +259,11 @@ class TestCheckAnswer:
 
     def test_check_answer_incorrect(self, vocab_knowledge_points):
         """Incorrect answer should return False."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         wrong_index = (exercise.correct_index + 1) % 4
         wrong_letter = ["A", "B", "C", "D"][wrong_index]
         is_correct, _ = handler.check_answer(wrong_letter)
@@ -257,40 +272,44 @@ class TestCheckAnswer:
 
     def test_check_answer_returns_correct_answer(self, vocab_knowledge_points):
         """Should return the correct answer in the result."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         _, correct_answer = handler.check_answer("X")
 
         assert correct_answer == exercise.options[exercise.correct_index]
 
     def test_check_answer_invalid_input(self, vocab_knowledge_points):
         """Invalid input should return False."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         is_correct, _ = handler.check_answer("invalid")
 
         assert is_correct is False
 
     def test_check_answer_out_of_bounds(self, vocab_knowledge_points):
         """Out of bounds number should return False."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         is_correct, _ = handler.check_answer("5")
 
         assert is_correct is False
 
     def test_check_answer_lowercase_letter(self, vocab_knowledge_points):
         """Lowercase letters should be accepted."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         correct_letter = ["a", "b", "c", "d"][exercise.correct_index]
         is_correct, _ = handler.check_answer(correct_letter)
 
@@ -298,10 +317,11 @@ class TestCheckAnswer:
 
     def test_check_answer_with_whitespace(self, vocab_knowledge_points):
         """Input with whitespace should be handled."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         correct_letter = ["A", "B", "C", "D"][exercise.correct_index]
         is_correct, _ = handler.check_answer(f"  {correct_letter}  ")
 
@@ -313,10 +333,11 @@ class TestInputPrompt:
 
     def test_get_input_prompt(self, vocab_knowledge_points):
         """Should return valid input prompt."""
-        exercise = ClozeDeletionHandler.generate(vocab_knowledge_points)
+        adapter = ChineseExerciseAdapter(vocab_knowledge_points)
+        exercise = adapter.create_cloze_deletion()
         assert exercise is not None
 
-        handler = ClozeDeletionHandler(exercise)
+        handler = FillBlankHandler(exercise)
         prompt = handler.get_input_prompt()
 
         assert prompt is not None

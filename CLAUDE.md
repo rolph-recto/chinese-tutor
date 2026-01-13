@@ -20,6 +20,9 @@ linter, make sure you run the ruff formatter:
 uvx ruff format
 ```
 
+After making changes, be sure to update README.md so that it reflects the
+current state of the repo.
+
 Add plans you make in the plan/ directory.
 
 Add specifications you make in the specs/ directory.

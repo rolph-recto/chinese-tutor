@@ -10,80 +10,106 @@ This is an Chinese tutoring system with spaced repetition.
 # Install dependencies
 uv sync
 
-# Run the tutoring system
+# Run the tutoring system (interactive CLI)
 uv run python main.py
+
+# Run the student simulator
+uv run python main.py simulate
+
+# Run tests
+uv run pytest -v
+
+# Run linter with auto-fix
+uvx ruff check --fix
+
+# Run formatter
+uvx ruff format
 ```
 
 ## Core Components
 
-- **models.py** - Pydantic data models for knowledge points, exercises, student mastery, and FSRS scheduling
-- **scheduler.py** - Selects next knowledge point based on review urgency, frontier expansion, and interleaving
-- **main.py** - Interactive CLI loop that orchestrates exercise selection, presentation, and mastery updates
-- **simulate.py** - Simulator for testing scheduling algorithms
-- **simulator_models.py** - Additional models for simulation
+- `models.py` - Pydantic data models for knowledge points, exercises, student mastery, and FSRS scheduling
+- `scheduler.py` - Selects next knowledge point based on review urgency, frontier expansion, and interleaving
+- `main.py` - Interactive CLI loop that orchestrates exercise selection, presentation, and mastery updates
+- `simulate.py` and  - Student simulator for testing scheduling algorithms
+- `simulator_models.py` - Models for the simulator
 
 ## Terminal UI (ui/)
 
 The application uses the [rich](https://github.com/Textualize/rich) library for a styled terminal interface.
 
-- **app.py** - `TutorUI` class that orchestrates UI components and handles user input
-- **components.py** - Rich-based UI components:
-  - `ExercisePanel` - Displays exercises with progress bar and options
-  - `FeedbackPanel` - Shows correct/incorrect feedback with styling
-  - `RatingMenu` - Difficulty rating selection (1-4 FSRS scale)
-  - `MasteryTable` - Displays mastery updates after exercises
-  - `WelcomeScreen` - Welcome banner with session stats
-  - `ProgressTracker` - Tracks and displays session progress
-- **styles.py** - Color scheme and style definitions (Chinese red/gold theme)
+- UI components (`components.py`)
+  - **ExercisePanel** - Displays exercises with progress bar and options
+  - **FeedbackPanel** - Shows correct/incorrect feedback with styling
+  - **RatingMenu** - Difficulty rating selection (1-4 FSRS scale)
+  - **MasteryTable** - Displays mastery updates after exercises
+  - **WelcomeScreen** - Welcome banner with session stats
+  - **ProgressTracker** - Tracks and displays session progress
+- `app.py` - `TutorUI` class that orchestrates UI components and handles user input
+- `styles.py` - Color scheme and style definitions (Chinese red/gold theme)
 
 ## Exercise Types (exercises/)
 
-All exercises use a generic architecture with Chinese-specific adapters:
+Exercises are designed to be reusable templates that don't care about the
+specific subject. To make it work:
 
-### Generic Models
-- **generic_models.py** - Base exercise types:
-  - `MultipleChoiceExercise` - Pick one option from a list
-  - `FillBlankExercise` - Select word to complete a sentence
-  - `ReorderExercise` - Arrange items in correct sequence
+- A _populator_ acts as a bridge, taking specific info (like Chinese
+  vocabulary) and formatting it to fit a template.
 
-### Generic Handlers
-- **generic_handlers.py** - Exercise handlers that process user input and generate feedback
+- A _generator_ handles the procedural logic to generate exercises.
 
-### Chinese Adapter
-- **chinese_adapter.py** - Transforms Chinese knowledge points into generic exercises:
-  - `create_chinese_to_english()` - Pick the correct English translation for a Chinese word
-  - `create_english_to_chinese()` - Pick the correct Chinese word for an English translation
-  - `create_minimal_pair()` - Multiple choice discrimination for visually/phonetically similar characters
-  - `create_cloze_deletion()` - Fill-in-blank sentence completion
-  - `create_segmented_translation()` - English sentence → reorder Chinese chunks (template-based)
+The populator stays simple--—it just delivers the data without needing to know
+how the actual exercise is built.
 
-### Utilities
-- **base.py** - Shared utilities for input parsing and distractor selection
+For the Chinese language knowledge base, the flow looks like:
+```
+KnowledgePoint → ChineseSchemaPopulator.populate() → Schema (tables)
+                                                          ↓
+                 ExerciseGenerator.generate(schema, config) → Exercise
+                 (procedural logic here)
+```
+
+**Exercise types** (`generic_models.py`)
+  - `MultipleChoiceExercise` - pick one option from a list
+  - `FillBlankExercise` - select word to complete a sentence
+  - `ReorderExercise` - arrange items in correct sequence
+
+**Schemas** (`schemas.py`)- schema for generic databases used to generate exercises
+   - `MultipleChoiceSchema` - Prompt types, values, options for multiple choice
+   - `FillBlankSchema` - Templates, fills, options for fill-in-blank
+   - `ReorderSchema` - Templates, slot fills for reordering exercises
+
+**Populators** (`populator.py`) - transforms domain knowledge into schemas
+   - `chinese_populator.py` - `ChineseSchemaPopulator` for Chinese vocabulary/grammar
+
+**Exercise Generators** (`generators.py`) - consume generic databases to produce exercises:
+   - `MultipleChoiceGenerator` - generates `MultipleChoiceExercise`
+   - `FillBlankGenerator` - generates `FillBlankExercise`
+   - `ReorderGenerator` - generates `ReorderExercise`
+
+**Configuration** (`config.py`) - configure exercise generation behavior
+   - `MultipleChoiceConfig` - configure `MultipleChoiceGenerator`
+   - `FillBlankConfig` - configure `FillBlankGenerator`
+   - `ReorderConfig` - configure `ReorderGenerator`
 
 ## Storage Layer (storage/)
 
-Repository pattern with SQLite backend for data persistence:
+Student progress and application data are stored in `data/tutor.db` (SQLite database).
 
 ### Abstract Interfaces
-- **base.py** - Repository interfaces:
-  - `KnowledgePointRepository` - Knowledge point CRUD operations
-  - `StudentStateRepository` - Student mastery state operations
-  - `MinimalPairsRepository` - Minimal pair distractor data
-  - `ClozeTemplatesRepository` - Cloze template data
+- Repository interfaces (`base.py`)
+  - **KnowledgePointRepository** - Knowledge point CRUD operations
+  - **StudentStateRepository** - Student mastery state operations
+  - **MinimalPairsRepository** - Minimal pair distractor data
+  - **ClozeTemplatesRepository** - Cloze template data
 
 ### SQLite Implementation
-- **sqlite.py** - SQLite repository implementations
-- **connection.py** - Database connection and schema initialization
-
-### Factory Functions
-- **__init__.py** - Repository factory functions for easy access
-
-## State Persistence
-
-Student progress and application data are stored in `data/tutor.db` (SQLite database).
+- `sqlite.py` - SQLite repository implementations
+- `connection.py` - Database connection and schema initialization
 
 ## Scheduling Algorithm
 
 The system uses the FSRS spaced repetition algorithm to schedule exercises,
 as implemented in the [py-fsrs](https://github.com/open-spaced-repetition/py-fsrs)
 library.
+

@@ -352,8 +352,10 @@ class TestInteractiveEdgeCases:
         initial_state = StudentState()
 
         for kp in knowledge_points:
-            initial_state.masteries[kp.id] = StudentMastery(
-                knowledge_point_id=kp.id,
+            key = f"knowledge_points:{kp.id}"
+            initial_state.masteries[key] = StudentMastery(
+                table_id="knowledge_points",
+                row_id=kp.id,
                 fsrs_state=FSRSState(
                     stability=10.0,
                     difficulty=5.0,

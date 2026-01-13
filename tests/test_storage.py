@@ -15,7 +15,6 @@ from storage import (
     SQLiteStudentStateRepository,
     SQLiteMinimalPairsRepository,
     SQLiteClozeTemplatesRepository,
-    get_connection,
 )
 
 
@@ -81,22 +80,13 @@ class TestStudentStateRepository:
 
     def test_save_and_load_roundtrip(self, test_db_path):
         """Should correctly save and reload student state."""
-        # Insert a knowledge point to satisfy foreign key
-        conn = get_connection(test_db_path)
-        conn.execute(
-            """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
-            VALUES (?, ?, ?, ?, ?, ?)""",
-            ("v001", "vocabulary", "我", "wǒ", "I, me", "[]"),
-        )
-        conn.commit()
-        conn.close()
-
         repo = SQLiteStudentStateRepository(test_db_path)
 
         # Create a state with mastery records
         state = StudentState()
-        state.masteries["v001"] = StudentMastery(
-            knowledge_point_id="v001",
+        state.masteries["knowledge_points:v001"] = StudentMastery(
+            table_id="knowledge_points",
+            row_id="v001",
             fsrs_state=FSRSState(
                 stability=5.0,
                 difficulty=4.5,
@@ -111,30 +101,21 @@ class TestStudentStateRepository:
         loaded = repo.load()
 
         assert len(loaded.masteries) == 1
-        assert "v001" in loaded.masteries
-        mastery = loaded.masteries["v001"]
+        assert "knowledge_points:v001" in loaded.masteries
+        mastery = loaded.masteries["knowledge_points:v001"]
         assert mastery.fsrs_state.stability == 5.0
         assert mastery.fsrs_state.difficulty == 4.5
         assert mastery.fsrs_state.state == 2
 
     def test_get_mastery_returns_matching_record(self, test_db_path):
-        """Should return mastery for given knowledge point ID."""
-        # Insert a knowledge point to satisfy foreign key
-        conn = get_connection(test_db_path)
-        conn.execute(
-            """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
-            VALUES (?, ?, ?, ?, ?, ?)""",
-            ("v001", "vocabulary", "我", "wǒ", "I, me", "[]"),
-        )
-        conn.commit()
-        conn.close()
-
+        """Should return mastery for given table_id and row_id."""
         repo = SQLiteStudentStateRepository(test_db_path)
 
         # Save a mastery record
         state = StudentState()
-        state.masteries["v001"] = StudentMastery(
-            knowledge_point_id="v001",
+        state.masteries["knowledge_points:v001"] = StudentMastery(
+            table_id="knowledge_points",
+            row_id="v001",
             fsrs_state=FSRSState(
                 stability=3.0,
                 difficulty=5.0,
@@ -147,33 +128,25 @@ class TestStudentStateRepository:
         repo.save(state)
 
         # Retrieve single mastery
-        mastery = repo.get_mastery("v001")
+        mastery = repo.get_mastery("knowledge_points", "v001")
         assert mastery is not None
-        assert mastery.knowledge_point_id == "v001"
+        assert mastery.row_id == "v001"
+        assert mastery.table_id == "knowledge_points"
 
     def test_get_mastery_returns_none_for_unknown_id(self, test_db_path):
         """Should return None when mastery doesn't exist."""
         repo = SQLiteStudentStateRepository(test_db_path)
-        result = repo.get_mastery("nonexistent")
+        result = repo.get_mastery("knowledge_points", "nonexistent")
         assert result is None
 
     def test_save_mastery_updates_existing(self, test_db_path):
         """Should update existing mastery when saving."""
-        # Insert a knowledge point to satisfy foreign key
-        conn = get_connection(test_db_path)
-        conn.execute(
-            """INSERT INTO knowledge_points (id, type, chinese, pinyin, english, tags)
-            VALUES (?, ?, ?, ?, ?, ?)""",
-            ("v001", "vocabulary", "我", "wǒ", "I, me", "[]"),
-        )
-        conn.commit()
-        conn.close()
-
         repo = SQLiteStudentStateRepository(test_db_path)
 
         # Save initial mastery
         initial_mastery = StudentMastery(
-            knowledge_point_id="v001",
+            table_id="knowledge_points",
+            row_id="v001",
             fsrs_state=FSRSState(
                 stability=1.0,
                 difficulty=5.0,
@@ -187,7 +160,8 @@ class TestStudentStateRepository:
 
         # Update with new values
         updated_mastery = StudentMastery(
-            knowledge_point_id="v001",
+            table_id="knowledge_points",
+            row_id="v001",
             fsrs_state=FSRSState(
                 stability=10.0,
                 difficulty=4.0,
@@ -200,7 +174,7 @@ class TestStudentStateRepository:
         repo.save_mastery(updated_mastery)
 
         # Verify update
-        loaded = repo.get_mastery("v001")
+        loaded = repo.get_mastery("knowledge_points", "v001")
         assert loaded.fsrs_state.stability == 10.0
         assert loaded.fsrs_state.difficulty == 4.0
 

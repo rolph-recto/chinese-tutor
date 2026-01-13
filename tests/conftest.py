@@ -90,7 +90,8 @@ def sample_knowledge_points() -> list[KnowledgePoint]:
 def fsrs_mastery() -> StudentMastery:
     """Create a mastery record with FSRS state initialized."""
     return StudentMastery(
-        knowledge_point_id="v001",
+        table_id="knowledge_points",
+        row_id="v001",
         fsrs_state=FSRSState(
             stability=10.0,
             difficulty=5.0,
@@ -106,7 +107,8 @@ def fsrs_mastery() -> StudentMastery:
 def new_mastery() -> StudentMastery:
     """Create a new mastery record without FSRS state (not yet practiced)."""
     return StudentMastery(
-        knowledge_point_id="v001",
+        table_id="knowledge_points",
+        row_id="v001",
     )
 
 
@@ -114,7 +116,8 @@ def new_mastery() -> StudentMastery:
 def practiced_mastery() -> StudentMastery:
     """Create a mastery record that has been practiced multiple times."""
     return StudentMastery(
-        knowledge_point_id="v001",
+        table_id="knowledge_points",
+        row_id="v001",
         fsrs_state=FSRSState(
             stability=5.0,
             difficulty=5.0,
@@ -137,8 +140,9 @@ def populated_student_state() -> StudentState:
     """Create a student state with some mastery records (all with FSRS state)."""
     state = StudentState()
 
-    state.masteries["v001"] = StudentMastery(
-        knowledge_point_id="v001",
+    state.masteries["knowledge_points:v001"] = StudentMastery(
+        table_id="knowledge_points",
+        row_id="v001",
         fsrs_state=FSRSState(
             stability=3.0,
             difficulty=5.0,
@@ -149,8 +153,9 @@ def populated_student_state() -> StudentState:
         ),
     )
 
-    state.masteries["v002"] = StudentMastery(
-        knowledge_point_id="v002",
+    state.masteries["knowledge_points:v002"] = StudentMastery(
+        table_id="knowledge_points",
+        row_id="v002",
         fsrs_state=FSRSState(
             stability=8.0,
             difficulty=4.5,
@@ -161,8 +166,9 @@ def populated_student_state() -> StudentState:
         ),
     )
 
-    state.masteries["v005"] = StudentMastery(
-        knowledge_point_id="v005",
+    state.masteries["knowledge_points:v005"] = StudentMastery(
+        table_id="knowledge_points",
+        row_id="v005",
         fsrs_state=FSRSState(
             stability=15.0,
             difficulty=4.0,

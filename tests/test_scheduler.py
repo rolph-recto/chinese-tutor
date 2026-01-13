@@ -55,6 +55,7 @@ class TestExerciseScheduler:
 
         # Check that both were updated with FSRS state
         for kp_id in kp_ids:
-            mastery = empty_student_state.masteries[kp_id]
+            key = f"knowledge_points:{kp_id}"
+            mastery = empty_student_state.masteries[key]
             assert mastery.fsrs_state is not None
             assert mastery.due_date is not None

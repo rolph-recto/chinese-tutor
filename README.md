@@ -28,7 +28,7 @@ uvx ruff format
 
 ## Core Components
 
-- `models.py` - Pydantic data models for knowledge points, exercises, student mastery, and FSRS scheduling
+- `models.py` - Pydantic data models for knowledge points, exercises, student mastery, FSRS scheduling, and dynamic schema (UserTableMeta, UserRow, ColumnDefinition)
 - `scheduler.py` - Selects next knowledge point based on review urgency, frontier expansion, and interleaving
 - `main.py` - Interactive CLI loop that orchestrates exercise selection, presentation, and mastery updates
 - `simulate.py` and  - Student simulator for testing scheduling algorithms
@@ -96,16 +96,41 @@ KnowledgePoint → ChineseSchemaPopulator.populate() → Schema (tables)
 
 Student progress and application data are stored in `data/tutor.db` (SQLite database).
 
+### Dynamic Schema System
+
+The storage layer supports a dynamic schema system that allows users to define custom knowledge bases beyond the built-in Chinese vocabulary. This is implemented through two core tables:
+
+- **user_tables** - Stores metadata about user-defined tables (table ID, name, column definitions)
+- **user_rows** - Stores the actual row data as JSON values
+
+Column types supported: `TEXT`, `INTEGER`, `REAL`, `BOOLEAN`, `JSON`, `DATE`, `DATETIME`
+
 ### Abstract Interfaces
 - Repository interfaces (`base.py`)
-  - `KnowledgePointRepository` - Knowledge point CRUD operations
+  - `KnowledgePointRepository` - Knowledge point CRUD operations (legacy)
   - `StudentStateRepository` - Student mastery state operations
-  - `MinimalPairsRepository` - Minimal pair distractor data
-  - `ClozeTemplatesRepository` - Cloze template data
+  - `MinimalPairsRepository` - Minimal pair distractor data (legacy)
+  - `ClozeTemplatesRepository` - Cloze template data (legacy)
+  - `UserTableRepository` - Dynamic table metadata operations
+  - `UserRowRepository` - Dynamic table row operations
 
 ### SQLite Implementation
 - `sqlite.py` - SQLite repository implementations
 - `connection.py` - Database connection and schema initialization
+- `migrations.py` - Migration utilities for converting legacy tables to dynamic schema
+- `adapters.py` - Backwards compatibility adapters for legacy code
+
+### Migration
+
+To migrate an existing database to the dynamic schema format:
+
+```python
+from storage.migrations import migrate_to_dynamic_schema
+
+migrate_to_dynamic_schema()  # Uses default data/tutor.db path
+```
+
+The migration is idempotent and preserves existing data.
 
 ## Scheduling Algorithm
 

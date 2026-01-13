@@ -3,12 +3,15 @@
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from .base import (
     KnowledgePointRepository,
     StudentStateRepository,
     MinimalPairsRepository,
     ClozeTemplatesRepository,
+    UserTableRepository,
+    UserRowRepository,
 )
 from .connection import get_connection, DEFAULT_DB_PATH
 from models import (
@@ -17,6 +20,10 @@ from models import (
     StudentState,
     StudentMastery,
     FSRSState,
+    UserTableMeta,
+    UserRow,
+    ColumnDefinition,
+    ColumnType,
 )
 
 
@@ -84,7 +91,8 @@ class SQLiteStudentStateRepository(StudentStateRepository):
             masteries = {}
             for row in cursor.fetchall():
                 mastery = self._row_to_mastery(row)
-                masteries[mastery.knowledge_point_id] = mastery
+                key = StudentState._make_key(mastery.table_id, mastery.row_id)
+                masteries[key] = mastery
             return StudentState(masteries=masteries)
         finally:
             conn.close()
@@ -101,12 +109,13 @@ class SQLiteStudentStateRepository(StudentStateRepository):
         finally:
             conn.close()
 
-    def get_mastery(self, kp_id: str) -> StudentMastery | None:
-        """Get mastery for a single knowledge point."""
+    def get_mastery(self, table_id: str, row_id: str) -> StudentMastery | None:
+        """Get mastery for a single row."""
         conn = get_connection(self.db_path)
         try:
             cursor = conn.execute(
-                "SELECT * FROM student_mastery WHERE knowledge_point_id = ?", (kp_id,)
+                "SELECT * FROM student_mastery WHERE table_id = ? AND row_id = ?",
+                (table_id, row_id),
             )
             row = cursor.fetchone()
             return self._row_to_mastery(row) if row else None
@@ -114,7 +123,7 @@ class SQLiteStudentStateRepository(StudentStateRepository):
             conn.close()
 
     def save_mastery(self, mastery: StudentMastery) -> None:
-        """Save/update mastery for a single knowledge point."""
+        """Save/update mastery for a single row."""
         conn = get_connection(self.db_path)
         try:
             # Use INSERT OR REPLACE for upsert behavior
@@ -139,7 +148,8 @@ class SQLiteStudentStateRepository(StudentStateRepository):
                 step=row["step"],
             )
         return StudentMastery(
-            knowledge_point_id=row["knowledge_point_id"],
+            table_id=row["table_id"],
+            row_id=row["row_id"],
             fsrs_state=fsrs_state,
         )
 
@@ -151,10 +161,11 @@ class SQLiteStudentStateRepository(StudentStateRepository):
         sql = "INSERT OR REPLACE" if replace else "INSERT"
         conn.execute(
             f"""{sql} INTO student_mastery
-            (knowledge_point_id, stability, difficulty, due, last_review, state, step)
-            VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (table_id, row_id, stability, difficulty, due, last_review, state, step)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             (
-                mastery.knowledge_point_id,
+                mastery.table_id,
+                mastery.row_id,
                 fsrs.stability if fsrs else None,
                 fsrs.difficulty if fsrs else None,
                 fsrs.due.isoformat() if fsrs and fsrs.due else None,
@@ -265,3 +276,227 @@ class SQLiteClozeTemplatesRepository(ClozeTemplatesRepository):
             "target_vocab_id": row["target_vocab_id"],
             "tags": json.loads(row["tags"]),
         }
+
+
+# ============================================================================
+# Dynamic Schema Repository Implementations
+# ============================================================================
+
+
+class SQLiteUserTableRepository(UserTableRepository):
+    """SQLite implementation of UserTableRepository."""
+
+    def __init__(self, db_path: Path = DEFAULT_DB_PATH):
+        self.db_path = db_path
+
+    def create_table(self, table_meta: UserTableMeta) -> None:
+        """Create a new user table definition."""
+        conn = get_connection(self.db_path)
+        try:
+            # Check if table already exists
+            cursor = conn.execute(
+                "SELECT 1 FROM user_tables WHERE table_id = ?",
+                (table_meta.table_id,),
+            )
+            if cursor.fetchone():
+                raise ValueError(f"Table {table_meta.table_id} already exists")
+
+            # Serialize columns to JSON
+            columns_json = json.dumps(
+                [
+                    {
+                        "name": col.name,
+                        "type": col.type.value,
+                        "required": col.required,
+                        "default": col.default,
+                    }
+                    for col in table_meta.columns
+                ]
+            )
+
+            conn.execute(
+                """INSERT INTO user_tables (table_id, table_name, columns)
+                VALUES (?, ?, ?)""",
+                (table_meta.table_id, table_meta.table_name, columns_json),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_table(self, table_id: str) -> UserTableMeta | None:
+        """Get table metadata by ID."""
+        conn = get_connection(self.db_path)
+        try:
+            cursor = conn.execute(
+                "SELECT * FROM user_tables WHERE table_id = ?", (table_id,)
+            )
+            row = cursor.fetchone()
+            return self._row_to_model(row) if row else None
+        finally:
+            conn.close()
+
+    def get_all_tables(self) -> list[UserTableMeta]:
+        """Get all table definitions."""
+        conn = get_connection(self.db_path)
+        try:
+            cursor = conn.execute("SELECT * FROM user_tables")
+            return [self._row_to_model(row) for row in cursor.fetchall()]
+        finally:
+            conn.close()
+
+    def delete_table(self, table_id: str) -> None:
+        """Delete a table and all its rows."""
+        conn = get_connection(self.db_path)
+        try:
+            # Delete rows first (foreign key constraint)
+            conn.execute("DELETE FROM user_rows WHERE table_id = ?", (table_id,))
+            conn.execute("DELETE FROM user_tables WHERE table_id = ?", (table_id,))
+            conn.commit()
+        finally:
+            conn.close()
+
+    def _row_to_model(self, row) -> UserTableMeta:
+        """Convert a database row to a UserTableMeta model."""
+        columns_data = json.loads(row["columns"])
+        columns = [
+            ColumnDefinition(
+                name=col["name"],
+                type=ColumnType(col["type"]),
+                required=col.get("required", True),
+                default=col.get("default"),
+            )
+            for col in columns_data
+        ]
+        return UserTableMeta(
+            table_id=row["table_id"],
+            table_name=row["table_name"],
+            columns=columns,
+        )
+
+
+class SQLiteUserRowRepository(UserRowRepository):
+    """SQLite implementation of UserRowRepository."""
+
+    def __init__(self, db_path: Path = DEFAULT_DB_PATH):
+        self.db_path = db_path
+        self._table_repo = SQLiteUserTableRepository(db_path)
+
+    def insert_row(self, row: UserRow) -> None:
+        """Insert a new row (validates against table schema)."""
+        # Validate against table schema
+        table_meta = self._table_repo.get_table(row.table_id)
+        if table_meta is None:
+            raise ValueError(f"Table {row.table_id} does not exist")
+
+        valid, errors = table_meta.validate_row(row.row_values)
+        if not valid:
+            raise ValueError(f"Row validation failed: {errors}")
+
+        conn = get_connection(self.db_path)
+        try:
+            conn.execute(
+                """INSERT INTO user_rows (table_id, row_id, row_values)
+                VALUES (?, ?, ?)""",
+                (row.table_id, row.row_id, json.dumps(row.row_values)),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_row(self, table_id: str, row_id: str) -> UserRow | None:
+        """Get a specific row."""
+        conn = get_connection(self.db_path)
+        try:
+            cursor = conn.execute(
+                "SELECT * FROM user_rows WHERE table_id = ? AND row_id = ?",
+                (table_id, row_id),
+            )
+            row = cursor.fetchone()
+            return self._row_to_model(row) if row else None
+        finally:
+            conn.close()
+
+    def get_all_rows(self, table_id: str) -> list[UserRow]:
+        """Get all rows for a table."""
+        conn = get_connection(self.db_path)
+        try:
+            cursor = conn.execute(
+                "SELECT * FROM user_rows WHERE table_id = ?", (table_id,)
+            )
+            return [self._row_to_model(row) for row in cursor.fetchall()]
+        finally:
+            conn.close()
+
+    def query_rows(
+        self,
+        table_id: str,
+        filters: dict[str, Any] | None = None,
+    ) -> list[UserRow]:
+        """Query rows with optional filtering.
+
+        Note: Filtering is done in Python since SQLite JSON support varies.
+        For large datasets, consider using JSON1 extension queries.
+        """
+        rows = self.get_all_rows(table_id)
+
+        if filters is None:
+            return rows
+
+        # Filter in Python
+        result = []
+        for row in rows:
+            match = True
+            for key, value in filters.items():
+                if row.row_values.get(key) != value:
+                    match = False
+                    break
+            if match:
+                result.append(row)
+
+        return result
+
+    def update_row(self, row: UserRow) -> None:
+        """Update an existing row."""
+        # Validate against table schema
+        table_meta = self._table_repo.get_table(row.table_id)
+        if table_meta is None:
+            raise ValueError(f"Table {row.table_id} does not exist")
+
+        valid, errors = table_meta.validate_row(row.row_values)
+        if not valid:
+            raise ValueError(f"Row validation failed: {errors}")
+
+        conn = get_connection(self.db_path)
+        try:
+            cursor = conn.execute(
+                """UPDATE user_rows SET row_values = ?
+                WHERE table_id = ? AND row_id = ?""",
+                (json.dumps(row.row_values), row.table_id, row.row_id),
+            )
+            if cursor.rowcount == 0:
+                raise ValueError(
+                    f"Row {row.row_id} in table {row.table_id} does not exist"
+                )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def delete_row(self, table_id: str, row_id: str) -> None:
+        """Delete a row."""
+        conn = get_connection(self.db_path)
+        try:
+            conn.execute(
+                "DELETE FROM user_rows WHERE table_id = ? AND row_id = ?",
+                (table_id, row_id),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def _row_to_model(self, row) -> UserRow:
+        """Convert a database row to a UserRow model."""
+        return UserRow(
+            table_id=row["table_id"],
+            row_id=row["row_id"],
+            row_values=json.loads(row["row_values"]),
+        )

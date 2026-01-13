@@ -2,7 +2,7 @@
 
 ![test workflow](https://github.com/rolph-recto/chinese-tutor/actions/workflows/main.yml/badge.svg)
 
-This is an Chinese tutoring system with spaced repetition.
+Chinese tutoring system with spaced repetition.
 
 ## Development Commands
 

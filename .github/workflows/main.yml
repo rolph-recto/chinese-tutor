@@ -21,9 +21,10 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          # Enable caching for faster subsequent runs
           enable-cache: true
 
+      - name: Sync uv
+        run: uv sync --dev
+
       - name: Run tests
-        # uv run will automatically install dependencies from your lockfile
         run: uv run pytest

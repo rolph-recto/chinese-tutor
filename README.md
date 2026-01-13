@@ -39,12 +39,12 @@ uvx ruff format
 The application uses the [rich](https://github.com/Textualize/rich) library for a styled terminal interface.
 
 - UI components (`components.py`)
-  - **ExercisePanel** - Displays exercises with progress bar and options
-  - **FeedbackPanel** - Shows correct/incorrect feedback with styling
-  - **RatingMenu** - Difficulty rating selection (1-4 FSRS scale)
-  - **MasteryTable** - Displays mastery updates after exercises
-  - **WelcomeScreen** - Welcome banner with session stats
-  - **ProgressTracker** - Tracks and displays session progress
+  - `ExercisePanel` - Displays exercises with progress bar and options
+  - `FeedbackPanel` - Shows correct/incorrect feedback with styling
+  - `RatingMenu` - Difficulty rating selection (1-4 FSRS scale)
+  - `MasteryTable` - Displays mastery updates after exercises
+  - `WelcomeScreen` - Welcome banner with session stats
+  - `ProgressTracker` - Tracks and displays session progress
 - `app.py` - `TutorUI` class that orchestrates UI components and handles user input
 - `styles.py` - Color scheme and style definitions (Chinese red/gold theme)
 
@@ -98,10 +98,10 @@ Student progress and application data are stored in `data/tutor.db` (SQLite data
 
 ### Abstract Interfaces
 - Repository interfaces (`base.py`)
-  - **KnowledgePointRepository** - Knowledge point CRUD operations
-  - **StudentStateRepository** - Student mastery state operations
-  - **MinimalPairsRepository** - Minimal pair distractor data
-  - **ClozeTemplatesRepository** - Cloze template data
+  - `KnowledgePointRepository` - Knowledge point CRUD operations
+  - `StudentStateRepository` - Student mastery state operations
+  - `MinimalPairsRepository` - Minimal pair distractor data
+  - `ClozeTemplatesRepository` - Cloze template data
 
 ### SQLite Implementation
 - `sqlite.py` - SQLite repository implementations

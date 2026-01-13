@@ -24,7 +24,7 @@ jobs:
           enable-cache: true
 
       - name: Sync uv
-        run: uv sync --dev
+        run: uv sync --extra dev
 
       - name: Run tests
         run: uv run pytest
